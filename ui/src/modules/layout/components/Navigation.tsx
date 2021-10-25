@@ -387,6 +387,14 @@ class Navigation extends React.Component<IProps> {
             [],
             lbl
           )}
+          {this.renderNavItem(
+            'showDashboards',
+            __('Dashboards'),
+            '/dashboards',
+            'icon-circular',
+            [],
+            lbl
+          )}
 
           {pluginsOfNavigations(this.renderNavItem)}
         </Nav>
