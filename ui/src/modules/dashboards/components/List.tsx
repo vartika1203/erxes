@@ -15,25 +15,8 @@ import { IRouterProps } from 'modules/common/types';
 
 interface IProps extends IRouterProps {
   //   automations: IAutomation[];
-  //   loading: boolean;
-  //   searchValue: string;
-  //   totalCount: number;
-  //   toggleBulk: () => void;
-  //   toggleAll: (targets: IAutomation[], containerId: string) => void;
-  //   bulk: any[];
-  //   isAllSelected: boolean;
-  //   emptyBulk: () => void;
-  addDashboards: () => void;
-  //   removeAutomations: (
-  //     doc: { automationIds: string[] },
-  //     emptyBulk: () => void
-  //   ) => void;
-  //   queryParams: any;
-  //   exportAutomations: (bulk: string[]) => void;
-  //   refetch?: () => void;
-  //   renderExpandButton?: any;
-  //   isExpand?: boolean;
-  //   counts: AutomationsCount;
+
+  addDashboard: () => Promise<any>;
 }
 
 // type State = {
@@ -108,7 +91,7 @@ class DashboardList extends React.Component<IProps> {
       // queryParams,
       // isExpand,
       // counts,
-      addDashboards
+      addDashboard
     } = this.props;
 
     // const automations = this.props.automations || [];
@@ -186,7 +169,7 @@ class DashboardList extends React.Component<IProps> {
           btnStyle="primary"
           size="small"
           icon="plus-circle"
-          onClick={addDashboards}
+          onClick={addDashboard}
         >
           {__('Create an dashboard')}
         </Button>

@@ -1,8 +1,7 @@
 import Bulk from 'modules/common/components/Bulk';
 import React from 'react';
 import { Alert, withProps } from 'modules/common/utils';
-import Home from '../components/List';
-import { AddMutationResponse, IAutomationDoc } from '../types';
+import List from '../components/List';
 
 import * as compose from 'lodash.flowright';
 import { IRouterProps } from '../../common/types';
@@ -14,7 +13,9 @@ type Props = {
   queryParams?: any;
 };
 
-type FinalProps = {} & AddMutationResponse & IRouterProps;
+type FinalProps = {
+  addDashboardMutation: any;
+} & IRouterProps;
 
 class HomeContainer extends React.Component<FinalProps> {
   render() {
@@ -23,16 +24,14 @@ class HomeContainer extends React.Component<FinalProps> {
     const addDashboard = () => {
       addDashboardMutation({
         variables: {
-          name: 'Your dashboard title',
-          status: 'draft',
-          triggers: [],
-          actions: []
+          name: 'Your dashboard title'
         }
       })
         .then(data => {
+          console.log(data);
+
           history.push({
-            pathname: `/dashboard/${data.data.dashboardsAdd._id}`,
-            // ${data.data.dashboardsAdd._id}
+            pathname: `/dashboards/details/${data.data.dashboardAdd._id}`,
             search: '?isCreate=true'
           });
         })
@@ -48,25 +47,17 @@ class HomeContainer extends React.Component<FinalProps> {
     };
 
     const dashboardsList = props => {
-      return <Home {...updatedProps} {...props} />;
+      return <List {...updatedProps} {...props} />;
     };
 
     return <Bulk content={dashboardsList} />;
   }
 }
 
-// export default HomeContainer;
 export default withProps<Props>(
   compose(
-    // mutations
-    graphql<{}, AddMutationResponse, IAutomationDoc>(
-      gql(mutations.dashboardsAdd),
-      {
-        name: 'addDashboardMutation',
-        options: () => ({
-          refetchQueries: ['dashboards', 'automationsMain', 'automationDetail']
-        })
-      }
-    )
+    graphql(gql(mutations.dashboardsAdd), {
+      name: 'addDashboardMutation'
+    })
   )(HomeContainer)
 );

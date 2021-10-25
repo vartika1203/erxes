@@ -6,6 +6,10 @@ const List = asyncComponent(() =>
   import(/* webpackChunkName: "List" */ './containers/List')
 );
 
+const Details = asyncComponent(() =>
+  import(/* webpackChunkName: "DashboardDetail" */ './containers/Details')
+);
+
 const routes = () => {
   return (
     <>
@@ -14,6 +18,12 @@ const routes = () => {
         exact={true}
         key="/dashboards"
         component={List}
+      />
+      <Route
+        path="/dashboards/details/:id"
+        exact={true}
+        key="/dashboards/details/:id"
+        component={Details}
       />
     </>
   );
