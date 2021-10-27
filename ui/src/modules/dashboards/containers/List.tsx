@@ -7,16 +7,16 @@ import { IRouterProps } from '../../common/types';
 import gql from 'graphql-tag';
 import { mutations, queries } from '../graphql';
 import { graphql } from 'react-apollo';
-import { MainQueryResponse } from '../types';
+import { DashboardsQueryResponse } from '../types';
+
 type Props = {
   queryParams?: any;
 };
 
 type FinalProps = {
-  automationsMainQuery: MainQueryResponse;
   addDashboardMutation: any;
   removeDashboardMutation: any;
-  dashboardsQuery: any;
+  dashboardsQuery: DashboardsQueryResponse;
 } & IRouterProps;
 
 class HomeContainer extends React.Component<FinalProps> {
@@ -100,7 +100,7 @@ export default withProps<Props>(
         refetchQueries: ['dashboards']
       })
     }),
-    graphql(gql(queries.dashboards), {
+    graphql<{}, DashboardsQueryResponse>(gql(queries.dashboards), {
       name: 'dashboardsQuery'
     }),
     graphql(gql(mutations.dashboardsRemove), {

@@ -12,13 +12,14 @@ import { BarItems } from 'modules/layout/styles';
 import React from 'react';
 import { IRouterProps } from 'modules/common/types';
 import Row from './Row';
+import { IDashboard } from '../types';
 // import Sidebar from './Sidebar';
 
 interface IProps extends IRouterProps {
   //   automations: IAutomation[];
 
   addDashboard: () => void;
-  dashboards: any;
+  dashboards: IDashboard[];
   removeDashboard: (dashboardId: string) => void;
   //Promise<any>
 }

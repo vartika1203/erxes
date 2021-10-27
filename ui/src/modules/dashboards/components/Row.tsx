@@ -13,11 +13,11 @@ import { DateWrapper } from 'modules/common/styles/main';
 // import Button from 'modules/common/components/Button';
 // import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
-import { IDashboard } from 'modules/dashboard/types';
 import ActionButtons from 'modules/common/components/ActionButtons';
 import WithPermission from 'modules/common/components/WithPermission';
 import Tip from 'modules/common/components/Tip';
 import Button from 'modules/common/components/Button';
+import { IDashboard } from '../types';
 // import WithPermission from 'modules/common/components/WithPermission';
 
 type Props = {
