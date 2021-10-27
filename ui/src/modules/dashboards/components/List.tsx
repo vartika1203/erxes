@@ -11,12 +11,16 @@ import Wrapper from 'modules/layout/components/Wrapper';
 import { BarItems } from 'modules/layout/styles';
 import React from 'react';
 import { IRouterProps } from 'modules/common/types';
+import Row from './Row';
 // import Sidebar from './Sidebar';
 
 interface IProps extends IRouterProps {
   //   automations: IAutomation[];
 
-  addDashboard: () => Promise<any>;
+  addDashboard: () => void;
+  dashboards: any;
+  removeDashboard: (dashboardId: string) => void;
+  //Promise<any>
 }
 
 // type State = {
@@ -91,7 +95,9 @@ class DashboardList extends React.Component<IProps> {
       // queryParams,
       // isExpand,
       // counts,
-      addDashboard
+      addDashboard,
+      dashboards,
+      removeDashboard
     } = this.props;
 
     // const automations = this.props.automations || [];
@@ -111,7 +117,6 @@ class DashboardList extends React.Component<IProps> {
               <th>{__('Name')}</th>
               <th>{__('Status')}</th>
               <th>{__('Charts')}</th>
-              <th>{__('Action')}</th>
               <th>{__('Created by')}</th>
               <th>{__('Last updated by')}</th>
               <th>{__('Created date')}</th>
@@ -119,18 +124,18 @@ class DashboardList extends React.Component<IProps> {
               <th>{__('Actions')}</th>
             </tr>
           </thead>
-          {/* <tbody id="automations" className={isExpand ? 'expand' : ''}>
-            {(automations || []).map(automation => (
+          <tbody id="automations" className={'expand'}>
+            {(dashboards || []).map(dashboard => (
               <Row
-                key={automation._id}
-                automation={automation}
-                isChecked={bulk.includes(automation)}
-                history={history}
-                removeAutomations={this.removeAutomations}
-                toggleBulk={toggleBulk}
+                key={dashboard._id}
+                dashboard={dashboard}
+                // isChecked={bulk.includes(dashboard)}
+                // history={history}
+                removeDashboard={removeDashboard}
+                // toggleBulk={toggleBulk}
               />
             ))}
-          </tbody> */}
+          </tbody>
         </Table>
       </withTableWrapper.Wrapper>
     );
@@ -162,9 +167,6 @@ class DashboardList extends React.Component<IProps> {
           autoFocus={true}
           onFocus={this.moveCursorAtTheEnd}
         />
-        {/* <Link
-          to={`/dashboard2`}
-        > */}
         <Button
           btnStyle="primary"
           size="small"
@@ -173,7 +175,6 @@ class DashboardList extends React.Component<IProps> {
         >
           {__('Create an dashboard')}
         </Button>
-        {/* </Link> */}
       </BarItems>
     );
 

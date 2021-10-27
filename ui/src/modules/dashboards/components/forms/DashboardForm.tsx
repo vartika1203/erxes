@@ -17,19 +17,19 @@ import {
 } from 'modules/automations/styles';
 import ChartForm from 'modules/dashboards/components/forms/ChartForm';
 import { Title } from 'modules/dashboards/styles';
-
-// import { IAction, ITrigger } from 'modules/automations/types';
-// import Toggle from 'modules/common/components/Toggle';
+// import { IAutomation } from '../../types';
 
 // const plumb: any = jsPlumb;
 // let instance;
 
 // type Props = {
-//   save: (params: any) => void;
-//   saveLoading: boolean;
-//   id: string;
-//   history: any;
-//   queryParams: any;
+//   dashboard: IAutomation;
+// automationNotes?: IAutomationNote[];
+// save: (params: any) => void;
+// saveLoading: boolean;
+// id: string;
+// history: any;
+// queryParams: any;
 // };
 
 type State = {
@@ -43,29 +43,16 @@ type State = {
 };
 
 class DashboardForm extends React.Component<{}, State> {
-  // private wrapperRef;
-  // private setZoom;
-
   constructor(props) {
     super(props);
 
+    // const { dashboard = [] } = this.props;
+
     this.state = {
-      // triggers: JSON.parse(JSON.stringify(automation.triggers || [])),
-      // activeTrigger: {} as ITrigger,
-      // name: automation.name,
+      // name: dashboard.name,
       activeId: '',
       currentTab: 'triggers',
-      // isActionTab: true,
-      // showNoteForm: false,
-      // showTemplateForm: false,
-      // showTrigger: false,
       showDrawer: false
-      // showAction: false,
-      // isZoomable: false,
-      // zoomStep: 0.025,
-      // zoom: 1,
-      // percentage: 100,
-      // activeAction: {} as IAction,
     };
   }
 
@@ -73,124 +60,41 @@ class DashboardForm extends React.Component<{}, State> {
     this.setState({ showDrawer: !this.state.showDrawer, currentTab: type });
   };
 
-  // onClickTrigger = (trigger: ITrigger) => {
-  // const config = trigger && trigger.config;
-  // const selectedContentId = config && config.contentId;
+  // handleSubmit = () => {
+  //   const { name, triggers, actions } = this.state;
+  //   const { automation, save } = this.props;
 
-  // this.setState({
-  // showTrigger: true,
-  // showDrawer: true,
-  // showAction: false,
-  // currentTab: 'triggers',
-  // selectedContentId,
-  // activeTrigger: trigger ? trigger : ({} as ITrigger)
-  //   });
-  // };
+  //   const generateValues = () => {
+  //     const finalValues = {
+  //       _id: automation._id,
+  //       name,
+  //       // status: isActive ? 'active' : 'draft',
+  //       triggers: triggers.map(t => ({
+  //         id: t.id,
+  //         type: t.type,
+  //         config: t.config,
+  //         icon: t.icon,
+  //         label: t.label,
+  //         description: t.description,
+  //         actionId: t.actionId,
+  //         // style: jquery(`#trigger-${t.id}`).attr('style')
+  //       })),
+  //       actions: actions.map(a => ({
+  //         id: a.id,
+  //         type: a.type,
+  //         nextActionId: a.nextActionId,
+  //         config: a.config,
+  //         icon: a.icon,
+  //         label: a.label,
+  //         description: a.description,
+  //         // style: jquery(`#action-${a.id}`).attr('style')
+  //       }))
+  //     };
 
-  // onClickAction = (action: IAction) => {
-  //   this.setState({
-  //     // showAction: true,
-  //     showDrawer: true,
-  //     // showTrigger: false,
-  //     // activeAction: action ? action : ({} as IAction)
-  //   });
-  // };
-
-  // addTrigger = (data: ITrigger, triggerId?: string, config?: any) => {
-  //   const { triggers, activeTrigger } = this.state;
-
-  //   let trigger: any = {
-  //     ...data,
-  //     id: this.getNewId(triggers.map(t => t.id))
+  //     return finalValues;
   //   };
-  //   const triggerIndex = triggers.findIndex(t => t.id === triggerId);
 
-  //   if (triggerId && activeTrigger.id === triggerId) {
-  //     trigger = activeTrigger;
-  //   }
-
-  //   trigger.config = { ...trigger.config, ...config };
-
-  //   if (triggerIndex !== -1) {
-  //     triggers[triggerIndex] = trigger;
-  //   } else {
-  //     triggers.push(trigger);
-  //   }
-
-  //   this.setState({ triggers, activeTrigger: trigger }, () => {
-  //     if (!triggerId) {
-  //       this.renderControl('trigger', trigger, this.onClickTrigger);
-  //     }
-  //   });
-  // };
-
-  // renderControl = (key: string, item: ITrigger | IAction, onClick: any) => {
-  //   const idElm = `${key}-${item.id}`;
-
-  //   jquery('#canvas').append(`
-  //     <div class="${key} control" id="${idElm}" style="${item.style}">
-  //       <div class="trigger-header">
-  //         <div class='custom-menu'>
-  //           <div>
-  //             <i class="icon-notes add-note" title=${__('Write Note')}></i>
-  //             <i class="icon-trash-alt delete-control" id="${idElm}" title=${__(
-  //     'Delete control'
-  //   )}></i>
-  //           </div>
-  //         </div>
-  //         <div>
-  //           <i class="icon-${item.icon}"></i>
-  //           ${item.label} ${this.renderCount(item)}
-  //         </div>
-  //       </div>
-  //       <p>${item.description}</p>
-  //       ${this.renderNotes(idElm)}
-
-  //     </div>
-  //   `);
-
-  //   jquery('#canvas').on('dblclick', `#${idElm}`, event => {
-  //     event.preventDefault();
-
-  //     onClick(item);
-  //   });
-
-  //   jquery('#canvas').on('click', `.note-badge-${idElm}`, event => {
-  //     event.preventDefault();
-
-  //     this.onClickNote(event.currentTarget.id);
-  //   });
-
-  //   if (key === 'trigger') {
-  //     instance.addEndpoint(idElm, sourceEndpoint, {
-  //       anchor: [1, 0.5]
-  //     });
-
-  //     if (instance.getSelector(`#${idElm}`).length > 0) {
-  //       instance.draggable(instance.getSelector(`#${idElm}`));
-  //     }
-  //   }
-
-  //   if (key === 'action') {
-  //     if (item.type === 'if') {
-  //       instance.addEndpoint(idElm, targetEndpoint, {
-  //         anchor: ['Left']
-  //       });
-
-  //       instance.addEndpoint(idElm, yesEndPoint);
-  //       instance.addEndpoint(idElm, noEndPoint);
-  //     } else {
-  //       instance.addEndpoint(idElm, targetEndpoint, {
-  //         anchor: ['Left']
-  //       });
-
-  //       instance.addEndpoint(idElm, sourceEndpoint, {
-  //         anchor: ['Right']
-  //       });
-  //     }
-
-  //     instance.draggable(instance.getSelector(`#${idElm}`));
-  //   }
+  //   return save(generateValues());
   // };
 
   renderLeftActionBar() {
@@ -198,7 +102,7 @@ class DashboardForm extends React.Component<{}, State> {
 
     return (
       <CenterFlexRow>
-        <Link to={`/reports`}>
+        <Link to={`/dashboards`}>
           <BackButton>
             <Icon icon="angle-left" size={20} />
           </BackButton>
@@ -216,7 +120,7 @@ class DashboardForm extends React.Component<{}, State> {
     );
   }
 
-  rendeRightActionBar() {
+  renderRightActionBar() {
     // const { isActive } = this.state;
 
     return (
@@ -232,6 +136,14 @@ class DashboardForm extends React.Component<{}, State> {
               Create a chart
             </Button>
           }
+          <Button
+            btnStyle="success"
+            size="small"
+            icon={'check-circle'}
+            // onClick={this.handleSubmit}
+          >
+            {__('Save')}
+          </Button>
         </ActionBarButtonsWrapper>
       </BarItems>
     );
@@ -253,7 +165,7 @@ class DashboardForm extends React.Component<{}, State> {
               actionBar={
                 <Wrapper.ActionBar
                   left={this.renderLeftActionBar()}
-                  right={this.rendeRightActionBar()}
+                  right={this.renderRightActionBar()}
                 />
               }
               transparent={false}

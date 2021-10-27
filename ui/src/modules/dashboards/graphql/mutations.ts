@@ -7,4 +7,10 @@ const dashboardsAdd = `
     }
 `;
 
-export default { dashboardsAdd };
+const dashboardsRemove = `
+    mutation dashboardRemove($_id: String!){
+        dashboardRemove(_id:$_id) 
+  }
+`;
+
+export default { dashboardsAdd, dashboardsRemove };
