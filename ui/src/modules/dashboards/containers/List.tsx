@@ -109,7 +109,5 @@ export default withProps<Props>(
         refetchQueries: ['dashboards']
       })
     })
-    // mutation dashboardRemove($_id: String!){
-    //   dashboardRemove(_id:$_id)
   )(HomeContainer)
 );

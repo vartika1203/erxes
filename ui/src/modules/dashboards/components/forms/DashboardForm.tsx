@@ -17,20 +17,6 @@ import {
 } from 'modules/automations/styles';
 import ChartForm from 'modules/dashboards/components/forms/ChartForm';
 import { Title } from 'modules/dashboards/styles';
-// import { IAutomation } from '../../types';
-
-// const plumb: any = jsPlumb;
-// let instance;
-
-// type Props = {
-//   dashboard: IAutomation;
-// automationNotes?: IAutomationNote[];
-// save: (params: any) => void;
-// saveLoading: boolean;
-// id: string;
-// history: any;
-// queryParams: any;
-// };
 
 type State = {
   // name: string;
@@ -59,43 +45,6 @@ class DashboardForm extends React.Component<{}, State> {
   toggleDrawer = (type: string) => {
     this.setState({ showDrawer: !this.state.showDrawer, currentTab: type });
   };
-
-  // handleSubmit = () => {
-  //   const { name, triggers, actions } = this.state;
-  //   const { automation, save } = this.props;
-
-  //   const generateValues = () => {
-  //     const finalValues = {
-  //       _id: automation._id,
-  //       name,
-  //       // status: isActive ? 'active' : 'draft',
-  //       triggers: triggers.map(t => ({
-  //         id: t.id,
-  //         type: t.type,
-  //         config: t.config,
-  //         icon: t.icon,
-  //         label: t.label,
-  //         description: t.description,
-  //         actionId: t.actionId,
-  //         // style: jquery(`#trigger-${t.id}`).attr('style')
-  //       })),
-  //       actions: actions.map(a => ({
-  //         id: a.id,
-  //         type: a.type,
-  //         nextActionId: a.nextActionId,
-  //         config: a.config,
-  //         icon: a.icon,
-  //         label: a.label,
-  //         description: a.description,
-  //         // style: jquery(`#action-${a.id}`).attr('style')
-  //       }))
-  //     };
-
-  //     return finalValues;
-  //   };
-
-  //   return save(generateValues());
-  // };
 
   renderLeftActionBar() {
     // const { name } = this.state;

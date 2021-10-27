@@ -1,24 +1,15 @@
 import FormControl from 'modules/common/components/form/Control';
 import React from 'react';
-// import { IAutomation } from '../types';
 import dayjs from 'dayjs';
 import Label from 'modules/common/components/Label';
 import Icon from 'modules/common/components/Icon';
 import { DateWrapper } from 'modules/common/styles/main';
-// import s from 'underscore.string';
-// import { FlexItem } from 'modules/companies/styles';
-// import NameCard from 'modules/common/components/nameCard/NameCard';
-// import ActionButtons from 'modules/common/components/ActionButtons';
-// import { Link } from 'react-router-dom';
-// import Button from 'modules/common/components/Button';
-// import Tip from 'modules/common/components/Tip';
 import { __ } from 'modules/common/utils';
 import ActionButtons from 'modules/common/components/ActionButtons';
 import WithPermission from 'modules/common/components/WithPermission';
 import Tip from 'modules/common/components/Tip';
 import Button from 'modules/common/components/Button';
 import { IDashboard } from '../types';
-// import WithPermission from 'modules/common/components/WithPermission';
 
 type Props = {
   dashboard: IDashboard;

@@ -6,84 +6,26 @@ import Table from 'modules/common/components/table';
 import withTableWrapper from 'modules/common/components/table/withTableWrapper';
 import { __ } from 'modules/common/utils';
 import Sidebar from './Sidebar';
-// import { Link } from 'react-router-dom';
 import Wrapper from 'modules/layout/components/Wrapper';
 import { BarItems } from 'modules/layout/styles';
 import React from 'react';
 import { IRouterProps } from 'modules/common/types';
 import Row from './Row';
 import { IDashboard } from '../types';
-// import Sidebar from './Sidebar';
 
 interface IProps extends IRouterProps {
-  //   automations: IAutomation[];
-
   addDashboard: () => void;
   dashboards: IDashboard[];
   removeDashboard: (dashboardId: string) => void;
   //Promise<any>
 }
 
-// type State = {
-//   searchValue?: string;
-// };
-
 class DashboardList extends React.Component<IProps> {
-  // private timer?: NodeJS.Timer = undefined;
-
-  // constructor(props) {
-  //   super(props);
-
-  //   // this.state = {
-  //   //   searchValue: this.props.searchValue
-  //   // };
-  // }
-
-  // onChange = () => {
-  //   const { toggleAll, automations } = this.props;
-
-  //   toggleAll(automations, 'automations');
-  // };
-
-  // search = e => {
-  //   if (this.timer) {
-  //     clearTimeout(this.timer);
-  //   }
-
-  //   // const { history } = this.props;
-  //   const searchValue = e.target.value;
-
-  //   this.setState({ searchValue });
-
-  //   this.timer = setTimeout(() => {
-  //     router.removeParams(history, 'page');
-  //     router.setParams(history, { searchValue });
-  //   }, 500);
-  // };
-
-  // removeAutomations = automations => {
-  //   const automationIds: string[] = [];
-
-  //   automations.forEach(automation => {
-  //     automationIds.push(automation._id);
-  //   });
-
-  //   this.props.removeAutomations({ automationIds }, this.props.emptyBulk);
-  // };
-
   moveCursorAtTheEnd = e => {
     const tmpValue = e.target.value;
     e.target.value = '';
     e.target.value = tmpValue;
   };
-
-  // afterTag = () => {
-  //   this.props.emptyBulk();
-
-  //   if (this.props.refetch) {
-  //     this.props.refetch();
-  //   }
-  // };
 
   render() {
     const {
@@ -100,8 +42,6 @@ class DashboardList extends React.Component<IProps> {
       dashboards,
       removeDashboard
     } = this.props;
-
-    // const automations = this.props.automations || [];
 
     const mainContent = (
       <withTableWrapper.Wrapper>
@@ -142,21 +82,6 @@ class DashboardList extends React.Component<IProps> {
     );
 
     let actionBarLeft: React.ReactNode;
-
-    // if (bulk.length > 0) {
-    //   actionBarLeft = (
-    //     <BarItems>
-    //       <Button
-    //         btnStyle="danger"
-    //         size="small"
-    //         icon="cancel-1"
-    //         onClick={() => this.removeAutomations(bulk)}
-    //       >
-    //         Remove
-    //       </Button>
-    //     </BarItems>
-    //   );
-    // }
 
     const actionBarRight = (
       <BarItems>
