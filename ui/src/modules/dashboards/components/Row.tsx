@@ -90,7 +90,7 @@ function ActionRow({
       </td>
       <td onClick={onNameClick}> {name} </td>
       <td>
-        <Label lblStyle={labelStyle}>{name}</Label>
+        <Label lblStyle={labelStyle}>{'draft'}</Label>
       </td>
       <td>
         <Icon icon="calender" />{' '}

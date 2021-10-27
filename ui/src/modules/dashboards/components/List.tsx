@@ -116,11 +116,11 @@ class DashboardList extends React.Component<IProps> {
               </th>
               <th>{__('Name')}</th>
               <th>{__('Status')}</th>
-              <th>{__('Charts')}</th>
+              {/* <th>{__('Charts')}</th> */}
               <th>{__('Created by')}</th>
-              <th>{__('Last updated by')}</th>
+              {/* <th>{__('Last updated by')}</th> */}
               <th>{__('Created date')}</th>
-              <th>{__('Last update')}</th>
+              {/* <th>{__('Last update')}</th> */}
               <th>{__('Actions')}</th>
             </tr>
           </thead>
