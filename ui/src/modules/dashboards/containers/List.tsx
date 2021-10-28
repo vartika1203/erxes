@@ -7,17 +7,23 @@ import { IRouterProps } from '../../common/types';
 import gql from 'graphql-tag';
 import { mutations, queries } from '../graphql';
 import { graphql } from 'react-apollo';
-import { DashboardsQueryResponse } from '../types';
+import {
+  AddDashboardMutationResponse,
+  AddDashboardMutationVariables,
+  DashboardRemoveMutationVariables,
+  DashboardsQueryResponse,
+  RemoveDashboardMutationResponse
+} from '../types';
 
 type Props = {
   queryParams?: any;
 };
 
 type FinalProps = {
-  addDashboardMutation: any;
-  removeDashboardMutation: any;
   dashboardsQuery: DashboardsQueryResponse;
-} & IRouterProps;
+} & IRouterProps &
+  RemoveDashboardMutationResponse &
+  AddDashboardMutationResponse;
 
 class HomeContainer extends React.Component<FinalProps> {
   private timer?: NodeJS.Timer;
@@ -94,19 +100,30 @@ class HomeContainer extends React.Component<FinalProps> {
 
 export default withProps<Props>(
   compose(
-    graphql(gql(mutations.dashboardsAdd), {
-      name: 'addDashboardMutation',
-      options: () => ({
-        refetchQueries: ['dashboards']
-      })
-    }),
+    graphql<{}, AddDashboardMutationResponse, AddDashboardMutationVariables>(
+      gql(mutations.dashboardsAdd),
+      {
+        name: 'addDashboardMutation',
+        options: () => ({
+          refetchQueries: ['dashboards']
+        })
+      }
+    ),
     graphql<{}, DashboardsQueryResponse>(gql(queries.dashboards), {
       name: 'dashboardsQuery'
     }),
-    graphql(gql(mutations.dashboardsRemove), {
+    graphql<
+      {},
+      RemoveDashboardMutationResponse,
+      DashboardRemoveMutationVariables
+    >(gql(mutations.dashboardsRemove), {
       name: 'removeDashboardMutation',
       options: () => ({
-        refetchQueries: ['dashboards']
+        refetchQueries: [
+          {
+            query: gql(queries.dashboards)
+          }
+        ]
       })
     })
   )(HomeContainer)

@@ -17,37 +17,67 @@ import {
 } from 'modules/automations/styles';
 import ChartForm from 'modules/dashboards/components/forms/ChartForm';
 import { Title } from 'modules/dashboards/styles';
+import { IDashboard } from 'modules/dashboards/types';
+
+type Props = {
+  dashboard: IDashboard;
+  id: string;
+  queryParams: any;
+};
 
 type State = {
-  // name: string;
+  name: string;
   currentTab: string;
   activeId: string;
   showDrawer: boolean;
-  // showTrigger: boolean;
-  // triggers: ITrigger[];
-  // activeTrigger: ITrigger;
 };
 
-class DashboardForm extends React.Component<{}, State> {
+class DashboardForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
-    // const { dashboard = [] } = this.props;
+    const { dashboard } = this.props;
 
     this.state = {
-      // name: dashboard.name,
+      name: dashboard.name || 'Your dashboard title',
+      // dashbord.name
       activeId: '',
       currentTab: 'triggers',
       showDrawer: false
     };
   }
 
+  // onNameChange = (e: React.FormEvent<HTMLElement>) => {
+  //   const value = (e.currentTarget as HTMLButtonElement).value;
+  //   this.setState({ dashboardName: value });
+  // };
+
+  // handleSubmit = () => {
+  //   const { dashboardName } = this.state;
+  //   const { save } = this.props;
+
+  //   if (!dashboardName || dashboardName === 'Your dashboard title') {
+  //     return Alert.error('Enter an Automation title');
+  //   }
+
+  //   const generateValues = () => {
+  //     const finalValues = {
+  //       _id: 'hellodarkness',
+  //       dashboardName,
+  //       status: 'draft',
+  //     };
+  //     return finalValues;
+  //   };
+
+  //   return save(generateValues());
+  // };
+
   toggleDrawer = (type: string) => {
     this.setState({ showDrawer: !this.state.showDrawer, currentTab: type });
   };
 
   renderLeftActionBar() {
-    // const { name } = this.state;
+    const { name } = this.state;
 
     return (
       <CenterFlexRow>
@@ -59,9 +89,10 @@ class DashboardForm extends React.Component<{}, State> {
         <Title>
           <FormControl
             name="name"
-            // value={name}
+            value={name}
             required={true}
             autoFocus={true}
+            // onChange={this.onNameChange}
           />
           <Icon icon="edit-alt" size={16} />
         </Title>

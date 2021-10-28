@@ -10,10 +10,11 @@ import WithPermission from 'modules/common/components/WithPermission';
 import Tip from 'modules/common/components/Tip';
 import Button from 'modules/common/components/Button';
 import { IDashboard } from '../types';
+import { Link } from 'react-router-dom';
 
 type Props = {
   dashboard: IDashboard;
-  history?: any;
+  history: any;
   isChecked?: boolean;
   toggleBulk?: (dashboard: IDashboard, isChecked?: boolean) => void;
   removeDashboard: (dashboardId: string) => void;
@@ -38,6 +39,18 @@ function ActionRow({
 
   const onNameClick = () => {
     history.push(`/dashboards/details/${dashboard._id}`);
+  };
+
+  const editAction = () => {
+    return (
+      <Link to={`/dashboards/details/${dashboard._id}`}>
+        <Button btnStyle="link">
+          <Tip text={__('Edit')} placement="top">
+            <Icon icon="edit-3" />
+          </Tip>
+        </Button>
+      </Link>
+    );
   };
 
   const removeAction = () => {
@@ -83,9 +96,12 @@ function ActionRow({
       <td>
         <Label lblStyle={labelStyle}>{'draft'}</Label>
       </td>
+      <td>chart</td>
+      <td>createdBy</td>
       <td>
-        <Icon icon="calender" />{' '}
-        <DateWrapper>{dayjs(name || new Date()).format('ll')}</DateWrapper>
+        {/* <Icon icon="calender" />{' '}
+        <DateWrapper>{dayjs(name || new Date()).format('ll')}</DateWrapper> */}
+        last updated by
       </td>
       <td>
         <Icon icon="calender" />{' '}
@@ -93,7 +109,7 @@ function ActionRow({
       </td>
       <td>
         <ActionButtons>
-          {/* {editAction()} */}
+          {editAction()}
           {removeAction()}
         </ActionButtons>
       </td>

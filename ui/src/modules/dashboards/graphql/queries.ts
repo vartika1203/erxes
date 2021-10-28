@@ -1,10 +1,8 @@
 const dashboardDetails = `
-
     query dashboardDetails($_id: String!){
         dashboardDetails(_id: $_id){
             _id
             name
-    
         }
     }
 `;

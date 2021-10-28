@@ -29,7 +29,7 @@ class DashboardList extends React.Component<IProps> {
 
   render() {
     const {
-      // history,
+      history,
       //  loading,
       // toggleBulk,
       // bulk,
@@ -57,9 +57,9 @@ class DashboardList extends React.Component<IProps> {
               </th>
               <th>{__('Name')}</th>
               <th>{__('Status')}</th>
-              {/* <th>{__('Charts')}</th> */}
+              <th>{__('Charts')}</th>
               <th>{__('Created by')}</th>
-              {/* <th>{__('Last updated by')}</th> */}
+              <th>{__('Last updated by')}</th>
               <th>{__('Created date')}</th>
               {/* <th>{__('Last update')}</th> */}
               <th>{__('Actions')}</th>
@@ -71,7 +71,7 @@ class DashboardList extends React.Component<IProps> {
                 key={dashboard._id}
                 dashboard={dashboard}
                 // isChecked={bulk.includes(dashboard)}
-                // history={history}
+                history={history}
                 removeDashboard={removeDashboard}
                 // toggleBulk={toggleBulk}
               />
