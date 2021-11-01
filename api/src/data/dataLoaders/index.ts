@@ -11,6 +11,14 @@ import segment from './segment';
 import customer from './customer';
 import conversationMessagesByConversationId from './conversationMessagesByConversationId';
 import conversationsByCustomerId from './conversationsByCustomerId';
+import brand from './brand';
+import deal from './deal';
+import task from './task';
+import growthHack from './growthHack';
+import ticket from './ticket';
+import stage from './stage';
+import checklist from './checklist';
+import checklistItem from './checklistItem';
 
 export interface IDataLoaders {
   productCategory: DataLoader<string, any>;
@@ -24,6 +32,14 @@ export interface IDataLoaders {
   customer: DataLoader<string, any>;
   conversationMessagesByConversationId: DataLoader<string, any[]>;
   conversationsByCustomerId: DataLoader<string, any[]>;
+  brand: DataLoader<string, any>;
+  deal: DataLoader<string, any>;
+  task: DataLoader<string, any>;
+  growthHack: DataLoader<string, any>;
+  ticket: DataLoader<string, any>;
+  stage: DataLoader<string, any>;
+  checklist: DataLoader<string, any>;
+  checklistItem: DataLoader<string, any>;
 }
 
 export function generateAllDataLoaders(): IDataLoaders {
@@ -38,6 +54,14 @@ export function generateAllDataLoaders(): IDataLoaders {
     segment: segment(),
     customer: customer(),
     conversationMessagesByConversationId: conversationMessagesByConversationId(),
-    conversationsByCustomerId: conversationsByCustomerId()
+    conversationsByCustomerId: conversationsByCustomerId(),
+    brand: brand(),
+    deal: deal(),
+    task: task(),
+    growthHack: growthHack(),
+    ticket: ticket(),
+    stage: stage(),
+    checklist: checklist(),
+    checklistItem: checklistItem()
   };
 }

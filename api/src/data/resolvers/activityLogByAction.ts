@@ -1,15 +1,11 @@
-import {
-  ChecklistItems,
-  Checklists,
-  Deals,
-  GrowthHacks,
-  Tasks,
-  Tickets
-} from '../../db/models';
 import { debugError } from '../../debuggers';
-import { getDocument } from './mutations/cacheUtils';
+import { IDataLoaders } from '../dataLoaders';
+import { IContext } from '../types';
 
-export const getContentTypeDetail = async (activityLog: any) => {
+export const getContentTypeDetail = async (
+  activityLog: any,
+  dataLoaders: IDataLoaders
+) => {
   const { contentType, contentId, content } = activityLog;
 
   let item = {};
@@ -17,22 +13,22 @@ export const getContentTypeDetail = async (activityLog: any) => {
   try {
     switch (contentType) {
       case 'deal':
-        item = await Deals.getDeal(contentId);
+        item = await dataLoaders.deal.load(contentId);
         break;
       case 'task':
-        item = await Tasks.getTask(contentId);
+        item = await dataLoaders.task.load(contentId);
         break;
       case 'growthHack':
-        item = await GrowthHacks.getGrowthHack(contentId);
+        item = await dataLoaders.growthHack.load(contentId);
         break;
       case 'ticket':
-        item = await Tickets.getTicket(contentId);
+        item = await dataLoaders.ticket.load(contentId);
         break;
       case 'checklist':
-        item = (await Checklists.findOne({ _id: content._id })) || {};
+        item = (await dataLoaders.checklist.load(content._id)) || {};
         break;
       case 'checklistitem':
-        item = (await ChecklistItems.findOne({ _id: content._id })) || {};
+        item = (await dataLoaders.checklistItem.load(content._id)) || {};
         break;
     }
   } catch (e) {
@@ -43,11 +39,11 @@ export const getContentTypeDetail = async (activityLog: any) => {
 };
 
 export default {
-  createdUser(activityLog: any) {
-    return getDocument('users', { _id: activityLog.createdBy });
+  createdUser(activityLog: any, _, { dataLoaders }: IContext) {
+    return dataLoaders.user.load(activityLog.createdBy);
   },
 
-  contentTypeDetail(activityLog: any) {
-    return getContentTypeDetail(activityLog);
+  contentTypeDetail(activityLog: any, _, { dataLoaders }: IContext) {
+    return getContentTypeDetail(activityLog, dataLoaders);
   }
 };

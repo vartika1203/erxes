@@ -1,44 +1,39 @@
-import {
-  Companies,
-  Customers,
-  Deals,
-  GrowthHacks,
-  Stages,
-  Tasks,
-  Tickets
-} from '../../db/models';
 import { IActivityLog } from '../../db/models/definitions/activityLogs';
 import { ACTIVITY_ACTIONS } from '../../db/models/definitions/constants';
 import { ITagDocument } from '../../db/models/definitions/tags';
 import { IUserDocument } from '../../db/models/definitions/users';
+import { IContext } from '../types';
 import { getContentTypeDetail } from './activityLogByAction';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export default {
-  async createdByDetail(activityLog: IActivityLog) {
-    const user = await getDocument('users', { _id: activityLog.createdBy });
+  async createdByDetail(
+    activityLog: IActivityLog,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const user = await dataLoaders.user.load(activityLog.createdBy);
 
     if (user) {
       return { type: 'user', content: user };
     }
 
-    const integration = await getDocument('integrations', {
-      _id: activityLog.createdBy
-    });
+    const integration = await dataLoaders.integration.load(
+      activityLog.createdBy
+    );
 
     if (integration) {
-      const brand = await getDocument('brands', { _id: integration.brandId });
+      const brand = await dataLoaders.brand.load(integration.brandId);
       return { type: 'brand', content: brand };
     }
 
     return;
   },
 
-  contentTypeDetail(activityLog: IActivityLog) {
-    return getContentTypeDetail(activityLog);
+  contentTypeDetail(activityLog: IActivityLog, _, { dataLoaders }: IContext) {
+    return getContentTypeDetail(activityLog, dataLoaders);
   },
 
-  async contentDetail(activityLog: IActivityLog) {
+  async contentDetail(activityLog: IActivityLog, _, { dataLoaders }: IContext) {
     const { action, content, contentType, contentId } = activityLog;
 
     if (action === ACTIVITY_ACTIONS.MOVED) {
@@ -46,25 +41,23 @@ export default {
 
       switch (contentType) {
         case 'deal':
-          item = await Deals.getDeal(contentId);
+          item = await dataLoaders.deal.load(contentId);
           break;
         case 'task':
-          item = await Tasks.getTask(contentId);
+          item = await dataLoaders.task.load(contentId);
           break;
         case 'growthHack':
-          item = await GrowthHacks.getGrowthHack(contentId);
+          item = await dataLoaders.growthHack.load(contentId);
           break;
         case 'ticket':
-          item = await Tickets.getTicket(contentId);
+          item = await dataLoaders.ticket.load(contentId);
           break;
       }
 
       const { oldStageId, destinationStageId } = content;
 
-      const destinationStage = await Stages.findOne({
-        _id: destinationStageId
-      }).lean();
-      const oldStage = await Stages.findOne({ _id: oldStageId }).lean();
+      const destinationStage = await dataLoaders.stage.load(destinationStageId);
+      const oldStage = await dataLoaders.stage.load(oldStageId);
 
       if (destinationStage && oldStage) {
         return {
@@ -84,14 +77,10 @@ export default {
 
       switch (contentType) {
         case 'company':
-          result = await Companies.find({
-            _id: { $in: activityLog.content }
-          }).lean();
+          result = await dataLoaders.company.loadMany(activityLog.content);
           break;
         case 'customer':
-          result = await Customers.find({
-            _id: { $in: activityLog.content }
-          }).lean();
+          result = await dataLoaders.customer.loadMany(activityLog.content);
           break;
       }
 
@@ -103,12 +92,12 @@ export default {
       let removedUsers: IUserDocument[] = [];
 
       if (content) {
-        addedUsers = await getDocumentList('users', {
-          _id: { $in: content.addedUserIds }
-        });
-        removedUsers = await getDocumentList('users', {
-          _id: { $in: content.removedUserIds }
-        });
+        addedUsers = await dataLoaders.user.loadMany(
+          content.addedUserIds || []
+        );
+        removedUsers = await dataLoaders.user.loadMany(
+          content.removedUserIds || []
+        );
       }
 
       return { addedUsers, removedUsers };
@@ -117,7 +106,7 @@ export default {
     if (action === ACTIVITY_ACTIONS.TAGGED) {
       let tags: ITagDocument[] = [];
       if (content) {
-        tags = await getDocumentList('tags', { _id: { $in: content.tagIds } });
+        tags = await dataLoaders.tag.loadMany(content.tagIds || []);
       }
 
       return { tags };
