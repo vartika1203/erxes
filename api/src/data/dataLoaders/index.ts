@@ -21,6 +21,8 @@ import checklist from './checklist';
 import checklistItem from './checklistItem';
 import userActive from './userActive';
 import integrationActive from './integrationActive';
+import field from './field';
+import fieldsGroup from './fieldsGroup';
 
 export interface IDataLoaders {
   productCategory: DataLoader<string, any>;
@@ -44,6 +46,8 @@ export interface IDataLoaders {
   checklistItem: DataLoader<string, any>;
   userActive: DataLoader<string, any>;
   integrationActive: DataLoader<string, any>;
+  field: DataLoader<string, any>;
+  fieldsGroup: DataLoader<string, any>;
 }
 
 export function generateAllDataLoaders(): IDataLoaders {
@@ -68,6 +72,8 @@ export function generateAllDataLoaders(): IDataLoaders {
     checklist: checklist(),
     checklistItem: checklistItem(),
     userActive: userActive(),
-    integrationActive: integrationActive()
+    integrationActive: integrationActive(),
+    field: field(),
+    fieldsGroup: fieldsGroup()
   };
 }

@@ -1,33 +1,35 @@
-import { Fields, FieldsGroups } from '../../db/models';
+import { Fields } from '../../db/models';
 import {
   IFieldDocument,
   IFieldGroupDocument
 } from '../../db/models/definitions/fields';
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export const field = {
   name(root: IFieldDocument) {
     return `erxes-form-field-${root._id}`;
   },
 
-  lastUpdatedUser(root: IFieldDocument) {
+  lastUpdatedUser(root: IFieldDocument, _, { dataLoaders }: IContext) {
     const { lastUpdatedUserId } = root;
-
     // Returning user who updated the field last
-    return getDocument('users', { _id: lastUpdatedUserId });
+    return (
+      (lastUpdatedUserId && dataLoaders.user.load(lastUpdatedUserId)) || null
+    );
   },
 
-  associatedField(root: IFieldDocument) {
+  associatedField(root: IFieldDocument, _, { dataLoaders }: IContext) {
     const { associatedFieldId } = root;
-
     // Returning field that associated with form field
-    return Fields.findOne({ _id: associatedFieldId });
+    return (
+      (associatedFieldId && dataLoaders.field.load(associatedFieldId)) || null
+    );
   },
 
-  async groupName(root: IFieldDocument) {
+  async groupName(root: IFieldDocument, _, { dataLoaders }: IContext) {
     const { groupId } = root;
-
-    const group = await FieldsGroups.findOne({ _id: groupId });
+    const group =
+      (groupId && (await dataLoaders.fieldsGroup.load(groupId))) || null;
     return group && group.name;
   }
 };
@@ -38,10 +40,15 @@ export const fieldsGroup = {
     return Fields.find({ groupId: root._id }).sort({ order: 1 });
   },
 
-  lastUpdatedUser(fieldGroup: IFieldGroupDocument) {
+  lastUpdatedUser(
+    fieldGroup: IFieldGroupDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
     const { lastUpdatedUserId } = fieldGroup;
-
     // Returning user who updated the group last
-    return getDocument('users', { _id: lastUpdatedUserId });
+    return (
+      (lastUpdatedUserId && dataLoaders.user.load(lastUpdatedUserId)) || null
+    );
   }
 };
