@@ -1,8 +1,8 @@
 import { IImportHistoryDocument } from '../../db/models/definitions/importHistory';
-import { IContext } from '../types';
+import { getDocument } from './mutations/cacheUtils';
 
 export default {
-  user(history: IImportHistoryDocument, _, { dataLoaders }: IContext) {
-    return dataLoaders.user.load(history.userId);
+  user(history: IImportHistoryDocument) {
+    return getDocument('users', { _id: history.userId });
   }
 };

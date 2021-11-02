@@ -1,10 +1,10 @@
 import { Fields } from '../../db/models';
 import { IFormDocument } from '../../db/models/definitions/forms';
-import { IContext } from '../types';
+import { getDocument } from './mutations/cacheUtils';
 
 export default {
-  createdUser(form: IFormDocument, _, { dataLoaders }: IContext) {
-    return dataLoaders.user.load(form.createdUserId);
+  createdUser(form: IFormDocument) {
+    return getDocument('users', { _id: form.createdUserId });
   },
 
   fields(form: IFormDocument) {

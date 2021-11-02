@@ -1,6 +1,7 @@
 import { EngageMessages, Integrations } from '../../db/models';
 import { IEngageMessageDocument } from '../../db/models/definitions/engages';
 import { IContext } from '../types';
+import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export const deliveryReport = {
   engage(root) {
@@ -23,15 +24,8 @@ export const message = {
     return segments.filter(segment => segment);
   },
 
-  async brands(
-    engageMessage: IEngageMessageDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    const brands = await dataLoaders.brand.loadMany(
-      engageMessage.brandIds || []
-    );
-    return brands.filter(b => b);
+  brands(engageMessage: IEngageMessageDocument) {
+    return getDocumentList('brands', { _id: { $in: engageMessage.brandIds } });
   },
 
   async customerTags(
@@ -45,16 +39,8 @@ export const message = {
     return tags.filter(tag => tag);
   },
 
-  fromUser(
-    engageMessage: IEngageMessageDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    return (
-      (engageMessage.fromUserId &&
-        dataLoaders.user.load(engageMessage.fromUserId)) ||
-      null
-    );
+  fromUser(engageMessage: IEngageMessageDocument) {
+    return getDocument('users', { _id: engageMessage.fromUserId });
   },
 
   // common tags
@@ -67,11 +53,11 @@ export const message = {
     return tags.filter(tag => tag);
   },
 
-  brand(engageMessage: IEngageMessageDocument, _, { dataLoaders }: IContext) {
+  brand(engageMessage: IEngageMessageDocument) {
     const { messenger } = engageMessage;
 
     if (messenger && messenger.brandId) {
-      return dataLoaders.brand.load(messenger.brandId);
+      return getDocument('brands', { _id: messenger.brandId });
     }
   },
 
@@ -112,12 +98,8 @@ export const message = {
     return null;
   },
 
-  async createdUser(
-    engageMessage: IEngageMessageDocument,
-    _,
-    { dataLoaders }: IContext
-  ): Promise<string> {
-    const user = await dataLoaders.user.load(engageMessage.createdBy);
+  async createdUser(engageMessage: IEngageMessageDocument): Promise<string> {
+    const user = await getDocument('users', { _id: engageMessage.createdBy });
 
     if (!user) {
       return '';

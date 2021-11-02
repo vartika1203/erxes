@@ -3,22 +3,18 @@ import {
   IFieldDocument,
   IFieldGroupDocument
 } from '../../db/models/definitions/fields';
-import { IContext } from '../types';
+import { getDocument } from './mutations/cacheUtils';
 
 export const field = {
   name(root: IFieldDocument) {
     return `erxes-form-field-${root._id}`;
   },
 
-  lastUpdatedUser(
-    { lastUpdatedUserId }: IFieldDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
+  lastUpdatedUser(root: IFieldDocument) {
+    const { lastUpdatedUserId } = root;
+
     // Returning user who updated the field last
-    return (
-      (lastUpdatedUserId && dataLoaders.user.load(lastUpdatedUserId)) || null
-    );
+    return getDocument('users', { _id: lastUpdatedUserId });
   },
 
   associatedField(root: IFieldDocument) {
@@ -42,14 +38,10 @@ export const fieldsGroup = {
     return Fields.find({ groupId: root._id }).sort({ order: 1 });
   },
 
-  lastUpdatedUser(
-    { lastUpdatedUserId }: IFieldGroupDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
+  lastUpdatedUser(fieldGroup: IFieldGroupDocument) {
+    const { lastUpdatedUserId } = fieldGroup;
+
     // Returning user who updated the group last
-    return (
-      (lastUpdatedUserId && dataLoaders.user.load(lastUpdatedUserId)) || null
-    );
+    return getDocument('users', { _id: lastUpdatedUserId });
   }
 };

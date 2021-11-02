@@ -12,6 +12,7 @@ import {
 import { IDealDocument } from '../../db/models/definitions/deals';
 import { IContext } from '../types';
 import { boardId } from './boardUtils';
+import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export const generateProducts = async productsData => {
   const products: any = [];
@@ -101,9 +102,10 @@ export default {
     return generateAmounts(deal.productsData || []);
   },
 
-  async assignedUsers(deal: IDealDocument, _, { dataLoaders }: IContext) {
-    const users = await dataLoaders.user.loadMany(deal.assignedUserIds || []);
-    return users.filter(u => u);
+  assignedUsers(deal: IDealDocument) {
+    return getDocumentList('users', {
+      _id: { $in: deal.assignedUserIds || [] }
+    });
   },
 
   async pipeline(deal: IDealDocument) {
@@ -138,7 +140,7 @@ export default {
     return PipelineLabels.find({ _id: { $in: deal.labelIds || [] } }).lean();
   },
 
-  createdUser(deal: IDealDocument, _, { dataLoaders }: IContext) {
-    return (deal.userId && dataLoaders.user.load(deal.userId)) || null;
+  createdUser(deal: IDealDocument) {
+    return getDocument('users', { _id: deal.userId });
   }
 };

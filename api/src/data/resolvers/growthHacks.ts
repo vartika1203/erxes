@@ -7,8 +7,8 @@ import {
 } from '../../db/models';
 import { IGrowthHackDocument } from '../../db/models/definitions/growthHacks';
 import { IUserDocument } from '../../db/models/definitions/users';
-import { IContext } from '../types';
 import { boardId } from './boardUtils';
+import { getDocument, getDocumentList } from './mutations/cacheUtils';
 import { IFieldsQuery } from './queries/fields';
 
 export default {
@@ -46,26 +46,16 @@ export default {
     return Fields.find(query).sort({ order: 1 });
   },
 
-  async assignedUsers(
-    growthHack: IGrowthHackDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    const users = await dataLoaders.user.loadMany(
-      growthHack.assignedUserIds || []
-    );
-    return users.filter(u => u);
+  assignedUsers(growthHack: IGrowthHackDocument) {
+    return getDocumentList('users', {
+      _id: { $in: growthHack.assignedUserIds || [] }
+    });
   },
 
-  async votedUsers(
-    growthHack: IGrowthHackDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    const users = await dataLoaders.user.loadMany(
-      growthHack.votedUserIds || []
-    );
-    return users.filter(u => u);
+  votedUsers(growthHack: IGrowthHackDocument) {
+    return getDocumentList('users', {
+      _id: { $in: growthHack.votedUserIds || [] }
+    });
   },
 
   isVoted(
@@ -123,9 +113,7 @@ export default {
     return PipelineLabels.find({ _id: { $in: growthHack.labelIds || [] } });
   },
 
-  createdUser(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
-    return (
-      (growthHack.userId && dataLoaders.user.load(growthHack.userId)) || null
-    );
+  createdUser(growthHack: IGrowthHackDocument) {
+    return getDocument('users', { _id: growthHack.userId });
   }
 };

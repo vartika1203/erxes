@@ -1,24 +1,16 @@
 import { IEmailDeliveriesDocument } from '../../db/models/definitions/emailDeliveries';
-import { IContext } from '../types';
+import { getDocument } from './mutations/cacheUtils';
 
 export default {
-  async fromUser(
-    emailDelivery: IEmailDeliveriesDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    return (
-      (emailDelivery.userId && dataLoaders.user.load(emailDelivery.userId)) ||
-      {}
-    );
+  async fromUser(emailDelivery: IEmailDeliveriesDocument) {
+    return getDocument('users', { _id: emailDelivery.userId }) || {};
   },
 
-  async fromEmail(
-    emailDelivery: IEmailDeliveriesDocument,
-    _,
-    { dataLoaders }: IContext
-  ) {
-    const integration = await dataLoaders.integration.load(emailDelivery.from);
+  async fromEmail(emailDelivery: IEmailDeliveriesDocument) {
+    const integration = await getDocument('integrations', {
+      _id: emailDelivery.from
+    });
+
     return integration ? integration.name : '';
   }
 };
