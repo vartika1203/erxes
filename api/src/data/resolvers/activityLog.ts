@@ -11,18 +11,25 @@ export default {
     _,
     { dataLoaders }: IContext
   ) {
-    const user = await dataLoaders.user.load(activityLog.createdBy);
+    const user =
+      (activityLog.createdBy &&
+        (await dataLoaders.user.load(activityLog.createdBy))) ||
+      null;
 
     if (user) {
       return { type: 'user', content: user };
     }
 
-    const integration = await dataLoaders.integration.load(
-      activityLog.createdBy
-    );
+    const integration =
+      (activityLog.createdBy &&
+        (await dataLoaders.integration.load(activityLog.createdBy))) ||
+      null;
 
     if (integration) {
-      const brand = await dataLoaders.brand.load(integration.brandId);
+      const brand =
+        (integration.brandId &&
+          (await dataLoaders.brand.load(integration.brandId))) ||
+        null;
       return { type: 'brand', content: brand };
     }
 

@@ -13,22 +13,28 @@ export const getContentTypeDetail = async (
   try {
     switch (contentType) {
       case 'deal':
-        item = await dataLoaders.deal.load(contentId);
+        item = (contentId && (await dataLoaders.deal.load(contentId))) || {};
         break;
       case 'task':
-        item = await dataLoaders.task.load(contentId);
+        item = (contentId && (await dataLoaders.task.load(contentId))) || {};
         break;
       case 'growthHack':
-        item = await dataLoaders.growthHack.load(contentId);
+        item =
+          (contentId && (await dataLoaders.growthHack.load(contentId))) || {};
         break;
       case 'ticket':
-        item = await dataLoaders.ticket.load(contentId);
+        item = (contentId && (await dataLoaders.ticket.load(contentId))) || {};
         break;
       case 'checklist':
-        item = (await dataLoaders.checklist.load(content._id)) || {};
+        item =
+          (content._id && (await dataLoaders.checklist.load(content._id))) ||
+          {};
         break;
       case 'checklistitem':
-        item = (await dataLoaders.checklistItem.load(content._id)) || {};
+        item =
+          (content._id &&
+            (await dataLoaders.checklistItem.load(content._id))) ||
+          {};
         break;
     }
   } catch (e) {
@@ -40,7 +46,10 @@ export const getContentTypeDetail = async (
 
 export default {
   createdUser(activityLog: any, _, { dataLoaders }: IContext) {
-    return dataLoaders.user.load(activityLog.createdBy);
+    return (
+      (activityLog.createdBy && dataLoaders.user.load(activityLog.createdBy)) ||
+      null
+    );
   },
 
   contentTypeDetail(activityLog: any, _, { dataLoaders }: IContext) {
