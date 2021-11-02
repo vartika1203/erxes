@@ -19,6 +19,7 @@ import ticket from './ticket';
 import stage from './stage';
 import checklist from './checklist';
 import checklistItem from './checklistItem';
+import userActive from './userActive';
 
 export interface IDataLoaders {
   productCategory: DataLoader<string, any>;
@@ -40,6 +41,7 @@ export interface IDataLoaders {
   stage: DataLoader<string, any>;
   checklist: DataLoader<string, any>;
   checklistItem: DataLoader<string, any>;
+  userActive: DataLoader<string, any>;
 }
 
 export function generateAllDataLoaders(): IDataLoaders {
@@ -62,6 +64,7 @@ export function generateAllDataLoaders(): IDataLoaders {
     ticket: ticket(),
     stage: stage(),
     checklist: checklist(),
-    checklistItem: checklistItem()
+    checklistItem: checklistItem(),
+    userActive: userActive()
   };
 }

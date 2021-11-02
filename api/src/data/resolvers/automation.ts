@@ -1,11 +1,17 @@
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export default {
-  createdUser(automation: any) {
-    return getDocument('users', { _id: automation.createdBy || '' });
+  createdUser(automation: any, _, { dataLoaders }: IContext) {
+    return (
+      (automation.createdBy && dataLoaders.user.load(automation.createdBy)) ||
+      null
+    );
   },
 
-  updatedUser(automation: any) {
-    return getDocument('users', { _id: automation.updatedBy || '' });
+  updatedUser(automation: any, _, { dataLoaders }: IContext) {
+    return (
+      (automation.updatedBy && dataLoaders.user.load(automation.updatedBy)) ||
+      null
+    );
   }
 };

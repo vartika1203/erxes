@@ -1,7 +1,7 @@
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export default {
-  createdUser(note: any) {
-    return getDocument('users', { _id: note.createdBy });
+  createdUser(note: any, _, { dataLoaders }: IContext) {
+    return (note.createdBy && dataLoaders.user.load(note.createdBy)) || null;
   }
 };
