@@ -3,7 +3,7 @@ import { IContext } from '../types';
 
 export default {
   async integrations(channel: IChannelDocument, _, { dataLoaders }: IContext) {
-    const integrations = await dataLoaders.integration.loadMany(
+    const integrations = await dataLoaders.integrationActive.loadMany(
       channel.integrationIds || []
     );
     return integrations.filter(i => i);
