@@ -3,7 +3,6 @@ import { MESSAGE_TYPES } from '../../db/models/definitions/constants';
 import { IConversationDocument } from '../../db/models/definitions/conversations';
 import { debugError } from '../../debuggers';
 import { IContext } from '../types';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export default {
   /**
@@ -23,22 +22,42 @@ export default {
     );
   },
 
-  integration(conversation: IConversationDocument) {
-    return getDocument('integrations', { _id: conversation.integrationId });
+  integration(
+    conversation: IConversationDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    return dataLoaders.integration.load(conversation.integrationId);
   },
 
-  user(conversation: IConversationDocument) {
-    return getDocument('users', { _id: conversation.userId });
+  user(conversation: IConversationDocument, _, { dataLoaders }: IContext) {
+    return (
+      (conversation.userId && dataLoaders.user.load(conversation.userId)) ||
+      null
+    );
   },
 
-  assignedUser(conversation: IConversationDocument) {
-    return getDocument('users', { _id: conversation.assignedUserId });
+  assignedUser(
+    conversation: IConversationDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    return (
+      (conversation.assignedUserId &&
+        dataLoaders.user.load(conversation.assignedUserId)) ||
+      null
+    );
   },
 
-  participatedUsers(conv: IConversationDocument) {
-    return getDocumentList('users', {
-      _id: { $in: conv.participatedUserIds || [] }
-    });
+  async participatedUsers(
+    conv: IConversationDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const users = await dataLoaders.user.loadMany(
+      conv.participatedUserIds || []
+    );
+    return users.filter(u => u);
   },
 
   participatorCount(conv: IConversationDocument) {
@@ -55,12 +74,10 @@ export default {
   async facebookPost(
     conv: IConversationDocument,
     _args,
-    { dataSources }: IContext
+    { dataSources, dataLoaders }: IContext
   ) {
     const integration =
-      (await getDocument('integrations', {
-        _id: conv.integrationId
-      })) || {};
+      (await dataLoaders.integration.load(conv.integrationId)) || {};
 
     if (integration && integration.kind !== 'facebook-post') {
       return null;
@@ -85,12 +102,10 @@ export default {
   async callProAudio(
     conv: IConversationDocument,
     _args,
-    { dataSources, user }: IContext
+    { dataSources, user, dataLoaders }: IContext
   ) {
     const integration =
-      (await getDocument('integrations', {
-        _id: conv.integrationId
-      })) || {};
+      (await dataLoaders.integration.load(conv.integrationId)) || {};
 
     if (integration && integration.kind !== 'callpro') {
       return null;
@@ -150,11 +165,13 @@ export default {
     }
   },
 
-  async isFacebookTaggedMessage(conversation: IConversationDocument) {
+  async isFacebookTaggedMessage(
+    conversation: IConversationDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
     const integration =
-      (await getDocument('integrations', {
-        _id: conversation.integrationId
-      })) || {};
+      (await dataLoaders.integration.load(conversation.integrationId)) || {};
 
     if (integration && integration.kind !== 'facebook-messenger') {
       return false;

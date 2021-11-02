@@ -3,11 +3,10 @@ import { MESSAGE_TYPES } from '../../db/models/definitions/constants';
 import { IMessageDocument } from '../../db/models/definitions/conversationMessages';
 import { debugError } from '../../debuggers';
 import { IContext } from '../types';
-import { getDocument } from './mutations/cacheUtils';
 
 export default {
-  user(message: IMessageDocument) {
-    return getDocument('users', { _id: message.userId });
+  user(message: IMessageDocument, _, { dataLoaders }: IContext) {
+    return (message.userId && dataLoaders.user.load(message.userId)) || null;
   },
 
   customer(message: IMessageDocument, _, { dataLoaders }: IContext) {
@@ -17,7 +16,11 @@ export default {
     );
   },
 
-  async mailData(message: IMessageDocument, _args, { dataSources }: IContext) {
+  async mailData(
+    message: IMessageDocument,
+    _args,
+    { dataSources, dataLoaders }: IContext
+  ) {
     const conversation = await Conversations.findOne({
       _id: message.conversationId
     }).lean();
@@ -26,9 +29,9 @@ export default {
       return null;
     }
 
-    const integration = await getDocument('integrations', {
-      _id: conversation.integrationId
-    });
+    const integration = await dataLoaders.integration.load(
+      conversation.integrationId
+    );
 
     if (!integration) {
       return null;
