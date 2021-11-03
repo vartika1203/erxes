@@ -1,7 +1,5 @@
 import { Channels } from '../../../db/models';
 import { checkPermission, requireLogin } from '../../permissions/wrappers';
-import { getDocumentList } from '../mutations/cacheUtils';
-
 interface IIn {
   $in: string[];
 }
@@ -15,7 +13,7 @@ const channelQueries = {
    * Channels list
    */
   channelsByMembers(_root, { memberIds }: { memberIds: string[] }) {
-    return getDocumentList('channels', { memberIds: { $in: memberIds } });
+    return Channels.find({ memberIds: { $in: memberIds } }).lean();
   },
 
   /**
