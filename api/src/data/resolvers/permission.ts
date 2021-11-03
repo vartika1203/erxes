@@ -1,10 +1,10 @@
 import { UsersGroups } from '../../db/models';
 import { IPermissionDocument } from '../../db/models/definitions/permissions';
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export default {
-  user(entry: IPermissionDocument) {
-    return getDocument('users', { _id: entry.userId });
+  user(entry: IPermissionDocument, _, { dataLoaders }: IContext) {
+    return (entry.userId && dataLoaders.user.load(entry.userId)) || null;
   },
 
   group(entry: IPermissionDocument) {
