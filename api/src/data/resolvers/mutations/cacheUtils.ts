@@ -25,7 +25,7 @@ export const getDocument = async (
 };
 
 export const getDocumentList = async (
-  type: 'users' | 'integrations' | 'brands' | 'channels' | 'tags' | 'products',
+  type: 'users' | 'integrations' | 'brands' | 'channels',
   selector: { [key: string]: any }
 ) => {
   const listCache = await get(`erxes_${type}`);
@@ -53,15 +53,6 @@ export const getDocumentList = async (
 
       case 'brands': {
         list = await Brands.find().lean();
-        break;
-      }
-
-      case 'products': {
-        list = await Products.find().lean();
-        break;
-      }
-      case 'tags': {
-        list = await Tags.find().lean();
         break;
       }
     }

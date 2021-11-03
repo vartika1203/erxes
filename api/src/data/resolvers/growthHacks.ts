@@ -1,19 +1,18 @@
-import {
-  Fields,
-  FormSubmissions,
-  PipelineLabels,
-  Pipelines,
-  Stages
-} from '../../db/models';
+import { Fields, FormSubmissions } from '../../db/models';
 import { IGrowthHackDocument } from '../../db/models/definitions/growthHacks';
 import { IUserDocument } from '../../db/models/definitions/users';
+import { IContext } from '../types';
 import { boardId } from './boardUtils';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 import { IFieldsQuery } from './queries/fields';
 
 export default {
-  async formSubmissions(growthHack: IGrowthHackDocument) {
-    const stage = await Stages.getStage(growthHack.stageId);
+  async formSubmissions(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
 
     const result = {};
 
@@ -34,8 +33,13 @@ export default {
     return result;
   },
 
-  async formFields(growthHack: IGrowthHackDocument) {
-    const stage = await Stages.getStage(growthHack.stageId);
+  async formFields(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
 
     const query: IFieldsQuery = { contentType: 'form' };
 
@@ -46,16 +50,26 @@ export default {
     return Fields.find(query).sort({ order: 1 });
   },
 
-  assignedUsers(growthHack: IGrowthHackDocument) {
-    return getDocumentList('users', {
-      _id: { $in: growthHack.assignedUserIds || [] }
-    });
+  async assignedUsers(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const users = await dataLoaders.user.loadMany(
+      growthHack.assignedUserIds || []
+    );
+    return users.filter(u => u);
   },
 
-  votedUsers(growthHack: IGrowthHackDocument) {
-    return getDocumentList('users', {
-      _id: { $in: growthHack.votedUserIds || [] }
-    });
+  async votedUsers(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const users = await dataLoaders.user.loadMany(
+      growthHack.votedUserIds || []
+    );
+    return users.filter(u => u);
   },
 
   isVoted(
@@ -68,31 +82,42 @@ export default {
       : false;
   },
 
-  async pipeline(growthHack: IGrowthHackDocument) {
-    const stage = await Stages.getStage(growthHack.stageId);
-
-    return Pipelines.findOne({ _id: stage.pipelineId });
+  async pipeline(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
+    return dataLoaders.pipeline.load(stage.pipelineId);
   },
 
   boardId(growthHack: IGrowthHackDocument) {
     return boardId(growthHack);
   },
 
-  async formId(growthHack: IGrowthHackDocument) {
-    const stage = await Stages.getStage(growthHack.stageId);
-
+  async formId(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
     return stage.formId;
   },
 
-  async scoringType(growthHack: IGrowthHackDocument) {
-    const stage = await Stages.getStage(growthHack.stageId);
-    const pipeline = await Pipelines.getPipeline(stage.pipelineId);
-
+  async scoringType(
+    growthHack: IGrowthHackDocument,
+    _,
+    { dataLoaders }: IContext
+  ) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
+    const pipeline = await dataLoaders.pipeline.load(stage.pipelineId);
+    if (!pipeline) throw new Error('Pipeline not found');
     return pipeline.hackScoringType;
   },
 
-  stage(growthHack: IGrowthHackDocument) {
-    return Stages.getStage(growthHack.stageId);
+  async stage(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
+    const stage = await dataLoaders.stage.load(growthHack.stageId);
+    if (!stage) throw new Error('Stage not found');
+    return stage;
   },
 
   isWatched(
@@ -109,11 +134,16 @@ export default {
     return false;
   },
 
-  labels(growthHack: IGrowthHackDocument) {
-    return PipelineLabels.find({ _id: { $in: growthHack.labelIds || [] } });
+  async labels(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
+    const labels = await dataLoaders.pipelineLabel.loadMany(
+      growthHack.labelIds || []
+    );
+    return labels.filter(l => l);
   },
 
-  createdUser(growthHack: IGrowthHackDocument) {
-    return getDocument('users', { _id: growthHack.userId });
+  createdUser(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
+    return (
+      (growthHack.userId && dataLoaders.user.load(growthHack.userId)) || null
+    );
   }
 };

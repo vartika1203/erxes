@@ -23,6 +23,8 @@ import userActive from './userActive';
 import integrationActive from './integrationActive';
 import field from './field';
 import fieldsGroup from './fieldsGroup';
+import pipeline from './pipeline';
+import pipelineLabel from './pipelineLabel';
 
 export interface IDataLoaders {
   productCategory: DataLoader<string, any>;
@@ -48,6 +50,8 @@ export interface IDataLoaders {
   integrationActive: DataLoader<string, any>;
   field: DataLoader<string, any>;
   fieldsGroup: DataLoader<string, any>;
+  pipeline: DataLoader<string, any>;
+  pipelineLabel: DataLoader<string, any>;
 }
 
 export function generateAllDataLoaders(): IDataLoaders {
@@ -74,6 +78,8 @@ export function generateAllDataLoaders(): IDataLoaders {
     userActive: userActive(),
     integrationActive: integrationActive(),
     field: field(),
-    fieldsGroup: fieldsGroup()
+    fieldsGroup: fieldsGroup(),
+    pipeline: pipeline(),
+    pipelineLabel: pipelineLabel()
   };
 }

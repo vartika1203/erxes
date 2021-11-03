@@ -10,35 +10,29 @@ export const getContentTypeDetail = async (
 
   let item = {};
 
-  try {
-    switch (contentType) {
-      case 'deal':
-        item = (contentId && (await dataLoaders.deal.load(contentId))) || {};
-        break;
-      case 'task':
-        item = (contentId && (await dataLoaders.task.load(contentId))) || {};
-        break;
-      case 'growthHack':
-        item =
-          (contentId && (await dataLoaders.growthHack.load(contentId))) || {};
-        break;
-      case 'ticket':
-        item = (contentId && (await dataLoaders.ticket.load(contentId))) || {};
-        break;
-      case 'checklist':
-        item =
-          (content._id && (await dataLoaders.checklist.load(content._id))) ||
-          {};
-        break;
-      case 'checklistitem':
-        item =
-          (content._id &&
-            (await dataLoaders.checklistItem.load(content._id))) ||
-          {};
-        break;
-    }
-  } catch (e) {
-    debugError(e.message);
+  switch (contentType) {
+    case 'deal':
+      item = (contentId && (await dataLoaders.deal.load(contentId))) || {};
+      break;
+    case 'task':
+      item = (contentId && (await dataLoaders.task.load(contentId))) || {};
+      break;
+    case 'growthHack':
+      item =
+        (contentId && (await dataLoaders.growthHack.load(contentId))) || {};
+      break;
+    case 'ticket':
+      item = (contentId && (await dataLoaders.ticket.load(contentId))) || {};
+      break;
+    case 'checklist':
+      item =
+        (content._id && (await dataLoaders.checklist.load(content._id))) || {};
+      break;
+    case 'checklistitem':
+      item =
+        (content._id && (await dataLoaders.checklistItem.load(content._id))) ||
+        {};
+      break;
   }
 
   return item;
