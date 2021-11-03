@@ -3,14 +3,11 @@ import {
   Conformities,
   Customers,
   Notifications,
-  PipelineLabels,
-  Pipelines,
   Stages
 } from '../../db/models';
 import { ITicketDocument } from '../../db/models/definitions/tickets';
 import { IContext } from '../types';
 import { boardId } from './boardUtils';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export default {
   async companies(ticket: ITicketDocument) {
@@ -33,16 +30,14 @@ export default {
     return Customers.findActiveCustomers({ _id: { $in: customerIds || [] } });
   },
 
-  assignedUsers(ticket: ITicketDocument) {
-    return getDocumentList('users', {
-      _id: { $in: ticket.assignedUserIds || [] }
-    });
+  async assignedUsers(ticket: ITicketDocument, _, { dataLoaders }: IContext) {
+    const users = await dataLoaders.user.loadMany(ticket.assignedUserIds || []);
+    return users.filter(u => u);
   },
 
-  async pipeline(ticket: ITicketDocument) {
+  async pipeline(ticket: ITicketDocument, _, { dataLoaders }: IContext) {
     const stage = await Stages.getStage(ticket.stageId);
-
-    return Pipelines.findOne({ _id: stage.pipelineId });
+    return dataLoaders.pipeline.load(stage.pipelineId);
   },
 
   boardId(ticket: ITicketDocument) {
@@ -67,11 +62,14 @@ export default {
     return Notifications.checkIfRead(user._id, ticket._id);
   },
 
-  labels(ticket: ITicketDocument) {
-    return PipelineLabels.find({ _id: { $in: ticket.labelIds || [] } });
+  async labels(ticket: ITicketDocument, _, { dataLoaders }: IContext) {
+    const labels = await dataLoaders.pipelineLabel.loadMany(
+      ticket.labelIds || []
+    );
+    return labels.filter(l => l);
   },
 
-  createdUser(ticket: ITicketDocument) {
-    return getDocument('users', { _id: ticket.userId });
+  createdUser(ticket: ITicketDocument, _, { dataLoaders }: IContext) {
+    return (ticket.userId && dataLoaders.user.load(ticket.userId)) || null;
   }
 };

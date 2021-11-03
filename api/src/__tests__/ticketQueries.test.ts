@@ -5,11 +5,12 @@ import {
   conformityFactory,
   customerFactory,
   pipelineFactory,
+  pipelineLabelFactory,
   stageFactory,
   ticketFactory,
   userFactory
 } from '../db/factories';
-import { Tickets } from '../db/models';
+import { PipelineLabels, Tickets, Users } from '../db/models';
 
 import {
   BOARD_STATUSES,
@@ -72,6 +73,8 @@ describe('ticketQueries', () => {
   afterEach(async () => {
     // Clearing test data
     await Tickets.deleteMany({});
+    await Users.deleteMany({});
+    await PipelineLabels.deleteMany({});
   });
 
   test('Ticket filter by team members', async () => {
@@ -198,7 +201,12 @@ describe('ticketQueries', () => {
   });
 
   test('Ticket detail', async () => {
-    const ticket = await ticketFactory();
+    const user = await userFactory();
+    const label = await pipelineLabelFactory({ type: BOARD_TYPES.TICKET });
+    const ticket = await ticketFactory({
+      assignedUserIds: [user._id],
+      labelIds: [label._id]
+    });
 
     const args = { _id: ticket._id };
 
