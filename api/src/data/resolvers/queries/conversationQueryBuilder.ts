@@ -2,7 +2,6 @@ import * as _ from 'underscore';
 import { Channels, Integrations, Tags } from '../../../db/models';
 import { CONVERSATION_STATUSES } from '../../../db/models/definitions/constants';
 import { fixDate } from '../../utils';
-import { getDocumentList } from '../mutations/cacheUtils';
 
 interface IIn {
   $in: string[];
@@ -70,9 +69,9 @@ export default class Builder {
   }
 
   public async defaultFilters(): Promise<any> {
-    const activeIntegrations = await getDocumentList('integrations', {
+    const activeIntegrations = await Integrations.find({
       isActive: { $ne: false }
-    });
+    }).lean();
 
     this.activeIntegrationIds = activeIntegrations.map(integ => integ._id);
 
@@ -118,9 +117,7 @@ export default class Builder {
     // find all posssible integrations
     let availIntegrationIds: string[] = [];
 
-    const channels = await getDocumentList('channels', {
-      memberIds: this.user._id
-    });
+    const channels = await Channels.find({ memberIds: this.user._id }).lean();
 
     if (channels.length === 0) {
       return {
