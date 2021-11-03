@@ -5,7 +5,6 @@ import {
   PIPELINE_VISIBLITIES
 } from '../../db/models/definitions/constants';
 import { IContext } from '../types';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 import {
   generateDealCommonFilters,
   generateGrowthHackCommonFilters,
@@ -14,15 +13,15 @@ import {
 } from './queries/boardUtils';
 
 export default {
-  createdUser(pipeline: IPipelineDocument) {
-    return getDocument('users', { _id: pipeline.userId });
+  createdUser(pipeline: IPipelineDocument, _, { dataLoaders }: IContext) {
+    return (pipeline.userId && dataLoaders.user.load(pipeline.userId)) || null;
   },
 
-  members(pipeline: IPipelineDocument, {}) {
+  async members(pipeline: IPipelineDocument, _, { dataLoaders }: IContext) {
     if (pipeline.visibility === PIPELINE_VISIBLITIES.PRIVATE) {
-      return getDocumentList('users', { _id: { $in: pipeline.memberIds } });
+      const users = await dataLoaders.user.loadMany(pipeline.memberIds || []);
+      return users.filter(u => u);
     }
-
     return [];
   },
 
