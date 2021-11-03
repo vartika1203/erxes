@@ -1,12 +1,14 @@
-import { MessengerApps } from '../../db/models';
+import { Channels, MessengerApps } from '../../db/models';
 import { KIND_CHOICES } from '../../db/models/definitions/constants';
 import { IIntegrationDocument } from '../../db/models/definitions/integrations';
 import { IContext } from '../types';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export default {
-  brand(integration: IIntegrationDocument) {
-    return getDocument('brands', { _id: integration.brandId });
+  brand(integration: IIntegrationDocument, _, { dataLoaders }: IContext) {
+    return (
+      (integration.brandId && dataLoaders.brand.load(integration.brandId)) ||
+      null
+    );
   },
 
   form(integration: IIntegrationDocument, _, { dataLoaders }: IContext) {
@@ -16,9 +18,9 @@ export default {
   },
 
   channels(integration: IIntegrationDocument) {
-    return getDocumentList('channels', {
+    return Channels.find({
       integrationIds: { $in: [integration._id] }
-    });
+    }).lean();
   },
 
   async tags(integration: IIntegrationDocument, _, { dataLoaders }: IContext) {
