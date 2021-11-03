@@ -296,7 +296,7 @@ const generateProductsOptions = async (
   label: string,
   type: string
 ) => {
-  const products = await getDocumentList('products', {});
+  const products = await Products.find();
 
   const options: Array<{ label: string; value: any }> = products.map(
     product => ({

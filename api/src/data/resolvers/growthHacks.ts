@@ -12,7 +12,6 @@ export default {
     { dataLoaders }: IContext
   ) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
 
     const result = {};
 
@@ -39,8 +38,6 @@ export default {
     { dataLoaders }: IContext
   ) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
-
     const query: IFieldsQuery = { contentType: 'form' };
 
     if (stage.formId) {
@@ -88,7 +85,6 @@ export default {
     { dataLoaders }: IContext
   ) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
     return dataLoaders.pipeline.load(stage.pipelineId);
   },
 
@@ -98,7 +94,6 @@ export default {
 
   async formId(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
     return stage.formId;
   },
 
@@ -108,15 +103,13 @@ export default {
     { dataLoaders }: IContext
   ) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
     const pipeline = await dataLoaders.pipeline.load(stage.pipelineId);
-    if (!pipeline) throw new Error('Pipeline not found');
     return pipeline.hackScoringType;
   },
 
   async stage(growthHack: IGrowthHackDocument, _, { dataLoaders }: IContext) {
     const stage = await dataLoaders.stage.load(growthHack.stageId);
-    if (!stage) throw new Error('Stage not found');
+
     return stage;
   },
 

@@ -6,10 +6,11 @@ import {
   formSubmissionFactory,
   growthHackFactory,
   pipelineFactory,
+  pipelineLabelFactory,
   stageFactory,
   userFactory
 } from '../db/factories';
-import { GrowthHacks } from '../db/models';
+import { GrowthHacks, PipelineLabels } from '../db/models';
 
 import {
   BOARD_STATUSES,
@@ -64,6 +65,7 @@ describe('growthHackQueries', () => {
   afterEach(async () => {
     // Clearing test data
     await GrowthHacks.deleteMany({});
+    await PipelineLabels.deleteMany({});
   });
 
   test('Filter by team members', async () => {
@@ -195,12 +197,15 @@ describe('growthHackQueries', () => {
       pipelineId: pipelineWithForm._id,
       formId: form._id
     });
+    const label = await pipelineLabelFactory({ type: BOARD_TYPES.GROWTH_HACK });
 
     const user = await userFactory();
+
     const growthHackWithForm = await growthHackFactory({
       stageId: stageWithForm._id,
       watchedUserIds: [user._id],
-      votedUserIds: [user._id]
+      votedUserIds: [user._id],
+      labelIds: [label._id]
     });
 
     await formSubmissionFactory({
