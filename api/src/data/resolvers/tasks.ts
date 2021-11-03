@@ -3,14 +3,11 @@ import {
   Conformities,
   Customers,
   Notifications,
-  PipelineLabels,
-  Pipelines,
   Stages
 } from '../../db/models';
 import { ITaskDocument } from '../../db/models/definitions/tasks';
 import { IContext } from '../types';
 import { boardId } from './boardUtils';
-import { getDocument, getDocumentList } from './mutations/cacheUtils';
 
 export default {
   async companies(task: ITaskDocument) {
@@ -23,8 +20,8 @@ export default {
     return Companies.findActiveCompanies({ _id: { $in: companyIds || [] } });
   },
 
-  async createdUser(task: ITaskDocument) {
-    return getDocument('users', { _id: task.userId });
+  async createdUser(task: ITaskDocument, _, { dataLoaders }: IContext) {
+    return (task.userId && dataLoaders.user.load(task.userId)) || null;
   },
 
   async customers(task: ITaskDocument) {
@@ -37,16 +34,14 @@ export default {
     return Customers.findActiveCustomers({ _id: { $in: customerIds || [] } });
   },
 
-  assignedUsers(task: ITaskDocument) {
-    return getDocumentList('users', {
-      _id: { $in: task.assignedUserIds || [] }
-    });
+  async assignedUsers(task: ITaskDocument, _, { dataLoaders }: IContext) {
+    const users = await dataLoaders.user.loadMany(task.assignedUserIds || []);
+    return users.filter(u => u);
   },
 
-  async pipeline(task: ITaskDocument) {
+  async pipeline(task: ITaskDocument, _, { dataLoaders }: IContext) {
     const stage = await Stages.getStage(task.stageId);
-
-    return Pipelines.findOne({ _id: stage.pipelineId });
+    return dataLoaders.pipeline.load(stage.pipelineId);
   },
 
   boardId(task: ITaskDocument) {
@@ -71,7 +66,10 @@ export default {
     return Notifications.checkIfRead(user._id, deal._id);
   },
 
-  labels(task: ITaskDocument) {
-    return PipelineLabels.find({ _id: { $in: task.labelIds || [] } });
+  async labels(task: ITaskDocument, _, { dataLoaders }: IContext) {
+    const labels = await dataLoaders.pipelineLabel.loadMany(
+      task.labelIds || []
+    );
+    return labels.filter(l => l);
   }
 };

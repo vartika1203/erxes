@@ -5,11 +5,12 @@ import {
   conformityFactory,
   customerFactory,
   pipelineFactory,
+  pipelineLabelFactory,
   stageFactory,
   taskFactory,
   userFactory
 } from '../db/factories';
-import { Tasks } from '../db/models';
+import { PipelineLabels, Tasks, Users } from '../db/models';
 
 import {
   BOARD_STATUSES,
@@ -190,12 +191,20 @@ describe('taskQueries', () => {
   });
 
   test('Task detail', async () => {
-    const task = await taskFactory();
+    const user = await userFactory();
+    const label = await pipelineLabelFactory({ type: BOARD_TYPES.TASK });
+    const task = await taskFactory({
+      assignedUserIds: [user._id],
+      labelIds: [label._id]
+    });
     const response = await graphqlRequest(qryDetail, 'taskDetail', {
       _id: task._id
     });
 
     expect(response._id).toBe(task._id);
+
+    Users.deleteMany({});
+    PipelineLabels.deleteMany({});
   });
 
   test('Task detail with watchedUserIds', async () => {

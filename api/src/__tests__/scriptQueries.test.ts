@@ -1,20 +1,15 @@
 import { graphqlRequest } from '../db/connection';
-import { Scripts } from '../db/models';
+import { Integrations, Scripts } from '../db/models';
 
-import { scriptFactory } from '../db/factories';
+import { integrationFactory, scriptFactory } from '../db/factories';
 import './setup.ts';
+import { KIND_CHOICES } from '../db/models/definitions/constants';
 
 describe('responseTemplateQueries', () => {
-  beforeEach(async () => {
-    // Clearing test data
-    await scriptFactory({});
-    await scriptFactory({});
-    await scriptFactory({});
-  });
-
   afterEach(async () => {
     // Clearing test data
     await Scripts.deleteMany({});
+    await Integrations.deleteMany({});
   });
 
   test('Scripts', async () => {
@@ -28,6 +23,12 @@ describe('responseTemplateQueries', () => {
         }
       }
     `;
+
+    const integration = await integrationFactory({ kind: KIND_CHOICES.LEAD });
+
+    await scriptFactory({ leadIds: [integration._id] });
+    await scriptFactory({});
+    await scriptFactory({});
 
     const response = await graphqlRequest(qry, 'scripts', {
       page: 1,
@@ -43,6 +44,10 @@ describe('responseTemplateQueries', () => {
         scriptsTotalCount
       }
     `;
+
+    await scriptFactory({});
+    await scriptFactory({});
+    await scriptFactory({});
 
     const totalCount = await graphqlRequest(qry, 'scriptsTotalCount');
 
