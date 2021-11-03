@@ -1,4 +1,4 @@
-import { Channels, Integrations, Tags } from '../../../db/models';
+import { Brands, Channels, Integrations, Tags } from '../../../db/models';
 import {
   INTEGRATION_NAMES_MAP,
   KIND_CHOICES,
@@ -13,7 +13,6 @@ import messageBroker from '../../../messageBroker';
 import { RABBITMQ_QUEUES } from '../../constants';
 import { IContext } from '../../types';
 import { paginate } from '../../utils';
-import { getDocumentList } from '../mutations/cacheUtils';
 /**
  * Common helper for integrations & integrationsTotalCount
  */
@@ -210,7 +209,7 @@ const integrationQueries = {
     }
 
     // Counting integrations by channel
-    const channels = await getDocumentList('channels', {});
+    const channels = await Channels.find().lean();
 
     for (const channel of channels) {
       const countQueryResult = await count({
@@ -226,7 +225,7 @@ const integrationQueries = {
     }
 
     // Counting integrations by brand
-    const brands = await getDocumentList('brands', {});
+    const brands = await Brands.find().lean();
 
     for (const brand of brands) {
       const countQueryResult = await count({ brandId: brand._id, ...qry });

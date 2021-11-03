@@ -24,7 +24,8 @@ export const tagSchema = schemaHooksWrapper(
     type: field({
       type: String,
       enum: TAG_TYPES.ALL,
-      label: 'Type'
+      label: 'Type',
+      index: true
     }),
     colorCode: field({ type: String, label: 'Color code' }),
     createdAt: field({ type: Date, label: 'Created at' }),
