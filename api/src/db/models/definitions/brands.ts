@@ -41,7 +41,7 @@ export const brandEmailConfigSchema = new Schema(
 export const brandSchema = schemaHooksWrapper(
   new Schema({
     _id: field({ pkey: true }),
-    code: field({ type: String, label: 'Code' }),
+    code: field({ type: String, label: 'Code', index: true }),
     name: field({ type: String, label: 'Name' }),
     description: field({ type: String, optional: true, label: 'Description' }),
     userId: field({ type: String, label: 'Created by' }),

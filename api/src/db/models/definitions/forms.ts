@@ -28,7 +28,7 @@ export const formSchema = schemaWrapper(
       optional: true
     }),
     buttonText: field({ type: String, optional: true }),
-    code: field({ type: String }),
+    code: field({ type: String, index: true }),
     createdUserId: field({ type: String }),
     createdDate: field({
       type: Date,
