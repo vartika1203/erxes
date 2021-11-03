@@ -1,5 +1,5 @@
 import * as _ from 'underscore';
-import { Permissions, UsersGroups } from '../../../db/models';
+import { Permissions, Users, UsersGroups } from '../../../db/models';
 import {
   IPermissionParams,
   IUserGroup,
@@ -11,7 +11,6 @@ import { putCreateLog, putDeleteLog, putUpdateLog } from '../../logUtils';
 import { fixPermissions, resetPermissionsCache } from '../../permissions/utils';
 import { moduleCheckPermission } from '../../permissions/wrappers';
 import { IContext } from '../../types';
-import { getDocument, getDocumentList } from './cacheUtils';
 
 interface IParams {
   memberIds?: string[];
@@ -44,13 +43,16 @@ const writeUserLog = async (params: IParams) => {
     }
   } // end oldUser loop
 
+  const users = await Users.find({ _id: { $in: memberIds } }).lean();
+  const usersById = _.indexBy(users, '_id');
+
   for (const memberId of memberIds) {
     const exists = oldUsers.find(usr => usr._id === memberId);
 
     // user has been added to the group
     if (!exists) {
       // already updated user row
-      const addedUser = await getDocument('users', { _id: memberId });
+      const addedUser = usersById[memberId];
 
       if (addedUser) {
         // previous data was like this
@@ -137,9 +139,9 @@ const usersGroupMutations = {
     { user }: IContext
   ) {
     // users before updating
-    const oldUsers = await getDocumentList('users', {
+    const oldUsers = await Users.find({
       _id: { $in: memberIds || [] }
-    });
+    }).lean();
 
     const group = await UsersGroups.createGroup(doc, memberIds);
 
@@ -191,9 +193,10 @@ const usersGroupMutations = {
     { user }: IContext
   ) {
     const group = await UsersGroups.getGroup(_id);
-    const oldUsers = await getDocumentList('users', {
+    const oldUsers = await Users.find({
       groupIds: { $in: [_id] }
-    });
+    }).lean();
+
     const result = await UsersGroups.updateGroup(_id, doc, memberIds);
 
     // don't write unnecessary log when nothing is changed
@@ -228,9 +231,9 @@ const usersGroupMutations = {
    */
   async usersGroupsRemove(_root, { _id }: { _id: string }, { user }: IContext) {
     const group = await UsersGroups.getGroup(_id);
-    const members = await getDocumentList('users', {
+    const members = await Users.find({
       groupIds: { $in: [group._id] }
-    });
+    }).lean();
     const result = await UsersGroups.removeGroup(_id);
 
     await putDeleteLog(

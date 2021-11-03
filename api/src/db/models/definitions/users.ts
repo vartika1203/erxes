@@ -132,7 +132,7 @@ export const userSchema = schemaHooksWrapper(
     links: field({ type: Object, default: {}, label: 'Links' }),
     isActive: field({ type: Boolean, default: true, label: 'Is active' }),
     brandIds: field({ type: [String], label: 'Brands' }),
-    groupIds: field({ type: [String], label: 'Groups' }),
+    groupIds: field({ type: [String], label: 'Groups', index: true }),
     deviceTokens: field({
       type: [String],
       default: [],
