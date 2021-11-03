@@ -15,7 +15,6 @@ import {
   getOrCreateEngageMessage,
   getOrCreateEngageMessageElk
 } from '../../widgetUtils';
-import { getDocument, getDocumentList } from '../mutations/cacheUtils';
 
 export const isMessengerOnline = async (integration: IIntegrationDocument) => {
   if (!integration.messengerData) {
@@ -44,8 +43,7 @@ export const isMessengerOnline = async (integration: IIntegrationDocument) => {
 
 const messengerSupporters = async (integration: IIntegrationDocument) => {
   const messengerData = integration.messengerData || { supporterIds: [] };
-
-  return getDocumentList('users', { _id: { $in: messengerData.supporterIds } });
+  return Users.find({ _id: { $in: messengerData.supporterIds } }).lean();
 };
 
 const getWidgetMessages = (conversationId: string) => {
@@ -122,9 +120,9 @@ export default {
       messages: await getWidgetMessages(conversation._id),
       isOnline: await isMessengerOnline(integration),
       operatorStatus: conversation.operatorStatus,
-      participatedUsers: await getDocumentList('users', {
-        _id: { $in: conversation.participatedUserIds }
-      }),
+      participatedUsers: await Users.find({
+        _id: { $in: conversation.participatedUserIds || [] }
+      }).lean(),
       supporters: await messengerSupporters(integration)
     };
   },
@@ -163,9 +161,10 @@ export default {
     _root,
     { integrationId }: { integrationId: string }
   ) {
-    const integration = await getDocument('integrations', {
+    const integration = await Integrations.findOne({
       _id: integrationId
-    });
+    }).lean();
+
     let timezone = '';
 
     if (!integration) {
@@ -183,9 +182,9 @@ export default {
     }
 
     return {
-      supporters: await getDocumentList('users', {
+      supporters: await Users.find({
         _id: { $in: messengerData.supporterIds || [] }
-      }),
+      }).lean(),
       isOnline: await isMessengerOnline(integration),
       serverTime: momentTz().tz(timezone)
     };
