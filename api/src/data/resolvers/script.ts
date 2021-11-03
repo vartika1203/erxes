@@ -1,19 +1,24 @@
-import { Integrations, KnowledgeBaseTopics } from '../../db/models';
+import { KnowledgeBaseTopics } from '../../db/models';
 import { IScriptDocument } from '../../db/models/definitions/scripts';
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export default {
-  messenger(script: IScriptDocument) {
-    return getDocument('integrations', { _id: script.messengerId });
+  messenger(script: IScriptDocument, _, { dataLoaders }: IContext) {
+    return (
+      (script.messengerId &&
+        dataLoaders.integration.load(script.messengerId)) ||
+      null
+    );
   },
 
   kbTopic(script: IScriptDocument) {
-    return KnowledgeBaseTopics.findOne({ _id: script.kbTopicId });
+    return KnowledgeBaseTopics.findOne({ _id: script.kbTopicId }).lean();
   },
 
-  leads(script: IScriptDocument) {
-    return Integrations.findIntegrations({
-      _id: { $in: script.leadIds || [] }
-    });
+  async leads(script: IScriptDocument, _, { dataLoaders }: IContext) {
+    const integrations = await dataLoaders.integrationActive.loadMany(
+      script.leadIds || []
+    );
+    return integrations.filter(i => i);
   }
 };
