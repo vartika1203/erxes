@@ -1,8 +1,10 @@
 import { INotificationDocument } from '../../db/models/definitions/notifications';
-import { getDocument } from './mutations/cacheUtils';
+import { IContext } from '../types';
 
 export default {
-  createdUser(notif: INotificationDocument) {
-    return getDocument('users', { _id: notif.createdUser });
+  createdUser(notif: INotificationDocument, _, { dataLoaders }: IContext) {
+    return (
+      (notif.createdUser && dataLoaders.user.load(notif.createdUser)) || null
+    );
   }
 };
