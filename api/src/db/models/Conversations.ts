@@ -1,7 +1,6 @@
 import { Model, model } from 'mongoose';
 import { ConversationMessages, Fields, Users } from '.';
 import { stream } from '../../data/bulkUtils';
-import { getDocument } from '../../data/resolvers/mutations/cacheUtils';
 import { cleanHtml, sendToWebhook } from '../../data/utils';
 import { CONVERSATION_STATUSES } from './definitions/constants';
 import {
@@ -178,7 +177,7 @@ export const loadClass = () => {
     ) {
       await this.checkExistanceConversations(conversationIds);
 
-      if (!(await getDocument('users', { _id: assignedUserId }))) {
+      if (!(await Users.findOne({ _id: assignedUserId }).lean())) {
         throw new Error(`User not found with id ${assignedUserId}`);
       }
 

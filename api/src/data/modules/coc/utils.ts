@@ -1,5 +1,5 @@
 import * as _ from 'underscore';
-import { Conformities, Segments, Tags } from '../../../db/models';
+import { Brands, Conformities, Segments, Tags } from '../../../db/models';
 import { companySchema } from '../../../db/models/definitions/companies';
 import { KIND_CHOICES } from '../../../db/models/definitions/constants';
 import { customerSchema } from '../../../db/models/definitions/customers';
@@ -7,7 +7,6 @@ import { ISegmentDocument } from '../../../db/models/definitions/segments';
 import { debugError } from '../../../debuggers';
 import { fetchElk } from '../../../elasticsearch';
 import { COC_LEAD_STATUS_TYPES } from '../../constants';
-import { getDocumentList } from '../../resolvers/mutations/cacheUtils';
 import { fetchSegment } from '../segments/queryBuilder';
 
 export interface ICountBy {
@@ -65,7 +64,7 @@ export const countByBrand = async (qb): Promise<ICountBy> => {
   const counts: ICountBy = {};
 
   // Count customers by brand
-  const brands = await getDocumentList('brands', {});
+  const brands = await Brands.find().lean();
 
   for (const brand of brands) {
     await qb.buildAllQueries();

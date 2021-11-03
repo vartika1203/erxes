@@ -1,9 +1,8 @@
-import { Configs, OnboardingHistories } from '../../db/models';
+import { Brands, Configs, OnboardingHistories } from '../../db/models';
 import { DEFAULT_CONSTANT_VALUES } from '../../db/models/definitions/constants';
 import { IUserDocument } from '../../db/models/definitions/users';
 import { getUserActionsMap } from '../permissions/utils';
 import { getConfigs } from '../utils';
-import { getDocumentList } from './mutations/cacheUtils';
 
 export default {
   status(user: IUserDocument) {
@@ -16,10 +15,10 @@ export default {
 
   brands(user: IUserDocument) {
     if (user.isOwner) {
-      return getDocumentList('brands', {});
+      return Brands.find().lean();
     }
 
-    return getDocumentList('brands', { _id: { $in: user.brandIds } });
+    return Brands.find({ _id: { $in: user.brandIds } }).lean();
   },
 
   async permissionActions(user: IUserDocument) {

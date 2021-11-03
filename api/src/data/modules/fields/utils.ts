@@ -18,7 +18,6 @@ import {
 import { IFieldGroup } from '../../../db/models/definitions/fields';
 import { fetchElk } from '../../../elasticsearch';
 import { EXTEND_FIELDS, FIELD_CONTENT_TYPES } from '../../constants';
-import { getDocumentList } from '../../resolvers/mutations/cacheUtils';
 import { findElk } from '../../resolvers/mutations/engageUtils';
 import { getConfig, isUsingElk } from '../../utils';
 import { BOARD_BASIC_INFOS } from '../fileExporter/constants';
@@ -275,7 +274,7 @@ const generateUsersOptions = async (
   label: string,
   type: string
 ) => {
-  const users = await getDocumentList('users', {});
+  const users = await Users.find().lean();
 
   const options: Array<{ label: string; value: any }> = users.map(user => ({
     value: user._id,

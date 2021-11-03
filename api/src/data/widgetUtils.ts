@@ -19,7 +19,6 @@ import { ISubmission } from '../db/models/definitions/fields';
 import { debugBase, debugError } from '../debuggers';
 import { client, fetchElk, getIndexPrefix } from '../elasticsearch';
 import { sendToLog } from './logUtils';
-import { getDocument } from './resolvers/mutations/cacheUtils';
 import { findCompany, findCustomer } from './utils';
 
 export const getOrCreateEngageMessage = async (
@@ -356,7 +355,7 @@ export const solveSubmissions = async (args: {
 }) => {
   let { cachedCustomerId } = args;
   const { integrationId, browserInfo, formId } = args;
-  const integration = await getDocument('integrations', { _id: integrationId });
+  const integration = await Integrations.findOne({ _id: integrationId }).lean();
 
   const submissionsGrouped = groupSubmissions(args.submissions);
 
