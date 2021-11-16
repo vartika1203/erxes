@@ -1071,12 +1071,16 @@ export const findCompany = async doc => {
 };
 
 export const checkPremiumService = async type => {
-  const response = await sendRequest({
-    url: `${getCoreDomain()}/check-premium-service?domain=${getEnv({
-      name: 'MAIN_APP_DOMAIN'
-    })}&type=${type}`,
-    method: 'GET'
-  });
+  try {
+    const response = await sendRequest({
+      url: `${getCoreDomain()}/check-premium-service?domain=${getEnv({
+        name: 'MAIN_APP_DOMAIN'
+      })}&type=${type}`,
+      method: 'GET'
+    });
 
-  return response === 'yes';
+    return response === 'yes';
+  } catch (e) {
+    return false;
+  }
 };
