@@ -19,6 +19,7 @@ import { PRIORITIES } from '../constants';
 import SelectProducts from 'modules/settings/productService/containers/product/SelectProducts';
 import dayjs from 'dayjs';
 import { debounce } from 'lodash';
+import { INTEGRATION_KINDS } from 'modules/settings/integrations/constants';
 
 type Props = {
   options: IOptions;
@@ -153,21 +154,38 @@ function Archive(props: Props) {
           multi={true}
         />
 
-        <SelectProducts
-          label={__('Filter by products')}
-          name="productIds"
-          onSelect={v => {
-            if (typeof v === 'string') {
-              if (!v) {
-                setProductIds([]);
+        {options.type === 'deal' && (
+          <SelectProducts
+            label={__('Filter by products')}
+            name="productIds"
+            onSelect={v => {
+              if (typeof v === 'string') {
+                if (!v) {
+                  setProductIds([]);
+                } else {
+                  setProductIds([v]);
+                }
               } else {
-                setProductIds([v]);
+                setProductIds(v);
               }
-            } else {
-              setProductIds(v);
-            }
-          }}
-        />
+            }}
+          />
+        )}
+
+        {options.type === 'ticket' && (
+          <Select
+            placeholder={__('Choose a source')}
+            value={sources}
+            options={INTEGRATION_KINDS.ALL.map(kind => ({
+              label: kind.text,
+              value: kind.value
+            }))}
+            name="source"
+            onChange={v => console.log('sources', v)}
+            multi={true}
+            loadingPlaceholder={__('Loading...')}
+          />
+        )}
 
         <ControlLabel>Close Date range:</ControlLabel>
 
@@ -193,6 +211,8 @@ function Archive(props: Props) {
       </FilterBox>
     );
   };
+
+  console.log(options.type);
 
   return (
     <ArchiveWrapper>
