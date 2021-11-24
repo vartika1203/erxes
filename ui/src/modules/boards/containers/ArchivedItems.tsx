@@ -30,6 +30,7 @@ type IProps = {
     startDate: string;
     endDate: string;
     sources: string[];
+    hackStages: string[];
   };
 };
 

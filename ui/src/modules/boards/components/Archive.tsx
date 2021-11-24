@@ -20,6 +20,7 @@ import SelectProducts from 'modules/settings/productService/containers/product/S
 import dayjs from 'dayjs';
 import { debounce } from 'lodash';
 import { INTEGRATION_KINDS } from 'modules/settings/integrations/constants';
+import { HACKSTAGES } from 'modules/growthHacks/constants';
 
 type Props = {
   options: IOptions;
@@ -42,6 +43,7 @@ function Archive(props: Props) {
   const [sources, setSources] = useState<string[]>([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [hackStages, setHackStages] = useState<string[]>([]);
 
   const onChangeRangeFilter = (setterFn, date) => {
     const formattedDate = date ? dayjs(date).format('YYYY-MM-DD') : '';
@@ -60,7 +62,7 @@ function Archive(props: Props) {
 
   const isFiltered = (): boolean => {
     if (type === 'item') {
-      if (
+      return !!(
         searchInputValue ||
         userIds.length ||
         priorities.length ||
@@ -69,18 +71,11 @@ function Archive(props: Props) {
         productIds.length ||
         startDate ||
         endDate ||
-        sources.length
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+        sources.length ||
+        hackStages.length
+      );
     } else {
-      if (searchInputValue) {
-        return true;
-      } else {
-        return false;
-      }
+      return !!searchInputValue;
     }
   };
 
@@ -94,6 +89,7 @@ function Archive(props: Props) {
     setStartDate('');
     setEndDate('');
     setSources([]);
+    setHackStages([]);
   };
 
   const renderItemFilters = () => {
@@ -190,6 +186,18 @@ function Archive(props: Props) {
           />
         )}
 
+        {options.type === 'growthHack' && (
+          <Select
+            placeholder="Choose a growth funnel"
+            value={hackStages}
+            options={HACKSTAGES.map(hs => ({ value: hs, label: hs }))}
+            name="hackStage"
+            onChange={xs => setHackStages(xs.map(x => x.value))}
+            multi={true}
+            loadingPlaceholder={__('Loading...')}
+          />
+        )}
+
         <ControlLabel>Close Date range:</ControlLabel>
 
         <CustomRangeContainer>
@@ -261,7 +269,8 @@ function Archive(props: Props) {
           customerIds: [],
           startDate,
           endDate,
-          sources
+          sources,
+          hackStages
         }}
         type={type}
       />
