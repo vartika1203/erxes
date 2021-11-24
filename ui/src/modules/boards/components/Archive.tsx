@@ -39,6 +39,7 @@ function Archive(props: Props) {
   const [assignedUserIds, setAssignedUserIds] = useState<string[]>([]);
   const [labelIds, setLabelIds] = useState<string[]>([]);
   const [productIds, setProductIds] = useState<string[]>([]);
+  const [sources, setSources] = useState<string[]>([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -67,7 +68,8 @@ function Archive(props: Props) {
         labelIds.length ||
         productIds.length ||
         startDate ||
-        endDate
+        endDate ||
+        sources.length
       ) {
         return true;
       } else {
@@ -91,6 +93,7 @@ function Archive(props: Props) {
     setProductIds([]);
     setStartDate('');
     setEndDate('');
+    setSources([]);
   };
 
   const renderItemFilters = () => {
@@ -181,7 +184,7 @@ function Archive(props: Props) {
               value: kind.value
             }))}
             name="source"
-            onChange={v => console.log('sources', v)}
+            onChange={xs => setSources(xs.map(x => x.value))}
             multi={true}
             loadingPlaceholder={__('Loading...')}
           />
@@ -211,8 +214,6 @@ function Archive(props: Props) {
       </FilterBox>
     );
   };
-
-  console.log(options.type);
 
   return (
     <ArchiveWrapper>
@@ -259,7 +260,8 @@ function Archive(props: Props) {
           companyIds: [],
           customerIds: [],
           startDate,
-          endDate
+          endDate,
+          sources
         }}
         type={type}
       />

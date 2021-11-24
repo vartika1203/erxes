@@ -34,6 +34,7 @@ export interface IArchiveArgs {
   customerIds?: string[];
   startDate?: string;
   endDate?: string;
+  sources?: string[];
 }
 
 const contains = (values: string[]) => {
@@ -461,7 +462,8 @@ const generateArhivedItemsFilter = (
     labelIds,
     productIds,
     startDate,
-    endDate
+    endDate,
+    sources
   } = params;
 
   const filter: any = { status: BOARD_STATUSES.ARCHIVED };
@@ -506,6 +508,10 @@ const generateArhivedItemsFilter = (
         $lte: new Date(endDate)
       };
     }
+  }
+
+  if (sources && sources.length) {
+    filter.source = { $in: sources };
   }
 
   return filter;
