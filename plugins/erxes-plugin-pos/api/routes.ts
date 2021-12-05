@@ -17,6 +17,23 @@ export default {
           details: 1
         };
 
+        // qpay configs
+        const qpayUrl = await models.Configs.findOne({ code: 'qpayUrl' });
+        const qpayCallbackUrl = await models.Configs.findOne({ code: 'callbackUrl' });
+        const qpayMerchantUser = await models.Configs.findOne({ code: 'qpayMerchantUser' });
+        const qpayMerchantPassword = await models.Configs.findOne({ code: 'qpayMerchantPassword' });
+        const qpayInvoiceCode = await models.Configs.findOne({ code: 'qpayInvoiceCode' });
+
+        if (pos) {
+          data.qpayConfig = {
+            url: qpayUrl && qpayUrl.value,
+            callbackUrl: qpayCallbackUrl && qpayCallbackUrl.value,
+            username: qpayMerchantUser && qpayMerchantUser.value,
+            password: qpayMerchantPassword && qpayMerchantPassword.value,
+            invoiceCode: qpayInvoiceCode && qpayInvoiceCode.value
+          };
+        }
+
         // collect admin users
         if (pos.adminIds) {
           data.adminUsers = await models.Users.find({
@@ -112,7 +129,8 @@ export default {
 
         data.productGroups = productGroups;
 
-        data.customers = await models.Customers.find().lean();
+        // consider 'customer' state as valid customers
+        data.customers = await models.Customers.find({ state: 'customer' }).lean();
 
         return data;
       }
