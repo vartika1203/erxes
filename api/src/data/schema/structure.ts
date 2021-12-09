@@ -28,7 +28,9 @@ export const types = `
         code: String
         parent: Department
         children: [Department]
+        childCount: Int
         users: [User]
+        userCount: Int
         userIds: [String]
     }
 
@@ -73,7 +75,7 @@ export const types = `
 `;
 
 export const queries = `
-    departments(depthType: String, searchValue: String): [Department]
+    departments(searchValue: String): [Department]
     departmentDetail(_id: String!): Department
 
     noDepartmentUsers(excludeId: String): [User]
@@ -81,7 +83,7 @@ export const queries = `
     units(searchValue: String): [Unit]
     unitDetail(_id: String!): Unit
 
-    branches(depthType: String, searchValue: String): [Branch]
+    branches(searchValue: String): [Branch]
     branchDetail(_id: String!): Branch
 
     structureDetail: Structure
