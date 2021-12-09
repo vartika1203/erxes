@@ -1,0 +1,7 @@
+@media print {
+ html,
+ body {
+   height: 100% !important;
+   margin: 0;
+ }
+}
