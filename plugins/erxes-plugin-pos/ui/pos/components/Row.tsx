@@ -124,7 +124,7 @@ class Row extends React.Component<Props> {
         </td>
         <td>
           <Icon icon="calender" />{' '}
-          <DateWrapper>{dayjs(new Date()).format('ll')}</DateWrapper>
+          <DateWrapper>{dayjs(pos.createdAt).format('ll')}</DateWrapper>
         </td>
 
         <td>
