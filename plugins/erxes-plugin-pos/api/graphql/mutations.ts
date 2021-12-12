@@ -10,23 +10,36 @@ const mutations = [
       await checkPermission('managePos', user);
 
       return await models.Pos.posAdd(models, user, params);
-    }
+    },
   },
-
-  /**
-   * edit pos
-   */
   {
     name: 'posEdit',
     handler: async (
       _root,
       { _id, ...params },
-      { models, checkPermission, user }
+      { models, checkPermission, user, messageBroker }
     ) => {
       await checkPermission('managePos', user);
 
-      return await models.Pos.posEdit(models, _id, params);
-    }
+      const object = await models.Pos.getPos(models, { _id });
+      const updatedDocument = await models.Pos.posEdit(models, _id, params);
+
+      const adminUsers = await models.Users.find({ _id: { $in: updatedDocument.adminIds } });
+      const cashierUsers = await models.Users.find({ _id: { $in: updatedDocument.cashierIds } })
+
+      if (messageBroker) {
+        messageBroker().sendMessage('pos:crudData', {
+          type: 'pos',
+          action: 'update',
+          object,
+          updatedDocument,
+          adminUsers,
+          cashierUsers
+        });
+      }
+
+      return updatedDocument;
+    },
   },
 
   /**
@@ -42,7 +55,7 @@ const mutations = [
       await checkPermission('managePos', user);
 
       return await models.Pos.posRemove(models, _id);
-    }
+    },
   },
 
   {
@@ -67,8 +80,8 @@ const mutations = [
         }
       }
 
-      const groupsToRemove = dbGroups.filter(el => {
-        const index = groupsToUpdate.findIndex(g => g._id === el._id);
+      const groupsToRemove = dbGroups.filter((el) => {
+        const index = groupsToUpdate.findIndex((g) => g._id === el._id);
 
         if (index === -1) {
           return el._id;
@@ -82,8 +95,8 @@ const mutations = [
       await models.ProductGroups.insertMany(groupsToAdd);
 
       return models.ProductGroups.groups(models, posId);
-    }
-  }
+    },
+  },
 ];
 
 export default mutations;
