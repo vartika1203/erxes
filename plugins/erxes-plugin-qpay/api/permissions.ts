@@ -1,9 +1,9 @@
 export default [
-  { name: "showQpay", description: "Show qpay" },
-  { name: "manageQpay", description: "Manage qpay" },
+  { name: "showQr", description: "Show qr" },
+  { name: "manageQr", description: "Manage qr" },
   {
-    name: "allQpay",
+    name: "allQr",
     description: "All",
-    use: ["showQpay", "manageQpay"],
+    use: ["showQr", "manageQr"],
   },
 ];

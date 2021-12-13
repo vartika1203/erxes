@@ -12,6 +12,22 @@ const getQpayInvoiceDetails = `
   }
 `;
 
+const getSpCheckParams = `
+  $invoiceNo: String!
+  `;
+
+const getSpCheckParamsValues = `
+invoiceNo: $invoiceNo  
+`;
+
+const checkSPInvoice = `
+  query checkSPInvoice(${getSpCheckParams}) {
+    checkSPInvoice(${getSpCheckParamsValues})
+  }
+`;
+
+
+
 const configs = `
   query configs {
     configs {
@@ -24,5 +40,6 @@ const configs = `
 
 export default {
   getQpayInvoiceDetails,
+  checkSPInvoice,
   configs  
 };

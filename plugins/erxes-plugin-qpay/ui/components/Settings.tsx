@@ -6,7 +6,7 @@ import {
 import React from 'react';
 import { SettingsContent } from '../styles';
 import { IConfigsMap } from '../types';
-import QpaySection from './common/QpaySection';
+import PaymentSection from './common/PaymentSection';
 
 type Props = {
   save: (configsMap: IConfigsMap) => void;
@@ -127,7 +127,7 @@ class GeneralSettings extends React.Component<Props, State> {
             </>
           }
           leftSidebar={
-            <QpaySection amount="10" description="qpay test invoice" />
+            <PaymentSection type="qpay" />
           }
           content={content}
           center={true}

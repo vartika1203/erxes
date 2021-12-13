@@ -64,11 +64,20 @@ class SocialPayInvoice {
   };
 
   public static async socialPayInvoiceStatusUpdate(models, invoice, status) {     
+
+    const invoiceOne = await models.SocialPayInvoice.findOne({_id:invoice._id});
     
-    console.log("status");      
-    console.log(status);
+    if(invoiceOne.status !== "canceled payment") 
+    {
+      console.log("status");      
+      console.log(status, invoice._id);
     
-    await models.SocialPayInvoice.updateOne({_id: invoice._id} , {$set : { status }});    
+      await models.SocialPayInvoice.updateOne({_id: invoice._id} , {$set : { status }});    
+    }
+    else {
+      console.log("already canceled payment, not change");      
+    }
+    
   };
 }
 

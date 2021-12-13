@@ -43,11 +43,11 @@ const Mutations = [
         terminal
       }              
       const invoiceQrData = await socialPayPaymentCancel(requestBody, configs);
-      const response = invoiceQrData.header && invoiceQrData.header.code ? invoiceQrData.header.code : 0;
-      
+      const response = invoiceQrData.header && invoiceQrData.header.code ? invoiceQrData.header.code : 0;              
+
       if(response === 200) {
         await models.SocialPayInvoice.socialPayInvoiceStatusUpdate(models,invoice,"canceled payment");
-      }            
+      }
       
       return invoiceQrData;
     }  
@@ -75,8 +75,9 @@ const Mutations = [
       }              
       const invoiceQrData = await socialPayInvoiceCancel(requestBody, configs);
       const response = invoiceQrData.header && invoiceQrData.header.code ? invoiceQrData.header.code : 0;
+      const responseDesc = invoiceQrData.body && invoiceQrData.body.response && invoiceQrData.body.response.status ? invoiceQrData.body.response.status : "UNSUCCESS";
       
-      if(response === 200) {
+      if(response === 200 && responseDesc === "SUCCESS") {
         await models.SocialPayInvoice.socialPayInvoiceStatusUpdate(models,invoice,"canceled");
       }            
       

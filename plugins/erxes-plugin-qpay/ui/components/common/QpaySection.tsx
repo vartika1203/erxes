@@ -3,9 +3,10 @@ import {
 } from 'erxes-ui';
 import React from 'react';
 import { mutations, queries } from '../../graphql';
-import client from 'apolloClient';
+import client from 'erxes-ui/lib/apolloClient';
 import gql from 'graphql-tag';
-import { QpaySectionStyle, QpayButtonStyle, QpayImageStyle, QpayRefreshStyle } from '../../styles';
+import { QpaySectionStyle, QpayButtonStyle, QpayImageStyle } from '../../styles';
+import QRCode from 'qrcode';
 
 type Props = {
   invoiceNo?: string;
@@ -88,10 +89,11 @@ class QpaySection extends React.Component<Props, State> {
     }).then(async (response) => {
       const data = response.data.createQpaySimpleInvoice;
       if (!data.error) {
-        this.setState({
-          qr: data.qr_image,
-          qrInvoiceNo: data.invoice_id
-        });
+
+        QRCode.toDataURL(data.qr_text).then((qrImage) => {
+          this.setState({ qr: qrImage, qrInvoiceNo: data.invoice_id });
+        })
+
       }
       else {
         alert(data.error);
@@ -110,7 +112,7 @@ class QpaySection extends React.Component<Props, State> {
   }
 
   onClickEvent = () => {
-    this.setState({ invoiceNo: defaultInvoiceNo(16) });
+    this.setState({ invoiceNo: defaultInvoiceNo(16), qr: "", qrInvoiceNo: "" });
   }
 
   render() {
@@ -169,7 +171,7 @@ class QpaySection extends React.Component<Props, State> {
           </QpayButtonStyle>
           {qrInvoiceNo !== "" && (<>
             <QpayImageStyle>
-              <img src={`data:image/jpeg;base64,${this.state.qr}`} width="90%" />
+              <img src={this.state.qr} width="90%" />
             </QpayImageStyle>
             <FormGroup>
               <ControlLabel >Status: {this.state.qrPaymentStatus}</ControlLabel>
@@ -178,7 +180,7 @@ class QpaySection extends React.Component<Props, State> {
               <ControlLabel >Qpay InvoiceNo</ControlLabel>
               <FormControl
                 value={this.state.qrInvoiceNo}
-                onChange={this.onChangeAmount}
+                // onChange={this.onChangeAmount}
                 required={true}
               />
             </FormGroup>
