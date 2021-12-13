@@ -19,14 +19,14 @@ export default () => ({
       image: '/images/icons/erxes-16.svg',
       to: '/erxes-plugin-qpay/settings/',
       action: 'pluginQpayConfig',
-      permissions: []
+      permissions: ['manageQr','allQr']
     },
     {
       name: 'SocialPay config',
       image: '/images/icons/erxes-16.svg',
       to: '/erxes-plugin-qpay/settings_socialPay/',
       action: 'pluginQpayConfig',
-      permissions: []
+      permissions: ['manageQr','allQr']
     }
   ]
   // ,customerRightSidebarSection: {

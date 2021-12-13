@@ -6,7 +6,9 @@ import {
 import React from 'react';
 import { SettingsContent } from '../styles';
 import { IConfigsMap } from '../types';
-// import Select from 'react-select-plus';
+import SocialPaySection from './common/SocialPaySection';
+import PaymentSection from './common/PaymentSection';
+
 
 type Props = {
   save: (configsMap: IConfigsMap) => void;
@@ -121,6 +123,11 @@ class GeneralSettings extends React.Component<Props, State> {
             left={< Title > {__('SocialPay API configs')}</Title >}
             right={actionButtons}
           />
+        }
+        leftSidebar={
+          <>
+            <PaymentSection type="socialPay" />
+          </>
         }
         content={content}
         center={true}

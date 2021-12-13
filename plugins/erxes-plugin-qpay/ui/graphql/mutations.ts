@@ -21,6 +21,44 @@ const createInvoice = `
   }
 `;
 
+const spInvoicePhoneFields = `
+$amount: String!
+$invoiceNoAuto: Boolean!
+$invoice: String
+$phone: String!
+`;
+
+const spInvoicePhoneVariables = `
+amount: $amount
+invoiceNoAuto: $invoiceNoAuto
+invoice: $invoice
+phone: $phone
+`;
+
+const createSPInvoicePhone = `
+mutation createSPInvoicePhone(${spInvoicePhoneFields}) {
+  createSPInvoicePhone(${spInvoicePhoneVariables})   
+}
+`;
+
+const spInvoiceQrFields = `
+$amount: String!
+$invoiceNoAuto: Boolean!
+$invoice: String
+`;
+
+const spInvoiceQrVariables = `
+amount: $amount
+invoiceNoAuto: $invoiceNoAuto
+invoice: $invoice
+`;
+
+const createSPInvoiceQr = `
+mutation createSPInvoiceQr(${spInvoiceQrFields}) {
+  createSPInvoiceQr(${spInvoiceQrVariables})
+}
+`;
+
 // Settings
 
 const updateConfigs = `
@@ -31,5 +69,7 @@ const updateConfigs = `
 
 export default {
   updateConfigs,
-  createInvoice
+  createInvoice,
+  createSPInvoicePhone,
+  createSPInvoiceQr
 };
