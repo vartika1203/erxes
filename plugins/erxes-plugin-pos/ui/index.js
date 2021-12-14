@@ -3,6 +3,7 @@ import List from './pos/containers/List';
 import EditPos from './pos/containers/EditPos';
 import queryString from 'query-string';
 import CreatePos from './pos/containers/CreatePos';
+import OrderList from './orders/containers/List'
 
 const settingsComponent = ({ location, history }) => {
   return (
@@ -21,6 +22,15 @@ const createPos = ({ match, location, history }) => {
   return <CreatePos location={location} match={match} history={history} />;
 };
 
+const OrderListComponent = ({ location, history }) => {
+  return (
+    <OrderList
+      queryParams={queryString.parse(location.search)}
+      history={history}
+    />
+  )
+}
+
 export default () => ({
   routes: [
     {
@@ -34,6 +44,10 @@ export default () => ({
     {
       path: '/pos/create',
       component: createPos
+    },
+    {
+      path: '/pos-orders',
+      component: OrderListComponent
     }
   ],
   settings: [
