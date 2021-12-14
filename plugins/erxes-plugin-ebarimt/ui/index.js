@@ -78,7 +78,7 @@ export default () => ({
     label: 'Put Responses',
     icon: 'icon-lamp',
     link: '/put-responses',
-    // permission: 'showCars'
+    permission: 'syncEbarimtConfig'
   },
   response: returnResponse
 });
