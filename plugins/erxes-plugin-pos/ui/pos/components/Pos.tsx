@@ -64,7 +64,8 @@ class Pos extends React.Component<Props, State> {
         footerColor: '#3CCC38'
       },
       logo: '/images/erxes.png',
-      bgImage: ''
+      bgImage: '',
+      favIcon: '/images/erxes.png'
     };
 
     this.state = {
