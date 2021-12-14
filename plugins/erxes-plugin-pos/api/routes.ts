@@ -1,3 +1,16 @@
+const getChildCategories = async (models, categories) => {
+  let catIds = []
+  for (const category of categories) {
+    const childs = await models.ProductCategories.find({
+      order: { $regex: `^${category.order}.*`, $options: 'i' }
+    }).sort({ order: 1 });
+
+    catIds = catIds.concat(childs.map(ch => ch._id));
+  }
+
+  return models.ProductCategories.find({_id: {$in: catIds}})
+}
+
 export default {
   routes: [
     {
@@ -95,16 +108,29 @@ export default {
         const productGroups = [];
 
         for (const group of groups) {
-          const productCategories = await models.ProductCategories.find({
+          const chosenCategories = await models.ProductCategories.find({
             $and: [
-              { _id: { $in: group.categoryIds } },
-              { _id: { $nin: group.excludedCategoryIds } }
+              { _id: { $in: group.categoryIds || [] } },
             ]
           });
+
+          const chosenExcludeCategories = await models.ProductCategories.find({
+            $and: [
+              { _id: { $in: group.excludedCategoryIds } }
+            ]
+          });
+
+          const includeCategories = await getChildCategories(models, chosenCategories);
+          const excludeCategories = await getChildCategories(models, chosenExcludeCategories);
+          const excludeCatIds = excludeCategories.map(c => (c._id));
+
+          const productCategories = includeCategories.filter(c => (!excludeCatIds.includes(c._id)));
+
           const categories = [];
 
           for (const category of productCategories) {
             const products = await models.Products.find({
+              status: { $ne: 'deleted' },
               categoryId: category._id,
               _id: { $nin: group.excludedProductIds }
             });

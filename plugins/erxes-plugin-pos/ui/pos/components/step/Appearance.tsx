@@ -46,7 +46,12 @@ class Appearance extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const uiOptions = props.uiOptions || {};
+    const uiOptions = props.uiOptions || {
+      colors: {},
+      logo: '',
+      favIcon: '',
+      bgImage: '',
+    };
 
     this.state = { uiOptions };
   }
@@ -55,44 +60,25 @@ class Appearance extends React.Component<Props, State> {
     this.props.onChange(name, value);
   };
 
-  onChangeAppearance = (name: any, value: any) => {
-    this.props.onChangeAppearance(name, value);
-  };
+  handleLogoChange = (id, url) => {
+    const { onChange } = this.props;
+    const { uiOptions } = this.state;
 
-  handleLogoChange = (e) => {
-    const { uiOptions } = this.props;
-    const imageFile = e.target.files;
 
-    const key = e.target.id;
-
-    uploadHandler({
-      files: imageFile,
-
-      beforeUpload: () => {
-        this.onChangeFunction("logoPreviewStyle", { opacity: "0.7" });
-      },
-
-      afterUpload: ({ response }) => {
-        uiOptions[key] = response;
-        this.onChangeFunction("uiOptions", uiOptions);
-        this.onChangeFunction("logoPreviewStyle", { opacity: "1" });
-      },
-
-      afterRead: ({ result }) => {
-        this.onChangeFunction("logoPreviewUrl", result);
-      },
-    });
+    this.setState({ uiOptions: { ...uiOptions, [id]: url } })
+    onChange('uiOptions', { ...uiOptions, [id]: url })
   };
 
   renderUploadImage(id, title, desc) {
+    const { uiOptions } = this.state;
     return (
       <LogoWrapper>
         <FormGroup>
           <ControlLabel>{__(title)}</ControlLabel>
           <p>{__(desc)}</p>
           <AvatarUpload
-            avatar={this.state.uiOptions[id] || ""}
-            onAvatarUpload={this.handleLogoChange}
+            avatar={uiOptions[id]}
+            onAvatarUpload={this.handleLogoChange.bind(this, id)}
           />
         </FormGroup>
       </LogoWrapper>
