@@ -21,7 +21,8 @@ export const posSChema = {
   formSectionTitle: { type: String, label: 'Form section title' },
   formIntegrationIds: { type: [String], label: 'Form integration ids' },
   token: { type: String, label: 'Pos token' },
-  ebarimtConfig: { type: Object, label: 'Ebarimt Config' }
+  ebarimtConfig: { type: Object, label: 'Ebarimt Config' },
+  syncInfo: { type: Object, label: 'sync info' }
 };
 
 class Pos {
@@ -157,6 +158,43 @@ class ProductGroup {
   }
 }
 
+const posOrderItemSchema = {
+  _id: { type: String },
+  createdAt: { type: Date },
+  productId: { type: String, label: 'Product' },
+  count: { type: Number },
+  unitPrice: { type: Number },
+  discountAmount: { type: Number },
+  discountPercent: { type: Number },
+};
+
+const posOrdersSchema = {
+  _id: { pkey: true },
+  createdAt: { type: Date },
+  status: { type: String, label: 'Status of the order' },
+  paidDate: { type: Date, label: 'Paid date' },
+  number: { type: String, label: 'Order number', unique: true },
+  customerId: { type: String, label: 'Customer' },
+  cardAmount: { type: Number },
+  cashAmount: { type: Number },
+  mobileAmount: { type: Number },
+  totalAmount: { type: Number },
+  finalAmount: { type: Number },
+  shouldPrintEbarimt: { type: Boolean, label: 'Should print ebarimt for this order' },
+  printedEbarimt: { type: Boolean, label: 'Printed ebarimt', default: false },
+  billType: { type: String, label: 'Ebarimt receiver entity type' },
+  billId: { type: String, label: 'Bill id' },
+  registerNumber: { type: String, label: 'Register number of the entity' },
+  oldBillId: { type: String, label: 'Previous bill id if it is changed' },
+  type: { type: String, },
+  userId: { type: String, label: 'Created user id' },
+
+  items: { type: posOrderItemSchema, label: 'items' },
+  posToken: { type: String, optional: true },
+  syncId: { type: String, optional: true }
+};
+
+
 export default [
   {
     name: 'Pos',
@@ -167,5 +205,9 @@ export default [
     name: 'ProductGroups',
     schema: productGroupSchema,
     klass: ProductGroup
+  },
+  {
+    name: 'PosOrders',
+    schema: posOrdersSchema,
   }
 ];

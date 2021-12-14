@@ -8,17 +8,24 @@ const getChildCategories = async (models, categories) => {
     catIds = catIds.concat(childs.map(ch => ch._id));
   }
 
-  return models.ProductCategories.find({_id: {$in: catIds}})
+  return models.ProductCategories.find({ _id: { $in: catIds } })
 }
 
 export default {
   routes: [
     {
       method: 'GET',
-      path: '/pos',
+      path: '/pos-init',
       handler: async ({ req, models }) => {
         const token = req.headers['pos-token'];
         const pos = await models.Pos.findOne({ token });
+
+        const syncId = Math.random().toString();
+        const syncInfo = { [syncId]: new Date() };
+
+        await models.Pos.updateOne({ _id: pos._id }, { $set: { syncInfo: { ...pos.syncInfo, ...syncInfo } } });
+        pos.syncInfo = { id: syncId, date: syncInfo[syncId] };
+
         const data: any = { pos };
 
         const userFields = {
@@ -107,18 +114,25 @@ export default {
 
         const productGroups = [];
 
+        const commonFilter = [
+          { status: { $ne: 'disabled' } },
+          { status: { $ne: 'archived' } }
+        ]
+
         for (const group of groups) {
           const chosenCategories = await models.ProductCategories.find({
             $and: [
               { _id: { $in: group.categoryIds || [] } },
+              ...commonFilter
             ]
-          });
+          }).lean();
 
           const chosenExcludeCategories = await models.ProductCategories.find({
             $and: [
-              { _id: { $in: group.excludedCategoryIds } }
+              { _id: { $in: group.excludedCategoryIds } },
+              ...commonFilter
             ]
-          });
+          }).lean();
 
           const includeCategories = await getChildCategories(models, chosenCategories);
           const excludeCategories = await getChildCategories(models, chosenExcludeCategories);
@@ -133,7 +147,7 @@ export default {
               status: { $ne: 'deleted' },
               categoryId: category._id,
               _id: { $nin: group.excludedProductIds }
-            });
+            }).lean();
 
             category.products = products;
 
@@ -156,7 +170,7 @@ export default {
         data.productGroups = productGroups;
 
         // consider 'customer' state as valid customers
-        data.customers = await models.Customers.find({ state: 'customer' }).lean();
+        data.customers = await models.Customers.find({ status: { $ne: 'deleted' } }).lean();
 
         return data;
       }

@@ -56,14 +56,17 @@ export const putResponseSchema = {
 
   stocks: { type: Object, label: '' },
   amount: { type: String, label: '' },
-  cityTax: {type: String, label: ''},
-  vat: {type: String, label: ''},
+  cityTax: { type: String, label: '' },
+  vat: { type: String, label: '' },
   returnBillId: { type: String },
   cashAmount: { type: String, label: '' },
   nonCashAmount: { type: String, label: '' },
   registerNo: { type: String, label: '' },
-  customerNo: {type: String, label: ''},
-  customerName: {type: String, label: ''}
+  customerNo: { type: String, label: '' },
+  customerName: { type: String, label: '' },
+
+  posToken: { type: String, optional: true },
+  syncId: { type: String, optional: true }
 };
 
 const compoundIndexes = {

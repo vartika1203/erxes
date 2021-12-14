@@ -419,7 +419,8 @@ export const pluginsConsume = client => {
   const context = {
     models: allModels,
     memoryStorage,
-    graphqlPubsub
+    graphqlPubsub,
+    messageBroker
   };
 
   for (const channel of Object.keys(pluginsConsumers)) {
