@@ -5,11 +5,11 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import { IRouterProps } from 'erxes-ui/lib/types';
-import PutResponse from '../components/PutResponses';
+import List from '../components/List';
 import { queries } from '../graphql';
 import {
   ListQueryVariables,
-  PutResponsesQueryResponse
+  OrdersQueryResponse
 } from '../types';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 };
 
 type FinalProps = {
-  putResponsesQuery: PutResponsesQueryResponse;
+  ordersQuery: OrdersQueryResponse;
 } & Props &
   IRouterProps;
 
@@ -26,7 +26,7 @@ type State = {
   loading: boolean;
 };
 
-class PutResponsesContainer extends React.Component<FinalProps, State> {
+class OrdersContainer extends React.Component<FinalProps, State> {
   constructor(props) {
     super(props);
 
@@ -37,29 +37,29 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
 
   render() {
     const {
-      putResponsesQuery,
+      ordersQuery,
       history
     } = this.props;
 
     const searchValue = this.props.queryParams.searchValue || '';
-    const list = putResponsesQuery.putResponses || [];
+    const list = ordersQuery.posOrders || [];
 
     const updatedProps = {
       ...this.props,
       searchValue,
-      putResponses: list,
-      loading: putResponsesQuery.loading,
+      orders: list,
+      loading: ordersQuery.loading,
     };
 
-    const carsList = props => {
-      return <PutResponse {...updatedProps} {...props} />;
+    const ordersList = props => {
+      return <List {...updatedProps} {...props} />;
     };
 
     const refetch = () => {
-      this.props.putResponsesQuery.refetch();
+      this.props.ordersQuery.refetch();
     };
 
-    return <Bulk content={carsList} refetch={refetch} />;
+    return <Bulk content={ordersList} refetch={refetch} />;
   }
 }
 
@@ -76,12 +76,12 @@ const generateParams = ({ queryParams }) => ({
 
 export default withProps<Props>(
   compose(
-    graphql<{ queryParams: any }, PutResponsesQueryResponse, ListQueryVariables>(
-      gql(queries.putResponses),
+    graphql<{ queryParams: any }, OrdersQueryResponse, ListQueryVariables>(
+      gql(queries.posOrders),
       {
-        name: 'putResponsesQuery',
+        name: 'ordersQuery',
         options: generateParams
       }
     ),
-  )(withRouter<IRouterProps>(PutResponsesContainer))
+  )(withRouter<IRouterProps>(OrdersContainer))
 );

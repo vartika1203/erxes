@@ -348,3 +348,12 @@ export const BlockRow = styled(FlexRow)`
     }
   }
 `;
+
+export const TableWrapper = styled.div`
+  td {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;

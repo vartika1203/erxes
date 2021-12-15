@@ -91,6 +91,16 @@ const queries = [
       await checkPermission('managePos', user);
       return await models.ProductGroups.groups(models, posId);
     }
+  },
+
+  {
+    name: 'posOrders',
+    handler: async (_root, params, { models }) => {
+      return paginate(models.PosOrders.find(), {
+        page: params.page,
+        perPage: params.perPage
+      });
+    }
   }
 ];
 

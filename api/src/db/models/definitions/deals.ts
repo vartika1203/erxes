@@ -163,7 +163,7 @@ export const productCategorySchema = schemaWrapper(
     _id: field({ pkey: true }),
     name: field({ type: String, label: 'Name' }),
     code: field({ type: String, unique: true, label: 'Code' }),
-    order: field({ type: String, label: 'Order' }),
+    order: field({ type: String, label: 'Order', index: true }),
     parentId: field({ type: String, optional: true, label: 'Parent' }),
     description: field({ type: String, optional: true, label: 'Description' }),
     attachment: field({ type: attachmentSchema }),

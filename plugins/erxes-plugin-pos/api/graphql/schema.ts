@@ -54,6 +54,39 @@ export const types = `
     excludedCategoryIds: [String]
     excludedProductIds: [String]
   }
+
+  type PosOrder {
+    _id: String,
+    createdAt: Date,
+    status: String,
+    paidDate: Date,
+    number: String,
+    customerId: String,
+    cardAmount: Float,
+    cashAmount: Float,
+    mobileAmount: Float,
+    totalAmount: Float,
+    finalAmount: Float,
+    shouldPrintEbarimt: Boolean,
+    printedEbarimt: Boolean,
+    billType: String,
+    billId: String,
+    registerNumber: String,
+    oldBillId: String,
+    type: String,
+    userId: String,
+
+    items: JSON,
+    posToken: String,
+    syncId: String,
+  }
+`;
+
+const queryParams = `
+  page: Int
+  perPage: Int
+  sortField: String
+  sortDirection: Int
 `;
 
 export const queries = `
@@ -66,6 +99,8 @@ export const queries = `
     sortDirection: Int): [Pos]
   posDetail(_id: String!): Pos
   productGroups(posId: String!): [ProductGroups]
+
+  posOrders(${queryParams}): [PosOrder]
 `;
 
 export const mutations = `
