@@ -1,5 +1,5 @@
 import {
-  Box, __, FormControl, FormGroup, ControlLabel
+  Box, __, FormGroup
 } from 'erxes-ui';
 import React from 'react';
 import { QpaySectionStyle } from '../../styles';
@@ -28,7 +28,6 @@ class PaymentSection extends React.Component<Props, State> {
   }
 
   onClickEvent = (variable, e) => {
-    console.log(variable);
     this.setState({ type: variable });
   }
 
