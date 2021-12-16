@@ -1,4 +1,5 @@
 import { IPOS } from '../types';
+import { sendMessage } from '../messageBrokers';
 
 const mutations = [
   /**
@@ -25,17 +26,17 @@ const mutations = [
       const updatedDocument = await models.Pos.posEdit(models, _id, params);
 
       const adminUsers = await models.Users.find({ _id: { $in: updatedDocument.adminIds } });
-      const cashierUsers = await models.Users.find({ _id: { $in: updatedDocument.cashierIds } })
+      const cashierUsers = await models.Users.find({ _id: { $in: updatedDocument.cashierIds } });
 
       if (messageBroker) {
-        messageBroker().sendMessage('pos:crudData', {
+        await sendMessage(models, messageBroker, 'pos:crudData', {
           type: 'pos',
           action: 'update',
           object,
           updatedDocument,
           adminUsers,
           cashierUsers
-        });
+        }, object)
       }
 
       return updatedDocument;

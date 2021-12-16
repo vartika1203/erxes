@@ -1,27 +1,11 @@
+import { sendMessage } from '../messageBrokers';
+
 const handler = async (_root, params: any, { models, messageBroker }) => {
   if (!messageBroker) {
     return;
   }
 
-  const allPos = await models.Pos.find().lean();
-  for (const pos of allPos) {
-    const syncIds = Object.keys(pos.syncInfo || {}) || [];
-
-    if (!syncIds.length) {
-      continue;
-    }
-
-    for (const syncId of syncIds) {
-      const syncDate = pos.syncInfo[syncId];
-
-      // expired sync 7day
-      if ((new Date().getTime() - syncDate.getTime()) / (24 * 60 * 60 * 1000) > 7) {
-        continue;
-      }
-
-      messageBroker().sendMessage(`pos:crudData_${syncId}`, params);
-    }
-  }
+  await sendMessage(models, messageBroker, 'pos:crudData', params);
 };
 
 const customerActions = { type: 'customer', handler };
