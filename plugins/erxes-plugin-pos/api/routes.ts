@@ -215,6 +215,77 @@ export default {
 
         return { error: 'wrong type' }
       }
+    },
+    {
+      method: 'POST',
+      path: '/pos-sync-orders',
+      handler: async ({ req, models }) => {
+        const token = req.headers['pos-token'];
+        const { syncId, orders, putResponses } = req.body;
+
+        const pos = await models.Pos.findOne({ token }).lean();
+
+        if (!pos) {
+          return { error: 'not found pos' }
+        }
+
+        await models.Pos.updateOne({ token }, { $set: { syncInfo: { ...pos.syncInfos, [syncId]: new Date() } } })
+
+        const resOrderIds = [];
+        const putResponseIds = [];
+
+        try {
+          let orderBulkOps: Array<{
+            updateOne: {
+              filter: { _id: string };
+              update: any;
+              upsert: true;
+            };
+          }> = [];
+
+          for (const order of orders) {
+            resOrderIds.push(order._id);
+            orderBulkOps.push({
+              updateOne: {
+                filter: { _id: order._id },
+                update: { $set: { ...order } },
+                upsert: true
+              }
+            });
+          }
+
+          if (orderBulkOps.length) {
+            await models.PosOrders.bulkWrite(orderBulkOps);
+          }
+
+          let bulkOps: Array<{
+            updateOne: {
+              filter: { _id: string };
+              update: any;
+              upsert: true;
+            };
+          }> = [];
+
+          for (const putResponse of putResponses) {
+            putResponseIds.push(putResponse._id);
+            bulkOps.push({
+              updateOne: {
+                filter: { _id: putResponse._id },
+                update: { $set: { ...putResponse } },
+                upsert: true
+              }
+            });
+          }
+
+          if (bulkOps.length) {
+            await models.PutResponses.bulkWrite(bulkOps)
+          }
+
+          return { resOrderIds, putResponseIds }
+        } catch (e) {
+          return { error: e.message }
+        }
+      }
     }
   ]
 };
