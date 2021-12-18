@@ -173,7 +173,7 @@ const posOrdersSchema = {
   createdAt: { type: Date },
   status: { type: String, label: 'Status of the order' },
   paidDate: { type: Date, label: 'Paid date' },
-  number: { type: String, label: 'Order number', unique: true },
+  number: { type: String, label: 'Order number' },
   customerId: { type: String, label: 'Customer' },
   cardAmount: { type: Number },
   cashAmount: { type: Number },
