@@ -166,6 +166,7 @@ const getCustomersData = async (models) => {
     status: { $ne: 'deleted' }
   }).sort({ state: 1 }).lean();
 }
+
 export default {
   routes: [
     {
