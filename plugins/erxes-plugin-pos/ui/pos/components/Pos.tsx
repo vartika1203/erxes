@@ -65,7 +65,8 @@ class Pos extends React.Component<Props, State> {
       },
       logo: '/images/erxes.png',
       bgImage: '',
-      favIcon: '/images/erxes.png'
+      favIcon: '/images/erxes.png',
+      receiptIcon: '/images/erxes.png'
     };
 
     this.state = {

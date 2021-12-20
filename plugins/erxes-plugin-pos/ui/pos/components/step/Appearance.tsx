@@ -27,6 +27,7 @@ export interface IUIOptions {
   logo: string;
   bgImage: string;
   favIcon: string;
+  receiptIcon: string;
 }
 
 type Props = {
@@ -51,6 +52,7 @@ class Appearance extends React.Component<Props, State> {
       logo: '',
       favIcon: '',
       bgImage: '',
+      receiptIcon: '',
     };
 
     this.state = { uiOptions };
@@ -140,6 +142,11 @@ class Appearance extends React.Component<Props, State> {
               {this.renderUploadImage(
                 "favIcon",
                 "Favicon",
+                "16x16px transparent PNG"
+              )}
+              {this.renderUploadImage(
+                "receiptIcon",
+                "Receipt icon",
                 "16x16px transparent PNG"
               )}
             </AppearanceRow>
