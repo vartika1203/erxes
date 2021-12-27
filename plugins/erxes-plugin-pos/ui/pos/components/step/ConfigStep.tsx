@@ -134,6 +134,8 @@ export default class ConfigStep extends React.Component<Props, State> {
   renderMapping(mapping: CatProd) {
     const { productCategories, products, pos, onChange } = this.props;
 
+    const cleanFields = (cat: CatProd) => ({ _id: cat._id, categoryId: cat.categoryId, productId: cat.productId });
+
     // for omitting react __typename field
     const mappings = this.state.mappings.map(m => 
       ({ _id: m._id, categoryId: m.categoryId, productId: m.productId })
@@ -141,11 +143,12 @@ export default class ConfigStep extends React.Component<Props, State> {
 
     const editMapping = (item: CatProd) => {
       const index = mappings.findIndex(i => i._id === item._id);
+      const cleanItem = cleanFields(item);
 
       if (index !== -1) {
-        mappings[index] = item;
+        mappings[index] = cleanItem;
       } else {
-        mappings.push(item);
+        mappings.push(cleanItem);
       }
 
       this.setState({ mappings });

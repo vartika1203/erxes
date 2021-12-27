@@ -104,6 +104,10 @@ class Pos extends React.Component<Props, State> {
       return Alert.error('Choose cashier users');
     }
 
+    const cleanMappings = (pos.catProdMappings || []).map(
+      m => ({ _id: m._id, categoryId: m.categoryId, productId: m.productId })
+    );
+
     const doc = {
       name: pos.name,
       brandId: brand,
@@ -119,7 +123,7 @@ class Pos extends React.Component<Props, State> {
       formIntegrationIds: pos.formIntegrationIds,
       uiOptions,
       ebarimtConfig,
-      catProdMappings: pos.catProdMappings
+      catProdMappings: cleanMappings
     };
 
     this.props.save(doc);
