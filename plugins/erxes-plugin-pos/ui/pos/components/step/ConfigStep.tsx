@@ -42,12 +42,12 @@ export default class ConfigStep extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { groups = [], catProdMappings = [] } = props;
+    const { groups = [], pos } = props;
 
     this.state = {
       groups,
       currentMode: undefined,
-      mappings: catProdMappings
+      mappings: pos && pos.catProdMappings ? pos.catProdMappings : []
     };
   }
 
@@ -179,6 +179,7 @@ export default class ConfigStep extends React.Component<Props, State> {
 
   render() {
     const { groups } = this.props;
+    const { mappings = [] } = this.state;
 
     const groupTrigger = (
       <Button btnStyle="primary" icon="plus-circle">
@@ -187,7 +188,7 @@ export default class ConfigStep extends React.Component<Props, State> {
     );
 
     const onClick = () => {
-      const m = this.state.mappings.slice();
+      const m = mappings.slice();
 
       m.push({
         _id: Math.random().toString(),
@@ -217,7 +218,7 @@ export default class ConfigStep extends React.Component<Props, State> {
                 with "take" option, then the mapped product will be added to the price.
               </Description>
               <FormGroup>
-                {this.state.mappings.map(item => this.renderMapping(item))}
+                {mappings.map(item => this.renderMapping(item))}
               </FormGroup>
               <Button btnStyle="primary" icon="plus-circle" onClick={onClick}>
                 Add mapping
