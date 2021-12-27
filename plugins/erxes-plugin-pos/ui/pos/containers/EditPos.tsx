@@ -1,8 +1,12 @@
 import * as compose from 'lodash.flowright';
 import gql from 'graphql-tag';
-import Pos from '../components/Pos';
 import React from 'react';
 import { Alert, Spinner, withProps } from 'erxes-ui';
+import { queries as productQueries } from 'erxes-ui/lib/products/graphql';
+import { IRouterProps } from 'erxes-ui/lib/types';
+import { graphql } from 'react-apollo';
+
+import Pos from '../components/Pos';
 import {
   EditPosMutationResponse,
   GroupsBulkInsertMutationResponse,
@@ -11,12 +15,9 @@ import {
   IntegrationMutationVariables,
   IntegrationsQueryResponse,
   IProductGroup,
-  PosDetailQueryResponse,
-  SchemaLabelsQueryResponse
+  PosDetailQueryResponse
 } from '../../types';
-import { graphql } from 'react-apollo';
-import { IPos } from '../../types';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import { IPos, ProductCategoriesQueryResponse, ProductsQueryResponse } from '../../types';
 import { mutations, queries } from '../graphql';
 import { PLUGIN_URL } from '../../constants';
 
@@ -34,7 +35,8 @@ type FinalProps = {
   posDetailQuery: PosDetailQueryResponse;
   groupsQuery: GroupsQueryResponse;
   integrationsQuery: IntegrationsQueryResponse;
-  schemaLabelsQuery: SchemaLabelsQueryResponse;
+  productsQuery: ProductsQueryResponse;
+  productCategoriesQuery: ProductCategoriesQueryResponse;
 } & Props &
   EditPosMutationResponse &
   GroupsBulkInsertMutationResponse &
@@ -55,20 +57,21 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       productGroupsBulkInsertMutation,
       history,
       integrationsQuery,
-      schemaLabelsQuery
+      productsQuery,
+      productCategoriesQuery
     } = this.props;
 
     const pos = posDetailQuery.posDetail || {} as IPos;
     const groups = groupsQuery.productGroups || [];
     const integration = pos.integration || {};
     const formIntegrations = integrationsQuery.integrations || [];
-    const productSchemas = schemaLabelsQuery.getDbSchemaLabels || [];
 
     if (
       posDetailQuery.loading ||
       groupsQuery.loading ||
       integrationsQuery.loading ||
-      schemaLabelsQuery.loading
+      productsQuery.loading ||
+      productCategoriesQuery.loading
     ) {
       return <Spinner objective={true} />;
     }
@@ -122,7 +125,8 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       save,
       isActionLoading: this.state.isLoading,
       currentMode: 'update',
-      productSchemas
+      products: productsQuery.products,
+      productCategories: productCategoriesQuery.productCategories
     };
 
     return <Pos {...updatedProps} />;
@@ -165,11 +169,6 @@ export default withProps<FinalProps>(
       name: 'productGroupsBulkInsertMutation'
     }),
 
-    graphql<Props, SchemaLabelsQueryResponse>(gql(queries.getDbSchemaLabels), {
-      name: 'schemaLabelsQuery',
-      options: () => ({ variables: { type: 'product' } })
-    }),
-
     graphql<Props, IntegrationsQueryResponse>(gql(queries.integrations), {
       name: 'integrationsQuery',
       options: () => ({
@@ -179,5 +178,20 @@ export default withProps<FinalProps>(
         }
       })
     }),
+    graphql<Props, ProductCategoriesQueryResponse>(
+      gql(productQueries.productCategories),
+      {
+        name: 'productCategoriesQuery',
+        options: () => ({
+          fetchPolicy: 'network-only'
+        })
+      }
+    ),
+    graphql<Props, ProductsQueryResponse>(gql(productQueries.products), {
+      name: 'productsQuery',
+      options: () => ({
+        fetchPolicy: 'network-only'
+      })
+    })
   )(EditPosContainer)
 );

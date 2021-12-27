@@ -9,6 +9,8 @@ import {
 } from "erxes-ui";
 import { LeftItem } from "erxes-ui/lib/components/step/styles";
 import React from "react";
+import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
+
 import {
   ActionButtons,
   Description,
@@ -17,35 +19,49 @@ import {
   Block,
   BlockRow,
 } from "../../../styles";
-import Select from "react-select-plus";
-import { IPos, IProductGroup, IProductShema } from "../../../types";
-import GroupForm from "../../containers/productGroup/GroupForm";
+import { IPos, IProductGroup, CatProd } from "../../../types";
+import GroupForm from "../../components/productGroup/GroupForm";
 
 type Props = {
   onChange: (name: "pos" | "description" | "groups", value: any) => void;
   pos?: IPos;
   groups: IProductGroup[];
-  productSchemas: IProductShema[];
+  catProdMappings: CatProd[];
+  products: IProduct[];
+  productCategories: IProductCategory[];
 };
 
 type State = {
   groups: IProductGroup[];
   currentMode: "create" | "update" | undefined;
+  mappings: CatProd[];
 };
 
 class OptionsStep extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const { groups = [], catProdMappings = [] } = props;
+
     this.state = {
-      groups: this.props.groups,
+      groups,
       currentMode: undefined,
+      mappings: catProdMappings
     };
   }
 
-  onChangeFunction = (name: any, value: any) => {
-    this.props.onChange(name, value);
-  };
+  onMappingChange(item: CatProd) {
+    const mappings = this.state.mappings.map(m => {
+      if (m._id === item._id) {
+        m.categoryId = item.categoryId;
+        m.productId = item.productId;
+      }
+
+      return m;
+    });
+
+    this.props.onChange('catProdMappings', mappings);
+  }
 
   onSubmitGroup = (group: IProductGroup) => {
     const { groups } = this.state;
@@ -58,12 +74,35 @@ class OptionsStep extends React.Component<Props, State> {
       groups.push(group);
     }
 
-    this.onChangeFunction("groups", groups);
+    this.props.onChange('groups', groups);
   };
 
-  renderFormTrigger(trigger: React.ReactNode, group?: IProductGroup) {
+  onSaveMapping(item: CatProd) {
+    const { mappings } = this.state;
+    const { onChange } = this.props;
+
+    const index = mappings.findIndex(m => m._id === item._id);
+
+    if (index !== -1) {
+      mappings[index] = item;
+    } else {
+      mappings.push(item);
+    }
+
+    onChange('catProdMappings', mappings);
+  }
+
+  renderGroupFormTrigger(trigger: React.ReactNode, group?: IProductGroup) {
+    const { productCategories, products } = this.props;
+
     const content = (props) => (
-      <GroupForm {...props} group={group} onSubmit={this.onSubmitGroup} />
+      <GroupForm
+        {...props}
+        group={group}
+        onSubmit={this.onSubmitGroup}
+        categories={productCategories}
+        products={products}
+      />
     );
 
     const title = group ? "Edit group" : "Add group";
@@ -80,7 +119,7 @@ class OptionsStep extends React.Component<Props, State> {
       </Button>
     );
 
-    return this.renderFormTrigger(trigger, group);
+    return this.renderGroupFormTrigger(trigger, group);
   }
 
   renderRemoveAction(group: IProductGroup) {
@@ -90,8 +129,9 @@ class OptionsStep extends React.Component<Props, State> {
       groups = groups.filter((e) => e._id !== group._id);
 
       this.setState({ groups });
-      this.onChangeFunction("groups", groups);
+      this.props.onChange("groups", groups);
     };
+
     return (
       <Button btnStyle="link" onClick={remove} style={{ float: "right" }}>
         <Tip text={__("Remove")} placement="bottom">
@@ -101,7 +141,7 @@ class OptionsStep extends React.Component<Props, State> {
     );
   }
 
-  renderGroup(group) {
+  renderGroup(group: IProductGroup) {
     return (
       <FormGroup key={group._id}>
         <BlockRow>
@@ -119,16 +159,9 @@ class OptionsStep extends React.Component<Props, State> {
   }
 
   render() {
-    const { pos, productSchemas, groups } = this.props;
+    const { groups } = this.props;
 
-    const onChangeDetail = (options) => {
-      pos.productDetails = options.map((e) => e.value);
-      this.onChangeFunction("pos", pos);
-    };
-
-    const productDetails = pos ? pos.productDetails || [] : [];
-
-    const trigger = (
+    const groupTrigger = (
       <Button btnStyle="primary" icon="plus-circle">
         Add group
       </Button>
@@ -139,30 +172,22 @@ class OptionsStep extends React.Component<Props, State> {
         <FlexColumn>
           <LeftItem>
             <Block>
-              <h4>{__("Default Settings")}</h4>
-              <FormGroup>
-                <ControlLabel>Product Details</ControlLabel>
-                <Description>
-                  Select pos to display in the product card.
-                </Description>
-                <Select
-                  options={productSchemas.map((e) => ({
-                    label: e.label,
-                    value: e.name,
-                  }))}
-                  value={productDetails}
-                  onChange={onChangeDetail}
-                  multi={true}
-                />
-              </FormGroup>
-            </Block>
-            <Block>
               <h4>{__("Product Groups")}</h4>
               <FormGroup>
                 {groups.map((group) => this.renderGroup(group))}
               </FormGroup>
 
-              {this.renderFormTrigger(trigger)}
+              {this.renderGroupFormTrigger(groupTrigger)}
+            </Block>
+            <Block>
+              <h4>{__("Product & category mappings")}</h4>
+              <Description>
+                Map a product to category. When a product within that category is sold in pos system
+                with "take" option, then the mapped product will be added to the price.
+              </Description>
+              <FormGroup>
+                {/* {this.state.mappings.map(item => this.renderMapping(item))} */}
+              </FormGroup>  
             </Block>
           </LeftItem>
         </FlexColumn>

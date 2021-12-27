@@ -3,7 +3,6 @@ import { IPOS } from './types';
 /**
  * pos
  */
-
 export const posSChema = {
   _id: { pkey: true },
   name: { type: String, label: 'Name' },
@@ -22,7 +21,8 @@ export const posSChema = {
   formIntegrationIds: { type: [String], label: 'Form integration ids' },
   token: { type: String, label: 'Pos token' },
   ebarimtConfig: { type: Object, label: 'Ebarimt Config' },
-  syncInfos: { type: Object, label: 'sync info' }
+  syncInfos: { type: Object, label: 'sync info' },
+  catProdMappings: { type: [Object], label: 'Category product mappings', optional: true }
 };
 
 class Pos {

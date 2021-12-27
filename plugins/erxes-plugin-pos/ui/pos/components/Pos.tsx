@@ -14,7 +14,9 @@ import {
 } from 'erxes-ui';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IIntegration, IPos, IProductGroup, IProductShema } from '../../types';
+import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
+
+import { IIntegration, IPos, IProductGroup } from '../../types';
 import { LeftContent, Content } from '../../styles';
 import ConfigStep from './step/ConfigStep';
 import GeneralStep from './step/GeneralStep';
@@ -30,8 +32,9 @@ type Props = {
   isReadyToSaveForm: boolean;
   groups: IProductGroup[];
   formIntegrations: IIntegration[];
-  productSchemas: IProductShema[];
   save: (params: any) => void;
+  productCategories: IProductCategory[];
+  products: IProduct[];
 };
 
 type State = {
@@ -86,7 +89,7 @@ class Pos extends React.Component<Props, State> {
     const { brand, pos, groups, uiOptions, ebarimtConfig } = this.state;
 
     if (!pos.name) {
-      return Alert.error('Enter a Pos name');
+      return Alert.error('Enter POS name');
     }
 
     if (!brand) {
@@ -94,11 +97,11 @@ class Pos extends React.Component<Props, State> {
     }
 
     if (!pos.adminIds || !pos.adminIds.length) {
-      return Alert.error('Choose a admin users');
+      return Alert.error('Choose admin users');
     }
 
     if (!pos.cashierIds || !pos.cashierIds.length) {
-      return Alert.error('Choose a cashier users');
+      return Alert.error('Choose cashier users');
     }
 
     const doc = {
@@ -115,7 +118,8 @@ class Pos extends React.Component<Props, State> {
       formSectionTitle: pos.formSectionTitle,
       formIntegrationIds: pos.formIntegrationIds,
       uiOptions,
-      ebarimtConfig
+      ebarimtConfig,
+      catProdMappings: pos.catProdMappings
     };
 
     this.props.save(doc);
@@ -127,7 +131,7 @@ class Pos extends React.Component<Props, State> {
 
   onChangeAppearance = (key: string, value: any) => {
     let uiOptions = this.state.uiOptions || {};
-    let { pos } = this.state || {};
+    const { pos } = this.state || {};
     uiOptions[key] = value;
 
     if (uiOptions[key]) {
@@ -199,8 +203,8 @@ class Pos extends React.Component<Props, State> {
   };
 
   render() {
-    const { pos, groups, currentMode, uiOptions } = this.state;
-    const { integration, formIntegrations } = this.props;
+    const { pos, groups, currentMode, uiOptions, catProdMappings } = this.state;
+    const { integration, formIntegrations, productCategories, products } = this.props;
     const brand = integration && integration.brand;
     const breadcrumb = [
       { title: 'POS List', link: `${PLUGIN_URL}/pos` },
@@ -238,9 +242,9 @@ class Pos extends React.Component<Props, State> {
                   onChange={this.onChange}
                   pos={pos}
                   groups={groups}
-                  productSchemas={this.props.productSchemas.filter(
-                    e => e.label !== ''
-                  )}
+                  catProdMappings={catProdMappings}
+                  productCategories={productCategories}
+                  products={products}
                 />
               </Step>
               <Step
@@ -278,7 +282,7 @@ class Pos extends React.Component<Props, State> {
         </Content>
       </StepWrapper>
     );
-  }
+  } // end render()
 }
 
 export default Pos;

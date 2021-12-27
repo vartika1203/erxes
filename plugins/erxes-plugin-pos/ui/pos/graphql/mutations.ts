@@ -22,6 +22,7 @@ const commonFields = `
   $formSectionTitle: String
   $formIntegrationIds: [String]
   $ebarimtConfig: JSON
+  $catProdMappings: [CatProdInput]
 `;
 
 const commonVariables = `
@@ -38,17 +39,22 @@ const commonVariables = `
   formSectionTitle: $formSectionTitle
   formIntegrationIds: $formIntegrationIds
   ebarimtConfig: $ebarimtConfig
+  catProdMappings: $catProdMappings
+`;
+
+const commonPosFields = `
+  _id
+  name
+  description
+  createdAt
+  integrationId
+  productDetails
 `;
 
 const posAdd = `
   mutation posAdd(${commonFields}) {
     posAdd(${commonVariables}){
-      _id
-      name
-      description
-      createdAt
-      integrationId
-      productDetails
+      ${commonPosFields}
     }
   }
 `;
@@ -56,12 +62,7 @@ const posAdd = `
 const posEdit = `
   mutation posEdit($_id: String, ${commonFields}) {
     posEdit(_id: $_id, ${commonVariables}){
-      _id
-      name
-      description
-      createdAt
-      integrationId
-      productDetails
+      ${commonPosFields}
     }
   }
 `;

@@ -5,7 +5,12 @@ import { ITag } from 'erxes-ui/lib/tags/types';
 
 export type IConfigsMap = { [key: string]: any };
 
-// types
+export type CatProd = {
+  _id: string;
+  categoryId: string;
+  productId: string;
+}
+
 export type IProductGroup = {
   _id: string;
   name: string;
@@ -42,6 +47,7 @@ export type IPos = {
   formSectionTitle?: string;
   formIntegrationIds: string[];
   ebarimtConfig: any;
+  catProdMappings: [CatProd];
 };
 
 // query types

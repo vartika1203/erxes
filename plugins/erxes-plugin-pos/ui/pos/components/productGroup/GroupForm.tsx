@@ -11,7 +11,7 @@ type Props = {
   onDelete: (group: IProductGroup) => void;
   closeModal: () => void;
   mode: 'create' | 'update';
-  categories: any[];
+  categories: IProductCategory[];
   products: IProduct[];
 };
 

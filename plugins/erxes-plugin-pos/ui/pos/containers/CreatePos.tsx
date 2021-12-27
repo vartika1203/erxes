@@ -3,6 +3,8 @@ import * as compose from 'lodash.flowright';
 import { Alert, withProps, Spinner } from 'erxes-ui';
 import React from 'react';
 import { graphql } from 'react-apollo';
+import { queries as productQueries } from 'erxes-ui/lib/products/graphql';
+
 import {
   AddPosMutationResponse,
   GroupsBulkInsertMutationResponse,
@@ -10,7 +12,8 @@ import {
   IntegrationsQueryResponse,
   IProductGroup,
   IRouterProps,
-  SchemaLabelsQueryResponse
+  ProductCategoriesQueryResponse,
+  ProductsQueryResponse
 } from '../../types';
 import { PLUGIN_URL } from '../../constants';
 import Pos from '../components/Pos';
@@ -18,7 +21,8 @@ import { queries, mutations } from '../graphql';
 
 type Props = {
   integrationsQuery: IntegrationsQueryResponse;
-  schemaLabelsQuery: SchemaLabelsQueryResponse;
+  productsQuery: ProductsQueryResponse;
+  productCategoriesQuery: ProductCategoriesQueryResponse;
 } & IRouterProps &
   AddPosMutationResponse &
   GroupsBulkInsertMutationResponse;
@@ -30,6 +34,7 @@ type State = {
 class CreatePosContainer extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+
     this.state = { isLoading: false };
   }
 
@@ -39,13 +44,13 @@ class CreatePosContainer extends React.Component<Props, State> {
       history,
       integrationsQuery,
       productGroupsBulkInsertMutation,
-      schemaLabelsQuery
+      productCategoriesQuery,
+      productsQuery
     } = this.props;
 
     const formIntegrations = integrationsQuery.integrations || [];
-    const productSchemas = schemaLabelsQuery.getDbSchemaLabels || [];
 
-    if (integrationsQuery.loading || schemaLabelsQuery.loading) {
+    if (integrationsQuery.loading || productCategoriesQuery.loading || productsQuery.loading) {
       return <Spinner objective={true} />;
     }
 
@@ -94,7 +99,8 @@ class CreatePosContainer extends React.Component<Props, State> {
       save,
       currentMode: 'create',
       isActionLoading: this.state.isLoading,
-      productSchemas
+      productCategories: productCategoriesQuery.productCategories,
+      products: productsQuery.products
     };
 
     return <Pos {...updatedProps} />;
@@ -109,11 +115,6 @@ export default withProps<Props>(
         name: 'addPosMutation'
       }
     ),
-
-    graphql<Props, SchemaLabelsQueryResponse>(gql(queries.getDbSchemaLabels), {
-      name: 'schemaLabelsQuery',
-      options: () => ({ variables: { type: 'product' } })
-    }),
 
     graphql<
       {},
@@ -132,5 +133,20 @@ export default withProps<Props>(
         }
       })
     }),
+    graphql<Props, ProductCategoriesQueryResponse>(
+      gql(productQueries.productCategories),
+      {
+        name: 'productCategoriesQuery',
+        options: () => ({
+          fetchPolicy: 'network-only'
+        })
+      }
+    ),
+    graphql<Props, ProductsQueryResponse>(gql(productQueries.products), {
+      name: 'productsQuery',
+      options: () => ({
+        fetchPolicy: 'network-only'
+      })
+    })
   )(CreatePosContainer)
 );

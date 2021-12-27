@@ -57,12 +57,27 @@ const posCommonFields = `
   formSectionTitle
   formIntegrationIds
   ebarimtConfig
+
+  catProdMappings {
+    _id
+    categoryId
+    productId
+  }
+`;
+
+const commonParamDefs = `
+  $page: Int,
+  $perPage: Int
+`;
+
+const commonParams = `
+  page: $page,
+  perPage: $perPage
 `;
 
 const posList = `
   query posList(
-    $page: Int
-    $perPage: Int
+    ${commonParamDefs}
     $brandId: String
     $tag: String
     $status: String
@@ -70,8 +85,7 @@ const posList = `
     $sortDirection: Int
   ) {
     posList(
-      page: $page
-      perPage: $perPage
+      ${commonParams}
       brandId: $brandId
       tag: $tag
       status: $status
@@ -109,8 +123,8 @@ const productGroups = `
 `;
 
 const brands = `
-  query brands($page: Int, $perPage: Int, $searchValue: String) {
-    brands(page: $page, perPage: $perPage, searchValue: $searchValue) {
+  query brands(${commonParamDefs}, $searchValue: String) {
+    brands(${commonParams}, searchValue: $searchValue) {
       _id
       code
       name
@@ -122,8 +136,8 @@ const brands = `
 `;
 
 const integrationsTotalCount = `
-  query integrationsTotalCount($kind: String, $tag: String, $brandId: String, $status: String){
-    integrationsTotalCount(kind:$kind, tag:$tag, brandId: $brandId, status: $status){
+  query integrationsTotalCount($kind: String, $tag: String, $brandId: String, $status: String) {
+    integrationsTotalCount(kind:$kind, tag:$tag, brandId: $brandId, status: $status) {
       byKind
       byTag
       byBrand
@@ -169,8 +183,8 @@ const tags = `
 `;
 
 const integrations = `
-  query integrations($perPage: Int, $page: Int, $kind: String, $tag: String, $brandId: String, $status: String, $sortField: String, $sortDirection: Int) {
-    integrations(perPage: $perPage, page: $page, kind: $kind, tag: $tag, brandId: $brandId, status: $status, sortField: $sortField, sortDirection: $sortDirection) {
+  query integrations(${commonParamDefs}, $kind: String, $tag: String, $brandId: String, $status: String, $sortField: String, $sortDirection: Int) {
+    integrations(${commonParams}, kind: $kind, tag: $tag, brandId: $brandId, status: $status, sortField: $sortField, sortDirection: $sortDirection) {
       _id
       ${commonFields}
     }

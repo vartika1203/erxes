@@ -25,7 +25,17 @@ const posCommonFields = `
   ebarimtConfig: JSON
 `;
 
+const catProd = `
+  _id: String
+  categoryId: String
+  productId: String
+`;
+
 export const types = `
+  type CatProd {
+    ${catProd}
+  }
+
   type Pos {
     _id: String
     createdAt: Date
@@ -34,6 +44,7 @@ export const types = `
     integration: Integration
     user: User
     ${posCommonFields}
+    catProdMappings: [CatProd]
   }
 
   type ProductGroups {
@@ -53,6 +64,10 @@ export const types = `
     categoryIds: [String]
     excludedCategoryIds: [String]
     excludedProductIds: [String]
+  }
+
+  input CatProdInput {
+    ${catProd}
   }
 
   type PosOrder {
@@ -104,8 +119,8 @@ export const queries = `
 `;
 
 export const mutations = `
-  posAdd(${posCommonFields}): Pos
-  posEdit(_id: String ${posCommonFields}): Pos
+  posAdd(${posCommonFields}, catProdMappings: [CatProdInput]): Pos
+  posEdit(_id: String ${posCommonFields}, catProdMappings: [CatProdInput]): Pos
   posRemove(_id: String!): JSON
   productGroupsAdd(${groupCommonFields}): ProductGroups
   productGroupsBulkInsert(posId: String, groups:[GroupInput]): [ProductGroups]
