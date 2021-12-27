@@ -203,7 +203,7 @@ class Pos extends React.Component<Props, State> {
   };
 
   render() {
-    const { pos, groups, currentMode, uiOptions, catProdMappings } = this.state;
+    const { pos, groups, currentMode, uiOptions } = this.state;
     const { integration, formIntegrations, productCategories, products } = this.props;
     const brand = integration && integration.brand;
     const breadcrumb = [
@@ -242,7 +242,7 @@ class Pos extends React.Component<Props, State> {
                   onChange={this.onChange}
                   pos={pos}
                   groups={groups}
-                  catProdMappings={catProdMappings}
+                  catProdMappings={pos.catProdMappings}
                   productCategories={productCategories}
                   products={products}
                 />

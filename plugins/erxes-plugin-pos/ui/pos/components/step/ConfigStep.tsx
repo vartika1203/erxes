@@ -21,6 +21,7 @@ import {
 } from "../../../styles";
 import { IPos, IProductGroup, CatProd } from "../../../types";
 import GroupForm from "../../components/productGroup/GroupForm";
+import CatProdItem from '../../components/productGroup/CatProdItem';
 
 type Props = {
   onChange: (name: "pos" | "description" | "groups", value: any) => void;
@@ -37,7 +38,7 @@ type State = {
   mappings: CatProd[];
 };
 
-class OptionsStep extends React.Component<Props, State> {
+export default class ConfigStep extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -48,19 +49,6 @@ class OptionsStep extends React.Component<Props, State> {
       currentMode: undefined,
       mappings: catProdMappings
     };
-  }
-
-  onMappingChange(item: CatProd) {
-    const mappings = this.state.mappings.map(m => {
-      if (m._id === item._id) {
-        m.categoryId = item.categoryId;
-        m.productId = item.productId;
-      }
-
-      return m;
-    });
-
-    this.props.onChange('catProdMappings', mappings);
   }
 
   onSubmitGroup = (group: IProductGroup) => {
@@ -76,21 +64,6 @@ class OptionsStep extends React.Component<Props, State> {
 
     this.props.onChange('groups', groups);
   };
-
-  onSaveMapping(item: CatProd) {
-    const { mappings } = this.state;
-    const { onChange } = this.props;
-
-    const index = mappings.findIndex(m => m._id === item._id);
-
-    if (index !== -1) {
-      mappings[index] = item;
-    } else {
-      mappings.push(item);
-    }
-
-    onChange('catProdMappings', mappings);
-  }
 
   renderGroupFormTrigger(trigger: React.ReactNode, group?: IProductGroup) {
     const { productCategories, products } = this.props;
@@ -158,6 +131,39 @@ class OptionsStep extends React.Component<Props, State> {
     );
   }
 
+  renderMapping(mapping: CatProd) {
+    const { mappings } = this.state;
+    const { productCategories, products, pos, onChange } = this.props;
+
+    
+    const editMapping = (item: CatProd) => {
+      const index = mappings.findIndex(i => i._id === item._id);
+
+      if (index !== -1) {
+        mappings[index] = item;
+      } else {
+        mappings.push(item);
+      }
+
+      this.setState({ mappings });
+
+      // for omitting react __typename field
+      pos.catProdMappings = mappings.map(m => ({ _id: m._id, categoryId: m.categoryId, productId: m.productId }));
+
+      onChange('pos', pos);
+    };
+
+    return (
+      <CatProdItem
+        editMapping={editMapping}
+        item={mapping}
+        productCategories={productCategories}
+        products={products}
+        key={mapping._id}
+      />
+    );
+  }
+
   render() {
     const { groups } = this.props;
 
@@ -166,6 +172,18 @@ class OptionsStep extends React.Component<Props, State> {
         Add group
       </Button>
     );
+
+    const onClick = () => {
+      const m = this.state.mappings.slice();
+
+      m.push({
+        _id: Math.random().toString(),
+        categoryId: '',
+        productId: ''
+      });
+
+      this.setState({ mappings: m });
+    };
 
     return (
       <FlexItem>
@@ -186,14 +204,15 @@ class OptionsStep extends React.Component<Props, State> {
                 with "take" option, then the mapped product will be added to the price.
               </Description>
               <FormGroup>
-                {/* {this.state.mappings.map(item => this.renderMapping(item))} */}
-              </FormGroup>  
+                {this.state.mappings.map(item => this.renderMapping(item))}
+              </FormGroup>
+              <Button btnStyle="primary" icon="plus-circle" onClick={onClick}>
+                Add mapping
+              </Button>
             </Block>
           </LeftItem>
         </FlexColumn>
       </FlexItem>
     );
-  }
+  } // end render()
 }
-
-export default OptionsStep;
