@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select-plus';
-import { FormGroup, ControlLabel } from 'erxes-ui';
+import { FormGroup, ControlLabel, Button } from 'erxes-ui';
 import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
 
 import { FlexRow } from '../../../styles';
@@ -8,6 +8,7 @@ import { CatProd } from '../../../types';
 
 type Props = {
   editMapping: (item: CatProd) => void;
+  removeMapping: (_id: string) => void;
   key: string;
   item: CatProd;
   productCategories: IProductCategory[];
@@ -32,7 +33,7 @@ export default class CatProdItem extends React.Component<Props, State> {
   }
 
   render() {
-    const { productCategories, products, item, editMapping } = this.props;
+    const { productCategories, products, item, editMapping, removeMapping } = this.props;
     const { productId, categoryId } = this.state;
 
     const onSelectChange = (field: string, option: any) => {
@@ -64,6 +65,7 @@ export default class CatProdItem extends React.Component<Props, State> {
             onChange={(option) => onSelectChange('productId', option)}
           />
         </FormGroup>
+        <Button btnStyle="danger" icon="trash" onClick={() => removeMapping(item._id)} />
       </FlexRow>
     );
   }
