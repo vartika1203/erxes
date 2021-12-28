@@ -88,7 +88,7 @@ class GeneralStep extends React.Component<Props, {}> {
     ];
 
     const valueTitle =
-      waitingScreen.type === "time" ? "Change time (sec)" : "Change count";
+      waitingScreen.type === "time" ? "Change time (min)" : "Change count";
 
     return (
       <FormGroup>
