@@ -145,7 +145,8 @@ export default withProps<Props>(
     graphql<Props, ProductsQueryResponse>(gql(productQueries.products), {
       name: 'productsQuery',
       options: () => ({
-        fetchPolicy: 'network-only'
+        fetchPolicy: 'network-only',
+        variables: { perPage: 100 }
       })
     })
   )(CreatePosContainer)
