@@ -465,6 +465,17 @@ const generateFieldsFromSchema = async (queSchema: any, namePrefix: string) => {
   return fields;
 };
 
+const getPluginConfig = async (pluginName: string, configName: string) => {
+  try {
+    const config = (await import(`../../../../../pls/${pluginName}/api/config`))
+      .default;
+
+    return config[configName];
+  } catch (e) {
+    return null;
+  }
+};
+
 /**
  * Generates all field choices base on given kind.
  */
@@ -530,6 +541,10 @@ export const fieldsCombinedByContentType = async ({
     case 'user':
       schema = Users.schema;
       break;
+
+    default: {
+      schema = await getPluginConfig(contentType, 'schema');
+    }
   }
 
   if (schema) {
