@@ -27,6 +27,7 @@ export type IScreenConfig = {
   isActive: boolean;
   type: string;
   value: number;
+  contentUrl?: string;
 };
 
 export type IPos = {

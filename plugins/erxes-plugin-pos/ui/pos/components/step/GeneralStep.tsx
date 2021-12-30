@@ -18,9 +18,9 @@ import {
   Block,
   BlockRow,
 } from "../../../styles";
-import { IBrand } from "erxes-ui/lib/products/types";
+import { IBrand } from 'erxes-ui/lib/types';
 import SelectBrand from "../../containers/SelectBrand";
-import { IIntegration, IPos } from "../../../types";
+import { IIntegration, IPos, IScreenConfig } from "../../../types";
 import Select from "react-select-plus";
 
 type Props = {
@@ -63,10 +63,17 @@ class GeneralStep extends React.Component<Props, {}> {
       this.onChangeFunction("pos", pos);
     };
 
-    let waitingScreen = {
+    const onChangeContentUrl = (e) => {
+      e.preventDefault();
+      pos.waitingScreen.contentUrl = e.target.value;
+      this.onChangeFunction("pos", pos);
+    };
+
+    let waitingScreen: IScreenConfig = {
       isActive: false,
       type: "time",
       value: 0,
+      contentUrl: ""
     };
 
     let posId;
@@ -76,6 +83,7 @@ class GeneralStep extends React.Component<Props, {}> {
         isActive: false,
         type: "time",
         value: 0,
+        contentUrl: ""
       };
       posId = pos._id;
     }
@@ -147,6 +155,16 @@ class GeneralStep extends React.Component<Props, {}> {
               type="text"
               value={waitingScreen.value}
               onChange={onChangeValue}
+            />
+
+            <br />
+            <ControlLabel>Content Url</ControlLabel>
+
+            <FormControl
+              id="contentUrl"
+              type="text"
+              value={waitingScreen.contentUrl || ''}
+              onChange={onChangeContentUrl}
             />
           </DomainRow>
         )}
