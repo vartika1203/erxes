@@ -1,3 +1,4 @@
+import { Schema } from 'mongoose';
 import {
   Companies,
   Conversations,
@@ -7,6 +8,7 @@ import {
   FieldsGroups,
   Integrations,
   PipelineLabels,
+  Plugins,
   Products,
   Segments,
   Stages,
@@ -20,7 +22,7 @@ import { fetchElk } from '../../../elasticsearch';
 import { EXTEND_FIELDS, FIELD_CONTENT_TYPES } from '../../constants';
 import { getDocumentList } from '../../resolvers/mutations/cacheUtils';
 import { findElk } from '../../resolvers/mutations/engageUtils';
-import { getConfig, isUsingElk } from '../../utils';
+import { getConfig, isUsingElk, sendRequest } from '../../utils';
 import { BOARD_BASIC_INFOS } from '../fileExporter/constants';
 
 const generateBasicInfosFromSchema = async (
@@ -465,14 +467,18 @@ const generateFieldsFromSchema = async (queSchema: any, namePrefix: string) => {
   return fields;
 };
 
-const getPluginConfig = async (pluginName: string, configName: string) => {
-  try {
-    const config = (await import(`../../../../../pls/${pluginName}/api/config`))
-      .default;
+const getPluginConfig = async (_pluginName: string, configName: string) => {
+  const domain = 'http://localhost:9000';
 
-    return config[configName];
+  try {
+    const config = await sendRequest({
+      url: `${domain}/config`,
+      method: 'GET'
+    });
+
+    return config[configName] || '';
   } catch (e) {
-    return null;
+    return '';
   }
 };
 
@@ -543,7 +549,9 @@ export const fieldsCombinedByContentType = async ({
       break;
 
     default: {
-      schema = await getPluginConfig(contentType, 'schema');
+      const schemaData = await getPluginConfig(contentType, 'schema');
+
+      schema = new Schema(schemaData);
     }
   }
 
