@@ -53,6 +53,18 @@ const generateFilterQuery = async (
   return query;
 };
 
+const generateFilterPosQuery = async (
+  models, params, commonQuerySelector
+) => {
+  const query: any = commonQuerySelector;
+
+  if (params.search) {
+    query.number = { $regex: new RegExp(params.search) }
+  }
+
+  return query
+}
+
 const queries = [
   /**
    * all pos list
@@ -99,11 +111,52 @@ const queries = [
 
   {
     name: 'posOrders',
-    handler: async (_root, params, { models }) => {
-      return paginate(models.PosOrders.find(), {
+    handler: async (_root, params, { models, commonQuerySelector }) => {
+      const query = await generateFilterPosQuery(models, params, commonQuerySelector)
+
+      return paginate(models.PosOrders.find(query), {
         page: params.page,
         perPage: params.perPage
       });
+    }
+  },
+  {
+    name: 'posOrdersSummary',
+    handler: async (_root, params, { models, commonQuerySelector }) => {
+      const query = await generateFilterPosQuery(models, params, commonQuerySelector)
+
+      const res = await models.PosOrders.aggregate([
+        { $match: { ...query } },
+        {
+          $project: {
+            cardAmount: '$cardAmount',
+            cashAmount: '$cashAmount',
+            mobileAmount: '$mobileAmount',
+            totalAmount: '$totalAmount',
+            finalAmount: '$finalAmount ',
+          }
+        },
+        {
+          $group: {
+            _id: '',
+            cardAmount: { $sum: '$cardAmount' },
+            cashAmount: { $sum: '$cashAmount' },
+            mobileAmount: { $sum: '$mobileAmount' },
+            totalAmount: { $sum: '$totalAmount' },
+            finalAmount: { $sum: '$finalAmount ' },
+          }
+        }
+      ]);
+
+      if (!res.length) {
+        return {}
+      }
+
+      return {
+        ...res[0],
+        count: await models.PosOrders.find(query).countDocuments()
+      }
+
     }
   }
 ];

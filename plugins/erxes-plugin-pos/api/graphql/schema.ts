@@ -106,6 +106,7 @@ const queryParams = `
   perPage: Int
   sortField: String
   sortDirection: Int
+  search: String
 `;
 
 export const queries = `
@@ -121,6 +122,7 @@ export const queries = `
   productGroups(posId: String!): [ProductGroups]
 
   posOrders(${queryParams}): [PosOrder]
+  posOrdersSummary(${queryParams}): JSON
 `;
 
 export const mutations = `

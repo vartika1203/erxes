@@ -1,3 +1,5 @@
+import { IOrdersSummary } from "../types";
+
 export type IOrder = {
   _id: string,
   createdAt: Date,
@@ -33,5 +35,11 @@ export type OrdersQueryResponse = {
 export type ListQueryVariables = {
   page?: number;
   perPage?: number;
-  searchValue?: string;
+  search?: string;
 };
+
+export type OrdersSummaryQueryResponse = {
+  posOrdersSummary: IOrdersSummary;
+  loading: boolean;
+  refetch: () => void;
+}

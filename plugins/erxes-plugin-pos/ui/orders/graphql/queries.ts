@@ -3,6 +3,7 @@ const listParamsDef = `
   $perPage: Int
   $sortField: String
   $sortDirection: Int
+  $search: String
 `;
 
 const listParamsValue = `
@@ -10,6 +11,7 @@ const listParamsValue = `
   perPage: $perPage
   sortField: $sortField
   sortDirection: $sortDirection
+  search: $search
 `;
 
 const responseFields = `
@@ -45,6 +47,12 @@ const posOrders = `
   }
 `;
 
+const posOrdersSummary = `
+  query posOrdersSummary(${listParamsDef}) {
+    posOrdersSummary(${listParamsValue})
+  }
+`;
+
 const orderDetail = `
   query orderDetail($_id: String) {
     orderDetail(_id: $_id)
@@ -52,5 +60,6 @@ const orderDetail = `
 `
 export default {
   posOrders,
+  posOrdersSummary,
   orderDetail
 };

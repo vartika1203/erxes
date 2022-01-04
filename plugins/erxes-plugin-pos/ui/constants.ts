@@ -45,3 +45,20 @@ export const DISTRICTS = [
   { value: '34', label: 'Сонгинохайрхан' },
   { value: '35', label: 'Чингэлтэй' },
 ]
+
+export const FILTER_PARAMS = [
+  'search',
+  'customerId',
+  'billType',
+  'registerNumber',
+  'type',
+  'createdStartDate',
+  'createdEndDate',
+  'paidStartDate',
+  'paidEndDate',
+  'financeStartDate',
+  'financeEndDate',
+  'payDate',
+  'userId',
+  'hasntUser'
+];

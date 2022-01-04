@@ -235,3 +235,12 @@ export type SchemaLabelsQueryResponse = {
 export type BranchesQueryResponse = {
   branches: any[];
 } & QueryResponse;
+
+export interface IOrdersSummary {
+  cardAmount: number;
+  cashAmount: number;
+  mobileAmount: number;
+  totalAmount: number;
+  finalAmount: number;
+  count: number;
+};

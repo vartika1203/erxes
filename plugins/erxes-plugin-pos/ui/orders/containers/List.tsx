@@ -1,16 +1,15 @@
-import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { Bulk, withProps, router, } from 'erxes-ui';
+import gql from 'graphql-tag';
+import List from '../components/List';
+import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
 import { IRouterProps } from 'erxes-ui/lib/types';
-import List from '../components/List';
+import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse } from '../types';
 import { queries } from '../graphql';
-import {
-  ListQueryVariables,
-  OrdersQueryResponse
-} from '../types';
+import { withRouter } from 'react-router-dom';
+import { Bulk, withProps, router, } from 'erxes-ui';
+import { FILTER_PARAMS } from '../../constants';
 
 type Props = {
   queryParams: any;
@@ -19,11 +18,16 @@ type Props = {
 
 type FinalProps = {
   ordersQuery: OrdersQueryResponse;
+  ordersSummaryQuery: OrdersSummaryQueryResponse
 } & Props &
   IRouterProps;
 
 type State = {
   loading: boolean;
+};
+
+const generateQueryParams = ({ location }) => {
+  return queryString.parse(location.search);
 };
 
 class OrdersContainer extends React.Component<FinalProps, State> {
@@ -35,20 +39,59 @@ class OrdersContainer extends React.Component<FinalProps, State> {
     };
   }
 
+  onSearch = (search: string) => {
+    if (!search) {
+      return router.removeParams(this.props.history, 'search');
+    }
+
+    router.setParams(this.props.history, { search });
+  };
+
+  onSelect = (values: string[] | string, key: string) => {
+    const params = generateQueryParams(this.props.history);
+
+    if (params[key] === values) {
+      return router.removeParams(this.props.history, key);
+    }
+
+    return router.setParams(this.props.history, { [key]: values });
+  };
+
+  isFiltered = (): boolean => {
+    const params = generateQueryParams(this.props.history);
+
+    for (const param in params) {
+      if (FILTER_PARAMS.includes(param)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  clearFilter = () => {
+    const params = generateQueryParams(this.props.history);
+    router.removeParams(this.props.history, ...Object.keys(params));
+  };
+
   render() {
     const {
       ordersQuery,
-      history
+      ordersSummaryQuery
     } = this.props;
 
-    const searchValue = this.props.queryParams.searchValue || '';
     const list = ordersQuery.posOrders || [];
 
     const updatedProps = {
       ...this.props,
-      searchValue,
       orders: list,
       loading: ordersQuery.loading,
+
+      onSelect: this.onSelect,
+      onSearch: this.onSearch,
+      isFiltered: this.isFiltered(),
+      clearFilter: this.clearFilter,
+      summaryQuery: ordersSummaryQuery
     };
 
     const ordersList = props => {
@@ -69,7 +112,8 @@ const generateParams = ({ queryParams }) => ({
     sortField: queryParams.sortField,
     sortDirection: queryParams.sortDirection
       ? parseInt(queryParams.sortDirection, 10)
-      : undefined
+      : undefined,
+    search: queryParams.search
   },
   fetchPolicy: 'network-only'
 });
@@ -80,6 +124,13 @@ export default withProps<Props>(
       gql(queries.posOrders),
       {
         name: 'ordersQuery',
+        options: generateParams
+      }
+    ),
+    graphql<{ queryParams: any }, OrdersSummaryQueryResponse, ListQueryVariables>(
+      gql(queries.posOrdersSummary),
+      {
+        name: 'ordersSummaryQuery',
         options: generateParams
       }
     ),

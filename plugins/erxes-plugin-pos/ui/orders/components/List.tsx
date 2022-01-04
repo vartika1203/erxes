@@ -7,49 +7,33 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { TableWrapper } from '../../styles';
-import { IOrder } from '../types';
+import { IOrder, OrdersSummaryQueryResponse } from '../types';
+import HeaderDescription from './MainHead';
+import RightMenu from './RightMenu';
 import Row from './Row';
 
 interface IProps extends IRouterProps {
   orders: IOrder[];
   loading: boolean;
-  searchValue: string;
   totalCount: number;
   bulk: any[];
   isAllSelected: boolean;
   history: any;
   queryParams: any;
+
+  onSearch: (search: string) => void;
+  onSelect: (values: string[] | string, key: string) => void;
+  isFiltered: boolean;
+  clearFilter: () => void;
+  summaryQuery: OrdersSummaryQueryResponse;
 }
 
-type State = {
-  searchValue?: string;
-};
-
-class Orders extends React.Component<IProps, State> {
+class Orders extends React.Component<IProps, {}> {
   private timer?: NodeJS.Timer = undefined;
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      searchValue: this.props.searchValue
-    };
   }
-
-  search = e => {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-
-    const { history } = this.props;
-    const searchValue = e.target.value;
-
-    this.setState({ searchValue });
-    this.timer = setTimeout(() => {
-      router.removeParams(history, 'page');
-      router.setParams(history, { searchValue });
-    }, 500);
-  };
 
   moveCursorAtTheEnd = e => {
     const tmpValue = e.target.value;
@@ -63,8 +47,40 @@ class Orders extends React.Component<IProps, State> {
       history,
       loading,
       totalCount,
-      queryParams
+      queryParams,
+      onSelect,
+      onSearch,
+      isFiltered,
+      clearFilter,
+      summaryQuery
     } = this.props;
+
+    let actionBarLeft: React.ReactNode;
+
+    const rightMenuProps = {
+      onSelect,
+      onSearch,
+      isFiltered,
+      clearFilter,
+      queryParams,
+    };
+
+    const actionBarRight = (
+      <BarItems>
+        <RightMenu {...rightMenuProps} />
+      </BarItems>
+    );
+
+
+    const header = (
+      <HeaderDescription
+        icon="/images/actions/26.svg"
+        title={__('Summary')}
+        summaryQuery={summaryQuery}
+        actionBar={actionBarRight}
+      />
+    );
+
     const mainContent = (
       <TableWrapper>
         <Table whiteSpace="nowrap" bordered={true} hover={true}>
@@ -97,26 +113,6 @@ class Orders extends React.Component<IProps, State> {
       </TableWrapper>
     );
 
-    let actionBarLeft: React.ReactNode;
-
-    const actionBarRight = (
-      <BarItems>
-        <FormControl
-          type="text"
-          placeholder={__('Type to search')}
-          onChange={this.search}
-          value={this.state.searchValue}
-          autoFocus={true}
-          onFocus={this.moveCursorAtTheEnd}
-        />
-
-      </BarItems>
-    );
-
-    const actionBar = (
-      <Wrapper.ActionBar right={actionBarRight} left={actionBarLeft} />
-    );
-
     const menuPos = [
       { title: 'Put Response', link: '/erxes-plugin-ebarimt/put-responses' },
       { title: 'Pos Orders', link: '/erxes-plugin-pos/pos-orders' }
@@ -131,7 +127,7 @@ class Orders extends React.Component<IProps, State> {
             submenu={menuPos}
           />
         }
-        actionBar={actionBar}
+        mainHead={header}
         footer={<Pagination count={totalCount} />}
         content={
           <DataWithLoader
