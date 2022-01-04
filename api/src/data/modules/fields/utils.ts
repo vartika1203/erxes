@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose';
 import {
   Companies,
   Conversations,
@@ -8,7 +7,6 @@ import {
   FieldsGroups,
   Integrations,
   PipelineLabels,
-  Plugins,
   Products,
   Segments,
   Stages,
@@ -20,9 +18,10 @@ import {
 import { IFieldGroup } from '../../../db/models/definitions/fields';
 import { fetchElk } from '../../../elasticsearch';
 import { EXTEND_FIELDS, FIELD_CONTENT_TYPES } from '../../constants';
+import { getSchema } from '../../pluginUtils';
 import { getDocumentList } from '../../resolvers/mutations/cacheUtils';
 import { findElk } from '../../resolvers/mutations/engageUtils';
-import { getConfig, isUsingElk, sendRequest } from '../../utils';
+import { getConfig, isUsingElk } from '../../utils';
 import { BOARD_BASIC_INFOS } from '../fileExporter/constants';
 
 const generateBasicInfosFromSchema = async (
@@ -467,21 +466,6 @@ const generateFieldsFromSchema = async (queSchema: any, namePrefix: string) => {
   return fields;
 };
 
-const getPluginConfig = async (_pluginName: string, configName: string) => {
-  const domain = 'http://localhost:9000';
-
-  try {
-    const config = await sendRequest({
-      url: `${domain}/config`,
-      method: 'GET'
-    });
-
-    return config[configName] || '';
-  } catch (e) {
-    return '';
-  }
-};
-
 /**
  * Generates all field choices base on given kind.
  */
@@ -549,9 +533,7 @@ export const fieldsCombinedByContentType = async ({
       break;
 
     default: {
-      const schemaData = await getPluginConfig(contentType, 'schema');
-
-      schema = new Schema(schemaData);
+      schema = await getSchema(contentType);
     }
   }
 
@@ -563,6 +545,7 @@ export const fieldsCombinedByContentType = async ({
       const path = schema.paths[name];
 
       // extend fields list using sub schema fields
+
       if (path.schema) {
         fields = [
           ...fields,

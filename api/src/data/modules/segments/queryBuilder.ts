@@ -12,6 +12,7 @@ import {
 } from '../../../db/models/definitions/constants';
 import { ICondition, ISegment } from '../../../db/models/definitions/segments';
 import { fetchElk } from '../../../elasticsearch';
+import { getPluginConfig } from '../../pluginUtils';
 import { getEsTypes } from '../coc/utils';
 
 type IOptions = {
@@ -54,8 +55,10 @@ export const fetchSegment = async (
 ): Promise<any> => {
   const { contentType } = segment;
 
-  let index = getIndexByContentType(contentType);
-  let selector = { bool: {} };
+  let index = await getIndexByContentType(contentType);
+  let selector = (await getPluginConfig(contentType, 'selector')) || {
+    bool: {}
+  };
 
   await generateQueryBySegment({
     segment,
@@ -72,7 +75,7 @@ export const fetchSegment = async (
 
     const itemsResponse = await fetchElk({
       action: 'search',
-      index: getIndexByContentType(segment.contentType),
+      index: await getIndexByContentType(segment.contentType),
       body: {
         query: selector,
         _source: '_id'
@@ -213,10 +216,14 @@ export const generateQueryBySegment = async (args: {
     });
   }
 
-  const eventPositive: any = [];
-  const eventNegative: any = [];
-  const propertiesPositive: any = [];
-  const propertiesNegative: any = [];
+  const eventPositive: any =
+    (await getPluginConfig(contentType, 'eventPositive')) || [];
+  const eventNegative: any =
+    (await getPluginConfig(contentType, 'eventNegative')) || [];
+  const propertiesPositive: any =
+    (await getPluginConfig(contentType, 'propertiesPositive')) || [];
+  const propertiesNegative: any =
+    (await getPluginConfig(contentType, 'propertiesNegative')) || [];
 
   if (['customer', 'lead', 'visitor'].includes(contentType)) {
     propertiesNegative.push({
@@ -657,8 +664,8 @@ export function elkConvertConditionToQuery(args: {
   return [positiveQuery, negativeQuery];
 }
 
-export const getIndexByContentType = (contentType: string) => {
-  let index = 'customers';
+export const getIndexByContentType = async (contentType: string) => {
+  let index = (await getPluginConfig(contentType, 'index')) || 'customers';
 
   if (contentType === 'company') {
     index = 'companies';
@@ -729,7 +736,8 @@ const associationPropertyFilter = async ({
   positiveQuery: any;
   negativeQuery: any;
 }) => {
-  let associatedTypes: string[] = [];
+  let associatedTypes: string[] =
+    (await getPluginConfig(mainType, 'associatedTypes')) || [];
 
   if (['customer', 'lead'].includes(mainType)) {
     associatedTypes = ['company', 'deal', 'ticket', 'task'];
@@ -753,7 +761,7 @@ const associationPropertyFilter = async ({
 
   if (associatedTypes.includes(propertyType)) {
     const mainTypeIds = await fetchByQuery({
-      index: getIndexByContentType(propertyType),
+      index: await getIndexByContentType(propertyType),
       positiveQuery,
       negativeQuery
     });
