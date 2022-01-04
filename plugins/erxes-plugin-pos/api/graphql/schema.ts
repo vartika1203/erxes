@@ -98,6 +98,9 @@ export const types = `
     items: JSON,
     posToken: String,
     syncId: String,
+
+    posName: String,
+    user: User,
   }
 `;
 

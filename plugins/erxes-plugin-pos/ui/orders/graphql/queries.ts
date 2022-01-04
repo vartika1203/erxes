@@ -37,6 +37,12 @@ const responseFields = `
   items
   posToken
   syncId
+
+  posName
+  user {
+    _id
+    email
+  }
 `;
 
 const posOrders = `

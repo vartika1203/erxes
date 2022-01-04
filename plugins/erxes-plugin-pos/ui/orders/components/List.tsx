@@ -93,7 +93,22 @@ class Orders extends React.Component<IProps, {}> {
                 <SortHandler sortField={'date'} label={__('Date')} />
               </th>
               <th>
-                <SortHandler sortField={'amount'} label={__('Amount')} />
+                <SortHandler sortField={'cashAmount'} label={__('Cash Amount')} />
+              </th>
+              <th>
+                <SortHandler sortField={'cardAmount'} label={__('Card Amount')} />
+              </th>
+              <th>
+                <SortHandler sortField={'mobileAmount'} label={__('Mobile Amount')} />
+              </th>
+              <th>
+                <SortHandler sortField={'totalAmount'} label={__('Amount')} />
+              </th>
+              <th>
+                <SortHandler sortField={'Pos'} label={__('Pos')} />
+              </th>
+              <th>
+                <SortHandler sortField={'User'} label={__('User')} />
               </th>
               <th>
                 Үйлдлүүд

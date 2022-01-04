@@ -1,4 +1,5 @@
 import { IOrdersSummary } from "../types";
+import { IUser } from 'erxes-ui/lib/auth/types';
 
 export type IOrder = {
   _id: string,
@@ -24,6 +25,8 @@ export type IOrder = {
   items: any,
   posToken: string,
   syncId: string,
+  posName: string,
+  user: IUser
 }
 
 export type OrdersQueryResponse = {
