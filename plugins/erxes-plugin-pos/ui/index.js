@@ -1,8 +1,7 @@
 import React from 'react';
 import List from './pos/containers/List';
-import EditPos from './pos/containers/EditPos';
+import PosContainer from './pos/containers/Pos';
 import queryString from 'query-string';
-import CreatePos from './pos/containers/CreatePos';
 import OrderList from './orders/containers/List'
 
 const settingsComponent = ({ location, history }) => {
@@ -11,15 +10,11 @@ const settingsComponent = ({ location, history }) => {
   );
 };
 
-const editPos = ({ match, location, history }) => {
+const posComponent = ({ match, location, history }) => {
   const { posId } = match.params;
   const queryParams = queryString.parse(location.search);
 
-  return <EditPos queryParams={queryParams} posId={posId} history={history} />;
-};
-
-const createPos = ({ match, location, history }) => {
-  return <CreatePos location={location} match={match} history={history} />;
+  return <PosContainer queryParams={queryParams} posId={posId} history={history} />;
 };
 
 const OrderListComponent = ({ location, history }) => {
@@ -39,11 +34,11 @@ export default () => ({
     },
     {
       path: '/pos/edit/:posId',
-      component: editPos
+      component: posComponent
     },
     {
       path: '/pos/create',
-      component: createPos
+      component: posComponent
     },
     {
       path: '/pos-orders',

@@ -17,6 +17,7 @@ import {
   Row,
   Block,
   BlockRow,
+  BlockRowUp,
 } from "../../../styles";
 import { IBrand } from 'erxes-ui/lib/types';
 import SelectBrand from "../../containers/SelectBrand";
@@ -29,11 +30,44 @@ type Props = {
   brand?: IBrand;
   formIntegrations: IIntegration[];
   currentMode: "create" | "update" | undefined;
+  branches: any[];
 };
+
+export const generateTree = (
+  list,
+  parentId,
+  callback,
+  level = -1,
+  parentKey = 'parentId'
+) => {
+  const filtered = list.filter(c => c[parentKey] === parentId);
+
+  if (filtered.length > 0) {
+    level++;
+  } else {
+    level--;
+  }
+
+  return filtered.reduce((tree, node) => {
+    return [
+      ...tree,
+      callback(node, level),
+      ...generateTree(list, node._id, callback, level, parentKey)
+    ];
+  }, []);
+};
+
 
 class GeneralStep extends React.Component<Props, {}> {
   onChangeFunction = (name: any, value: any) => {
     this.props.onChange(name, value);
+  };
+
+  onChangeSwitchIsOnline = (e) => {
+    const { pos } = this.props;
+    pos.isOnline = e.target.checked;
+
+    this.onChangeFunction("pos", pos);
   };
 
   onChangeSwitch = (e) => {
@@ -100,17 +134,6 @@ class GeneralStep extends React.Component<Props, {}> {
 
     return (
       <FormGroup>
-        <ControlLabel>Waiting screen</ControlLabel>
-        <Toggle
-          id={"waitingScreen"}
-          checked={waitingScreen.isActive}
-          onChange={this.onChangeSwitch}
-          icons={{
-            checked: <span>Yes</span>,
-            unchecked: <span>No</span>,
-          }}
-        />
-        <br />
         {!waitingScreen.isActive ? null : (
           <DomainRow>
             {this.props.currentMode !== "update" ? null : (
@@ -172,56 +195,6 @@ class GeneralStep extends React.Component<Props, {}> {
     );
   }
 
-  renderKiosk() {
-    const { pos } = this.props;
-
-    let kioskMachine = {
-      isActive: false,
-    };
-
-    let posId;
-
-    if (pos) {
-      kioskMachine = pos.kioskMachine || {
-        isActive: false,
-      };
-      posId = pos._id;
-    }
-
-    const { REACT_APP_API_URL } = getEnv();
-
-    return (
-      <FormGroup>
-        <ControlLabel>Kiosk Machine</ControlLabel>
-        <Toggle
-          id={"kioskMachine"}
-          checked={kioskMachine.isActive}
-          onChange={this.onChangeSwitch}
-          icons={{
-            checked: <span>Yes</span>,
-            unchecked: <span>No</span>,
-          }}
-        />
-        <br />
-        {!kioskMachine.isActive ? null : (
-          <DomainRow>
-            <ControlLabel>Link</ControlLabel>
-            <Row>
-              <FormControl
-                id="kioskLink"
-                type="text"
-                disabled={true}
-                value={`${REACT_APP_API_URL}/pos/${posId}/kiosk`}
-              />
-
-              <Button>{__("Copy")}</Button>
-            </Row>
-          </DomainRow>
-        )}
-      </FormGroup>
-    );
-  }
-
   renderKitchen() {
     const { pos } = this.props;
 
@@ -263,17 +236,6 @@ class GeneralStep extends React.Component<Props, {}> {
 
     return (
       <FormGroup>
-        <ControlLabel>Kitchen screen</ControlLabel>
-        <Toggle
-          id={"kitchenScreen"}
-          checked={kitchenScreen.isActive}
-          onChange={this.onChangeSwitch}
-          icons={{
-            checked: <span>Yes</span>,
-            unchecked: <span>No</span>,
-          }}
-        />
-        <br />
         {!kitchenScreen.isActive ? null : (
           <DomainRow>
             {this.props.currentMode !== "update" ? null : (
@@ -329,8 +291,96 @@ class GeneralStep extends React.Component<Props, {}> {
     );
   }
 
+  renderCauseOnline() {
+    const { pos, branches } = this.props;
+    if (pos.isOnline) {
+      const onChangeMultiBranches = (ops) => {
+        const selectedOptionsValues = ops.map(option => option.value);
+
+        this.onChangeFunction(
+          "pos",
+          { ...pos, allowBranches: selectedOptionsValues }
+        );
+      };
+
+      return (
+        <>
+          <FormGroup>
+            <ControlLabel>Allow branches</ControlLabel>
+            <Select
+              placeholder={__('Choose parent')}
+              value={pos.allowBranches || []}
+              clearable={true}
+              onChange={onChangeMultiBranches}
+              options={generateTree(branches || [], null, (node, level) => ({
+                value: node._id,
+                label: `${'---'.repeat(level)} ${node.title}`
+              }))}
+              multi={true}
+            />
+          </FormGroup>
+        </>
+      )
+    }
+
+    const onChangeBranches = (opt) => {
+      this.onChangeFunction(
+        "pos",
+        { ...pos, branchId: opt.value }
+      );
+    };
+
+    return (
+      <>
+        <h4>{__("Domain")}</h4>
+        <BlockRow>
+          <FormGroup>
+            <ControlLabel>Waiting screen</ControlLabel>
+            <Toggle
+              id={"waitingScreen"}
+              checked={pos && pos.waitingScreen ? pos.waitingScreen.isActive : false}
+              onChange={this.onChangeSwitch}
+              icons={{
+                checked: <span>Yes</span>,
+                unchecked: <span>No</span>,
+              }}
+            />
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Kitchen screen</ControlLabel>
+            <Toggle
+              id={"kitchenScreen"}
+              checked={pos && pos.kitchenScreen ? pos.kitchenScreen.isActive : false}
+              onChange={this.onChangeSwitch}
+              icons={{
+                checked: <span>Yes</span>,
+                unchecked: <span>No</span>,
+              }}
+            />
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Choose branch</ControlLabel>
+            <Select
+              placeholder={__('Choose parent')}
+              value={pos.branchId}
+              clearable={true}
+              onChange={onChangeBranches}
+              options={generateTree(branches || [], null, (node, level) => ({
+                value: node._id,
+                label: `${'---'.repeat(level)} ${node.title}`
+              }))}
+            />
+          </FormGroup>
+        </BlockRow>
+        <BlockRowUp>
+          {this.renderWaitingScreen()}
+          {this.renderKitchen()}
+        </BlockRowUp>
+      </>
+    )
+  }
   render() {
-    const { pos, brand, formIntegrations = [], currentMode } = this.props;
+    const { pos, brand, formIntegrations = [] } = this.props;
 
     const onChangeBrand = (e) => {
       this.onChangeFunction(
@@ -383,7 +433,7 @@ class GeneralStep extends React.Component<Props, {}> {
                   <FormControl
                     id="name"
                     type="text"
-                    value={name}
+                    value={name || ''}
                     onChange={onChangeInput}
                   />
                 </FormGroup>
@@ -393,7 +443,7 @@ class GeneralStep extends React.Component<Props, {}> {
                   <FormControl
                     id="description"
                     type="text"
-                    value={description}
+                    value={description || ''}
                     onChange={onChangeInput}
                   />
                 </FormGroup>
@@ -462,10 +512,17 @@ class GeneralStep extends React.Component<Props, {}> {
             </Block>
 
             <Block>
-              <h4>{__("Domain")}</h4>
-              {this.renderWaitingScreen()}
-              {currentMode !== "update" ? null : this.renderKiosk()}
-              {this.renderKitchen()}
+              <ControlLabel>Is Online</ControlLabel>
+              <Toggle
+                id={"isOnline"}
+                checked={pos && pos.isOnline ? true : false}
+                onChange={this.onChangeSwitchIsOnline}
+                icons={{
+                  checked: <span>Yes</span>,
+                  unchecked: <span>No</span>,
+                }}
+              />
+              {this.renderCauseOnline()}
             </Block>
           </LeftItem>
         </FlexColumn>

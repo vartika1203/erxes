@@ -29,12 +29,12 @@ type Props = {
   pos?: IPos;
   loading?: boolean;
   isActionLoading: boolean;
-  isReadyToSaveForm: boolean;
   groups: IProductGroup[];
   formIntegrations: IIntegration[];
   save: (params: any) => void;
   productCategories: IProductCategory[];
   products: IProduct[];
+  branches: any[];
 };
 
 type State = {
@@ -123,7 +123,10 @@ class Pos extends React.Component<Props, State> {
       formIntegrationIds: pos.formIntegrationIds,
       uiOptions,
       ebarimtConfig,
-      catProdMappings: cleanMappings
+      catProdMappings: cleanMappings,
+      isOnline: pos.isOnline,
+      branchId: pos.branchId,
+      allowBranches: pos.allowBranches
     };
 
     this.props.save(doc);
@@ -208,7 +211,7 @@ class Pos extends React.Component<Props, State> {
 
   render() {
     const { pos, groups, currentMode, uiOptions } = this.state;
-    const { integration, formIntegrations, productCategories, products } = this.props;
+    const { integration, formIntegrations, productCategories, products, branches } = this.props;
     const brand = integration && integration.brand;
     const breadcrumb = [
       { title: 'POS List', link: `${PLUGIN_URL}/pos` },
@@ -235,6 +238,7 @@ class Pos extends React.Component<Props, State> {
                   brand={brand}
                   currentMode={currentMode}
                   formIntegrations={formIntegrations}
+                  branches={branches}
                 />
               </Step>
               <Step

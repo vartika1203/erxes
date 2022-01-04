@@ -249,7 +249,7 @@ export default {
             orderBulkOps.push({
               updateOne: {
                 filter: { _id: order._id },
-                update: { $set: { ...order, posToken: token, syncId } },
+                update: { $set: { ...order, posToken: token, syncId, branchId: pos.branchId } },
                 upsert: true
               }
             });

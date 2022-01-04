@@ -41,6 +41,9 @@ export type IPos = {
   cashierIds: [string];
   integration: IIntegration;
   user: IUser;
+  isOnline: boolean;
+  branchId: string;
+  allowBranches: [string];
   waitingScreen?: IScreenConfig;
   kioskMachine?: IScreenConfig;
   kitchenScreen?: IScreenConfig;
@@ -226,4 +229,8 @@ export interface IProductShema {
 
 export type SchemaLabelsQueryResponse = {
   getDbSchemaLabels: IProductShema[];
+} & QueryResponse;
+
+export type BranchesQueryResponse = {
+  branches: any[];
 } & QueryResponse;

@@ -349,6 +349,10 @@ export const BlockRow = styled(FlexRow)`
   }
 `;
 
+export const BlockRowUp = styled(BlockRow)`
+  align-items: self-start;
+`;
+
 export const TableWrapper = styled.div`
   td {
     max-width: 250px;

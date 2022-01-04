@@ -118,6 +118,7 @@ class List extends React.Component<Props, {}> {
             </th>
             <th>{__('Status')}</th>
             <th>{__('Brand')}</th>
+            <th>{__('Is Online')}</th>
             <th>{__('Created by')}</th>
             <th>
               <SortHandler sortField={'createdDate'} label={__('Created at')} />

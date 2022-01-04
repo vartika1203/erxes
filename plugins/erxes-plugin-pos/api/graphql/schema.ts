@@ -15,6 +15,9 @@ const posCommonFields = `
   productDetails: [String]
   adminIds: [String]
   cashierIds: [String]
+  isOnline: Boolean
+  branchId: String
+  allowBranches: [String]
   waitingScreen: JSON
   kitchenScreen: JSON
   kioskMachine: JSON
@@ -110,6 +113,7 @@ export const queries = `
     brandId: String,
     tag: String,
     status: String,
+    isOnline: String,
     sortField: String
     sortDirection: Int): [Pos]
   posDetail(_id: String!): Pos

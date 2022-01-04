@@ -50,6 +50,9 @@ const posCommonFields = `
     }
   }
 
+  isOnline
+  branchId
+  allowBranches
   waitingScreen
   kitchenScreen
   kioskMachine
@@ -135,6 +138,20 @@ const brands = `
   }
 `;
 
+const branches = `
+  query branches {
+    branches {
+      _id
+      title
+      address
+      parentId
+      supervisorId
+      code
+      userIds
+    }
+  }
+`;
+
 const integrationsTotalCount = `
   query integrationsTotalCount($kind: String, $tag: String, $brandId: String, $status: String) {
     integrationsTotalCount(kind:$kind, tag:$tag, brandId: $brandId, status: $status) {
@@ -200,5 +217,6 @@ export default {
   posDetail,
   getDbSchemaLabels,
   tags,
-  integrations
+  integrations,
+  branches
 };

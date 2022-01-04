@@ -8,6 +8,7 @@ import { graphql } from 'react-apollo';
 
 import Pos from '../components/Pos';
 import {
+  AddPosMutationResponse,
   EditPosMutationResponse,
   GroupsBulkInsertMutationResponse,
   GroupsQueryResponse,
@@ -17,12 +18,12 @@ import {
   IProductGroup,
   PosDetailQueryResponse
 } from '../../types';
-import { IPos, ProductCategoriesQueryResponse, ProductsQueryResponse } from '../../types';
+import { IPos, ProductCategoriesQueryResponse, ProductsQueryResponse, BranchesQueryResponse } from '../../types';
 import { mutations, queries } from '../graphql';
 import { PLUGIN_URL } from '../../constants';
 
 type Props = {
-  posId: string;
+  posId?: string;
   queryParams: any;
 };
 
@@ -37,8 +38,10 @@ type FinalProps = {
   integrationsQuery: IntegrationsQueryResponse;
   productsQuery: ProductsQueryResponse;
   productCategoriesQuery: ProductCategoriesQueryResponse;
+  branchesQuery: BranchesQueryResponse;
 } & Props &
   EditPosMutationResponse &
+  AddPosMutationResponse &
   GroupsBulkInsertMutationResponse &
   IRouterProps;
 
@@ -54,41 +57,48 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       groupsQuery,
       posDetailQuery,
       editPosMutation,
+      addPosMutation,
       productGroupsBulkInsertMutation,
       history,
       integrationsQuery,
       productsQuery,
-      productCategoriesQuery
+      productCategoriesQuery,
+      branchesQuery
     } = this.props;
 
-    const pos = posDetailQuery.posDetail || {} as IPos;
-    const groups = groupsQuery.productGroups || [];
-    const integration = pos.integration || {};
-    const formIntegrations = integrationsQuery.integrations || [];
-
     if (
-      posDetailQuery.loading ||
+      posDetailQuery && posDetailQuery.loading ||
       groupsQuery.loading ||
       integrationsQuery.loading ||
       productsQuery.loading ||
-      productCategoriesQuery.loading
+      productCategoriesQuery.loading ||
+      branchesQuery.loading
     ) {
       return <Spinner objective={true} />;
     }
 
+    const pos = posDetailQuery && posDetailQuery.posDetail || {} as IPos;
+    const groups = groupsQuery.productGroups || [];
+    const integration = pos.integration;
+    const formIntegrations = integrationsQuery.integrations || [];
+    const branches = branchesQuery.branches || [];
+
     const save = doc => {
+      const { posId } = this.props;
       this.setState({ isLoading: true });
 
-      editPosMutation({
+      const saveMutation = posId ? editPosMutation : addPosMutation;
+
+      saveMutation({
         variables: {
-          _id: pos._id,
+          _id: posId,
           ...doc
         }
       })
         .then(() => {
           productGroupsBulkInsertMutation({
             variables: {
-              posId: pos._id,
+              posId,
               groups: doc.groups.map(e => ({
                 _id: e._id,
                 name: e.name,
@@ -123,6 +133,7 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       formIntegrations,
       pos,
       save,
+      branches,
       isActionLoading: this.state.isLoading,
       currentMode: 'update',
       products: productsQuery.products,
@@ -139,12 +150,20 @@ export default withProps<FinalProps>(
       gql(queries.posDetail),
       {
         name: 'posDetailQuery',
+        skip: ({ posId }) => !posId,
         options: ({ posId }) => ({
           fetchPolicy: 'cache-and-network',
           variables: {
             _id: posId
-          }
+          },
         })
+      }
+    ),
+
+    graphql<{}, AddPosMutationResponse, IntegrationMutationVariables>(
+      gql(mutations.posAdd),
+      {
+        name: 'addPosMutation'
       }
     ),
 
@@ -192,6 +211,12 @@ export default withProps<FinalProps>(
       options: () => ({
         fetchPolicy: 'network-only',
         variables: { perPage: 100 }
+      })
+    }),
+    graphql<Props, BranchesQueryResponse>(gql(queries.branches), {
+      name: 'branchesQuery',
+      options: () => ({
+        fetchPolicy: 'network-only',
       })
     })
   )(EditPosContainer)

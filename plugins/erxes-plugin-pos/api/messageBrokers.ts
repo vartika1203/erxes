@@ -11,7 +11,7 @@ export default [
       await models.Pos.updateOne({ _id: pos._id }, { $set: { syncInfos } });
 
       await models.PutResponses.updateOne({ _id: response._id }, { $set: { ...response, posToken, syncId } }, { upsert: true });
-      await models.PosOrders.updateOne({ _id: order._id }, { $set: { ...order, posToken, syncId, items } }, { upsert: true });
+      await models.PosOrders.updateOne({ _id: order._id }, { $set: { ...order, posToken, syncId, items, branchId: pos.branchId } }, { upsert: true });
 
       messageBroker().sendMessage(`vrpc_queue:erxes-pos-from-api_${syncId}`, { status: 'ok', posToken, syncId, responseId: response._id, orderId: order._id })
     }

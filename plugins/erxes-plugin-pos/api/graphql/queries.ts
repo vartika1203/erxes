@@ -21,7 +21,7 @@ export const paginate = (
 
 const generateFilterQuery = async (
   models,
-  { brandId, tag, status },
+  { brandId, tag, status, isOnline },
   commonQuerySelector
 ) => {
   const query: any = commonQuerySelector;
@@ -38,6 +38,10 @@ const generateFilterQuery = async (
 
   if (status) {
     query.isActive = status === 'active' ? true : false;
+  }
+
+  if (isOnline) {
+    query.isOnline = isOnline === 'online'
   }
 
   const posIntegrations = await models.Integrations.find(integrationQuery, {

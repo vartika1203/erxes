@@ -80,6 +80,7 @@ class Row extends React.Component<Props> {
     const { pos, isChecked, toggleBulk } = this.props;
     const { integration } = pos;
     const tags = integration.tags || [];
+    const isOnline = pos.isOnline ? 'online pos' : 'offline pos'
 
     const createdUser = pos.user || {
       _id: '',
@@ -114,6 +115,9 @@ class Row extends React.Component<Props> {
         </td>
         <td>
           <strong>{integration.brand ? integration.brand.name : ''}</strong>
+        </td>
+        <td>
+          <strong>{isOnline}</strong>
         </td>
         <td>
           <div key={createdUser._id}>

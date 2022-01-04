@@ -15,6 +15,9 @@ const commonFields = `
   $productDetails: [String]
   $adminIds: [String]
   $cashierIds: [String]
+  $isOnline: Boolean
+  $branchId: String
+  $allowBranches: [String]
   $kitchenScreen: JSON
   $waitingScreen: JSON
   $kioskMachine: JSON
@@ -32,6 +35,9 @@ const commonVariables = `
   productDetails: $productDetails
   adminIds: $adminIds
   cashierIds: $cashierIds
+  isOnline: $isOnline
+  branchId: $branchId
+  allowBranches: $allowBranches
   kitchenScreen: $kitchenScreen
   waitingScreen: $waitingScreen
   kioskMachine: $kioskMachine
