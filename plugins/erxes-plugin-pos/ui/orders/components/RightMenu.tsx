@@ -87,7 +87,8 @@ export default class RightMenu extends React.Component<Props, State> {
   }
 
   onChangeRangeFilter = (kind, date) => {
-    this.props.onSelect(date, kind);
+    const cDate = dayjs(date).format('YYYY-MM-DD HH:mm')
+    this.props.onSelect(cDate, kind);
   };
 
   renderSpecials() {
