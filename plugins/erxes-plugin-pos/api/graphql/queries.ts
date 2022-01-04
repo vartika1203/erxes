@@ -54,7 +54,7 @@ const generateFilterQuery = async (
 };
 
 const generateFilterPosQuery = async (
-  models, params, commonQuerySelector
+  _models, params, commonQuerySelector
 ) => {
   const query: any = commonQuerySelector;
 
