@@ -33,17 +33,18 @@ export type IScreenConfig = {
 export type IPos = {
   _id: string;
   name: string;
-  description: string;
+  description?: string;
   createdAt: Date;
   integrationId: string;
-  productDetails: [string];
+  productDetails?: string[];
   adminIds: [string];
   cashierIds: [string];
   integration: IIntegration;
   user: IUser;
   isOnline: boolean;
-  branchId: string;
-  allowBranches: [string];
+  branchId?: string;
+  allowBranches?: [string];
+  beginNumber?: string;
   waitingScreen?: IScreenConfig;
   kioskMachine?: IScreenConfig;
   kitchenScreen?: IScreenConfig;
@@ -51,7 +52,7 @@ export type IPos = {
   formSectionTitle?: string;
   formIntegrationIds: string[];
   ebarimtConfig: any;
-  catProdMappings: [CatProd];
+  catProdMappings?: CatProd[];
 };
 
 // query types

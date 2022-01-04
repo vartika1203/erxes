@@ -53,6 +53,7 @@ const posCommonFields = `
   isOnline
   branchId
   allowBranches
+  beginNumber
   waitingScreen
   kitchenScreen
   kioskMachine

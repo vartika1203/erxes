@@ -108,7 +108,7 @@ class Pos extends React.Component<Props, State> {
       m => ({ _id: m._id, categoryId: m.categoryId, productId: m.productId })
     );
 
-    const doc = {
+    let doc: any = {
       name: pos.name,
       brandId: brand,
       description: pos.description,
@@ -117,17 +117,31 @@ class Pos extends React.Component<Props, State> {
       adminIds: pos.adminIds,
       cashierIds: pos.cashierIds,
       kioskMachine: pos.kioskMachine,
-      waitingScreen: pos.waitingScreen,
-      kitchenScreen: pos.kitchenScreen,
       formSectionTitle: pos.formSectionTitle,
       formIntegrationIds: pos.formIntegrationIds,
       uiOptions,
       ebarimtConfig,
       catProdMappings: cleanMappings,
       isOnline: pos.isOnline,
+      waitingScreen: pos.waitingScreen,
+      kitchenScreen: pos.kitchenScreen,
       branchId: pos.branchId,
-      allowBranches: pos.allowBranches
+      allowBranches: pos.allowBranches,
+      beginNumber: pos.beginNumber
     };
+
+    if (pos.isOnline) {
+      doc = {
+        ...doc,
+        branchId: ''
+      }
+    } else {
+      doc = {
+        ...doc,
+        beginNumber: '',
+        allowBranches: ''
+      }
+    }
 
     this.props.save(doc);
   };

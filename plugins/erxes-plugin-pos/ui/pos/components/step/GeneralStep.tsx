@@ -291,6 +291,12 @@ class GeneralStep extends React.Component<Props, {}> {
     );
   }
 
+  onChangeInput = (e) => {
+    const { pos } = this.props;
+    pos[e.target.id] = (e.currentTarget as HTMLInputElement).value;
+    this.onChangeFunction("pos", pos);
+  };
+
   renderCauseOnline() {
     const { pos, branches } = this.props;
     if (pos.isOnline) {
@@ -303,22 +309,38 @@ class GeneralStep extends React.Component<Props, {}> {
         );
       };
 
+
+
       return (
         <>
-          <FormGroup>
-            <ControlLabel>Allow branches</ControlLabel>
-            <Select
-              placeholder={__('Choose parent')}
-              value={pos.allowBranches || []}
-              clearable={true}
-              onChange={onChangeMultiBranches}
-              options={generateTree(branches || [], null, (node, level) => ({
-                value: node._id,
-                label: `${'---'.repeat(level)} ${node.title}`
-              }))}
-              multi={true}
-            />
-          </FormGroup>
+          <BlockRow>
+            <FormGroup>
+              <ControlLabel>Allow branches</ControlLabel>
+              <Select
+                placeholder={__('Choose parent')}
+                value={pos.allowBranches || []}
+                clearable={true}
+                onChange={onChangeMultiBranches}
+                options={generateTree(branches || [], null, (node, level) => ({
+                  value: node._id,
+                  label: `${'---'.repeat(level)} ${node.title}`
+                }))}
+                multi={true}
+              />
+            </FormGroup>
+          </BlockRow>
+          <BlockRow>
+            <FormGroup>
+              <ControlLabel required={true}>Begin Number</ControlLabel>
+              <FormControl
+                id="beginNumber"
+                maxLength={2}
+                type="text"
+                value={pos.beginNumber || ''}
+                onChange={this.onChangeInput}
+              />
+            </FormGroup>
+          </BlockRow>
         </>
       )
     }
@@ -389,11 +411,6 @@ class GeneralStep extends React.Component<Props, {}> {
       );
     };
 
-    const onChangeInput = (e) => {
-      pos[e.target.id] = (e.currentTarget as HTMLInputElement).value;
-      this.onChangeFunction("pos", pos);
-    };
-
     const onAdminSelect = (users) => {
       pos.adminIds = users;
       this.onChangeFunction("pos", pos);
@@ -434,7 +451,7 @@ class GeneralStep extends React.Component<Props, {}> {
                     id="name"
                     type="text"
                     value={name || ''}
-                    onChange={onChangeInput}
+                    onChange={this.onChangeInput}
                   />
                 </FormGroup>
 
@@ -444,7 +461,7 @@ class GeneralStep extends React.Component<Props, {}> {
                     id="description"
                     type="text"
                     value={description || ''}
-                    onChange={onChangeInput}
+                    onChange={this.onChangeInput}
                   />
                 </FormGroup>
 
@@ -467,7 +484,7 @@ class GeneralStep extends React.Component<Props, {}> {
                     id="formSectionTitle"
                     type="text"
                     value={pos.formSectionTitle || ""}
-                    onChange={onChangeInput}
+                    onChange={this.onChangeInput}
                   />
                 </FormGroup>
                 <FormGroup>

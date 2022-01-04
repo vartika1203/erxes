@@ -18,6 +18,7 @@ const posCommonFields = `
   isOnline: Boolean
   branchId: String
   allowBranches: [String]
+  beginNumber: String
   waitingScreen: JSON
   kitchenScreen: JSON
   kioskMachine: JSON

@@ -14,8 +14,9 @@ export const posSChema = {
   adminIds: { type: [String], label: 'Admin user ids' },
   cashierIds: { type: [String], label: 'Cashier ids' },
   isOnline: { type: Boolean, label: 'Is online pos' },
-  branchId: { type: String, label: 'Branch' },
-  allowBranches: { type: [String], label: 'Allow branches' },
+  branchId: { type: String, optional: true, label: 'Branch' },
+  allowBranches: { type: [String], optional: true, label: 'Allow branches' },
+  beginNumber: { type: String, optional: true, label: 'Begin number' },
   waitingScreen: { type: Object, label: 'Waiting screen config' },
   kioskMachine: { type: Object, label: 'Kiosk config' },
   kitchenScreen: { type: Object, label: 'Kitchen screen config' },
@@ -193,7 +194,7 @@ const posOrdersSchema = {
   userId: { type: String, label: 'Created user id' },
 
   items: { type: posOrderItemSchema, label: 'items' },
-  branchId: {type: String, label: 'Branch'},
+  branchId: { type: String, label: 'Branch' },
   posToken: { type: String, optional: true },
   syncId: { type: String, optional: true }
 };
