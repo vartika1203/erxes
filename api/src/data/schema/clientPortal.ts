@@ -75,6 +75,7 @@ export const queries = `
   clientPortalTickets(email: String!): [Ticket]
   clientPortalTask(_id: String!): Task
   clientPortalTicket(_id: String!): Ticket
+  clientPortalBranches(ids: [String], parentId: String, isNode: Boolean, title: String): [Branch]
 `;
 
 export const mutations = `

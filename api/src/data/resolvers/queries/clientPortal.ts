@@ -1,6 +1,7 @@
 // TODO: check if related stages are selected in client portal config
 
 import {
+  Branches,
   ClientPortals,
   Customers,
   Stages,
@@ -62,6 +63,37 @@ const configClientPortalQueries = {
 
   async clientPortalTicket(_root, { _id }: { _id: string }) {
     return Tickets.findOne({ _id });
+  },
+
+  async clientPortalBranches(
+    _root,
+    param: {
+      ids?: string[];
+      parentId?: string;
+      isNode?: boolean;
+      title?: string;
+    }
+  ) {
+    const query: any = {};
+    if (param.ids) {
+      query._id = { $in: param.ids };
+    }
+
+    if (param.parentId) {
+      query.parentId = param.parentId;
+    }
+
+    if (param.title) {
+      query.title = param.title;
+    }
+
+    if (param.isNode) {
+      query.parentId = null;
+    }
+
+    return Branches.find(query)
+      .sort({ title: 1 })
+      .lean();
   }
 };
 
