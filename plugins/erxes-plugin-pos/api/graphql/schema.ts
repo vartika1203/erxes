@@ -17,7 +17,7 @@ const posCommonFields = `
   cashierIds: [String]
   isOnline: Boolean
   branchId: String
-  allowBranches: [String]
+  allowBranchIds: [String]
   beginNumber: String
   waitingScreen: JSON
   kitchenScreen: JSON

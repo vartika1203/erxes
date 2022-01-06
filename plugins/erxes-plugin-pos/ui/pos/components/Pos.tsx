@@ -126,7 +126,7 @@ class Pos extends React.Component<Props, State> {
       waitingScreen: pos.waitingScreen,
       kitchenScreen: pos.kitchenScreen,
       branchId: pos.branchId,
-      allowBranches: pos.allowBranches,
+      allowBranchIds: pos.allowBranchIds,
       beginNumber: pos.beginNumber
     };
 
@@ -139,7 +139,7 @@ class Pos extends React.Component<Props, State> {
       doc = {
         ...doc,
         beginNumber: '',
-        allowBranches: ''
+        allowBranchIds: ''
       }
     }
 

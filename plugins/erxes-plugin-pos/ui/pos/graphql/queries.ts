@@ -52,7 +52,7 @@ const posCommonFields = `
 
   isOnline
   branchId
-  allowBranches
+  allowBranchIds
   beginNumber
   waitingScreen
   kitchenScreen

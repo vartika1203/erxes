@@ -15,7 +15,7 @@ export const posSChema = {
   cashierIds: { type: [String], label: 'Cashier ids' },
   isOnline: { type: Boolean, label: 'Is online pos' },
   branchId: { type: String, optional: true, label: 'Branch' },
-  allowBranches: { type: [String], optional: true, label: 'Allow branches' },
+  allowBranchIds: { type: [String], optional: true, label: 'Allow branches' },
   beginNumber: { type: String, optional: true, label: 'Begin number' },
   waitingScreen: { type: Object, label: 'Waiting screen config' },
   kioskMachine: { type: Object, label: 'Kiosk config' },

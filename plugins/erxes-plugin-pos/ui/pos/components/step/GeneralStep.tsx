@@ -305,7 +305,7 @@ class GeneralStep extends React.Component<Props, {}> {
 
         this.onChangeFunction(
           "pos",
-          { ...pos, allowBranches: selectedOptionsValues }
+          { ...pos, allowBranchIds: selectedOptionsValues }
         );
       };
 
@@ -318,7 +318,7 @@ class GeneralStep extends React.Component<Props, {}> {
               <ControlLabel>Allow branches</ControlLabel>
               <Select
                 placeholder={__('Choose parent')}
-                value={pos.allowBranches || []}
+                value={pos.allowBranchIds || []}
                 clearable={true}
                 onChange={onChangeMultiBranches}
                 options={generateTree(branches || [], null, (node, level) => ({

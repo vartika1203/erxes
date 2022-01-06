@@ -17,7 +17,7 @@ const commonFields = `
   $cashierIds: [String]
   $isOnline: Boolean
   $branchId: String
-  $allowBranches: [String]
+  $allowBranchIds: [String]
   $beginNumber: String
   $kitchenScreen: JSON
   $waitingScreen: JSON
@@ -38,7 +38,7 @@ const commonVariables = `
   cashierIds: $cashierIds
   isOnline: $isOnline
   branchId: $branchId
-  allowBranches: $allowBranches
+  allowBranchIds: $allowBranchIds
   beginNumber: $beginNumber
   kitchenScreen: $kitchenScreen
   waitingScreen: $waitingScreen

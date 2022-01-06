@@ -43,7 +43,7 @@ export type IPos = {
   user: IUser;
   isOnline: boolean;
   branchId?: string;
-  allowBranches?: [string];
+  allowBranchIds?: string[];
   beginNumber?: string;
   waitingScreen?: IScreenConfig;
   kioskMachine?: IScreenConfig;
