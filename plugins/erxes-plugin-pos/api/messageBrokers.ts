@@ -19,12 +19,21 @@ export default [
   {
     method: 'RPCQueue',
     channel: 'erxes-pos-to-api',
-    handler: async (msg, { models }) => {
-      const { action, data } = msg;
+    handler: async (msg, { models, messageBroker }) => {
+      const { action, data, posToken } = msg;
 
       try {
         if (action === 'newCustomer') {
           const customer = await models.Customers.createCustomer(data);
+
+          await sendMessage(
+            models,
+            messageBroker,
+            'pos:crudData',
+            { action: 'create', type: 'customer', object: customer },
+            undefined,
+            [posToken]
+          );
 
           return { status: 'success', data: customer }
         }
@@ -35,10 +44,14 @@ export default [
   }
 ];
 
-export const sendMessage = async (models, messageBroker, channel, params, pos = undefined) => {
+export const sendMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
   const allPos = pos ? [pos] : await models.Pos.find().lean();
 
   for (const p of allPos) {
+    if (excludeTokens.includes(p.token)) {
+      continue;
+    }
+
     const syncIds = Object.keys(p.syncInfos || {}) || [];
 
     if (!syncIds.length) {
@@ -48,8 +61,8 @@ export const sendMessage = async (models, messageBroker, channel, params, pos = 
     for (const syncId of syncIds) {
       const syncDate = p.syncInfos[syncId];
 
-      // expired sync 7day
-      if ((new Date().getTime() - syncDate.getTime()) / (24 * 60 * 60 * 1000) > 7) {
+      // expired sync 72 hour
+      if ((new Date().getTime() - syncDate.getTime()) / (60 * 60 * 1000) > 72) {
         continue;
       }
 
