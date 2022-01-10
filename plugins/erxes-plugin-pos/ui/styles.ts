@@ -52,6 +52,10 @@ export const ActionButtons = styled.div`
   }
 `;
 
+export const FinanceAmount = styled.div`
+  float: right;
+`;
+
 export const Actions = styled.div`
   float: right;
 `;

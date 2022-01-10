@@ -134,7 +134,8 @@ class PutResponses extends React.Component<IProps, State> {
 
     const menuPos = [
       { title: 'Put Response', link: '/erxes-plugin-ebarimt/put-responses' },
-      { title: 'Pos Orders', link: '/erxes-plugin-pos/pos-orders' }
+      { title: 'Pos Orders', link: '/erxes-plugin-pos/pos-orders' },
+      { title: 'Pos Items', link: '/erxes-plugin-pos/pos-order-items' }
     ];
 
     return (

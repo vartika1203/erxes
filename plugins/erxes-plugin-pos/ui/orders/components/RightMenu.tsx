@@ -8,8 +8,8 @@ import {
   ControlLabel,
   FormControl,
   Icon,
-  SelectCompanies,
-  SelectCustomers
+  SelectCustomers,
+  SelectTeamMembers
 } from 'erxes-ui';
 import {
   CustomRangeContainer,
@@ -94,7 +94,7 @@ export default class RightMenu extends React.Component<Props, State> {
   renderSpecials() {
     return (
       <>
-        {this.renderLink('Only Today', 'payDate', 'today')}
+        {this.renderLink('Only Today', 'paidDate', 'today')}
         {this.renderLink('Only Me', 'userId', 'me')}
         {this.renderLink('No Pos', 'userId', 'nothing')}
       </>
@@ -126,7 +126,6 @@ export default class RightMenu extends React.Component<Props, State> {
               className={'filterDate'}
               defaultValue={dayjs()
                 .startOf('day')
-                .add(12, 'hour')
                 .format('YYYY-MM-DD HH:mm:ss')}
             />
           </div>
@@ -143,7 +142,6 @@ export default class RightMenu extends React.Component<Props, State> {
               onChange={this.onChangeRangeFilter.bind(this, lblEnd)}
               defaultValue={dayjs()
                 .startOf('day')
-                .add(12, 'hour')
                 .format('YYYY-MM-DD HH:mm:ss')}
             />
           </div>
@@ -172,17 +170,16 @@ export default class RightMenu extends React.Component<Props, State> {
           multi={false}
         />
 
-        <SelectCompanies
-          label="Filter by company"
-          name="companyId"
-          queryParams={queryParams}
+        <SelectTeamMembers
+          label="Choose users"
+          name="userId"
+          initialValue={queryParams.userId}
           onSelect={onSelect}
           multi={false}
         />
 
         {this.renderRange('created')}
         {this.renderRange('paid')}
-        {this.renderRange('finance')}
 
         {this.renderSpecials()}
 

@@ -101,6 +101,20 @@ export const types = `
 
     posName: String,
     user: User,
+    customer: Customer
+  }
+
+  type PosProduct {
+    _id: String!
+    name: String
+    code: String
+    type: String
+    sku: String
+    unitPrice: Float
+    categoryId: String
+    createdAt: Date,
+    count: Float
+    category: ProductCategory
   }
 `;
 
@@ -110,6 +124,13 @@ const queryParams = `
   sortField: String
   sortDirection: Int
   search: String
+  paidStartDate: Date
+  paidEndDate: Date
+  createdStartDate: Date
+  createdEndDate: Date
+  paidDate: String
+  userId: String
+  customerId: String
 `;
 
 export const queries = `
@@ -125,6 +146,7 @@ export const queries = `
   productGroups(posId: String!): [ProductGroups]
 
   posOrders(${queryParams}): [PosOrder]
+  posProducts(${queryParams} categoryId: String, searchValue: String): [PosProduct]
   posOrdersSummary(${queryParams}): JSON
 `;
 

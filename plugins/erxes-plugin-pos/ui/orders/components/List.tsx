@@ -1,5 +1,5 @@
 import {
-  __, Button, DataWithLoader, FormControl, Pagination, router,
+  __, DataWithLoader, Pagination,
   SortHandler, Table, Wrapper, BarItems
 } from 'erxes-ui';
 import { IRouterProps } from 'erxes-ui/lib/types';
@@ -28,6 +28,12 @@ interface IProps extends IRouterProps {
   summaryQuery: OrdersSummaryQueryResponse;
 }
 
+export const menuPos = [
+  { title: 'Put Response', link: '/erxes-plugin-ebarimt/put-responses' },
+  { title: 'Pos Orders', link: '/erxes-plugin-pos/pos-orders' },
+  { title: 'Pos Items', link: '/erxes-plugin-pos/pos-order-items' }
+];
+
 class Orders extends React.Component<IProps, {}> {
   private timer?: NodeJS.Timer = undefined;
 
@@ -54,8 +60,6 @@ class Orders extends React.Component<IProps, {}> {
       clearFilter,
       summaryQuery
     } = this.props;
-
-    let actionBarLeft: React.ReactNode;
 
     const rightMenuProps = {
       onSelect,
@@ -105,6 +109,9 @@ class Orders extends React.Component<IProps, {}> {
                 <SortHandler sortField={'totalAmount'} label={__('Amount')} />
               </th>
               <th>
+                <SortHandler sortField={'Customer'} label={__('Customer')} />
+              </th>
+              <th>
                 <SortHandler sortField={'Pos'} label={__('Pos')} />
               </th>
               <th>
@@ -127,11 +134,6 @@ class Orders extends React.Component<IProps, {}> {
         </Table>
       </TableWrapper>
     );
-
-    const menuPos = [
-      { title: 'Put Response', link: '/erxes-plugin-ebarimt/put-responses' },
-      { title: 'Pos Orders', link: '/erxes-plugin-pos/pos-orders' }
-    ];
 
     return (
       <Wrapper

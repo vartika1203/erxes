@@ -113,7 +113,14 @@ const generateParams = ({ queryParams }) => ({
     sortDirection: queryParams.sortDirection
       ? parseInt(queryParams.sortDirection, 10)
       : undefined,
-    search: queryParams.search
+    search: queryParams.search,
+    paidStartDate: queryParams.paidStartDate,
+    paidEndDate: queryParams.paidEndDate,
+    createdStartDate: queryParams.createdStartDate,
+    createdEndDate: queryParams.createdEndDate,
+    paidDate: queryParams.paidDate,
+    userId: queryParams.userId,
+    customerId: queryParams.customerId,
   },
   fetchPolicy: 'network-only'
 });

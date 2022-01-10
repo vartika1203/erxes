@@ -58,7 +58,7 @@ export const FILTER_PARAMS = [
   'paidEndDate',
   'financeStartDate',
   'financeEndDate',
-  'payDate',
+  'paidDate',
   'userId',
   'hasntUser'
 ];

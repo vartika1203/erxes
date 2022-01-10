@@ -1,10 +1,8 @@
 import _ from 'lodash';
-import {
-  formatValue
-} from 'erxes-ui';
 import React from 'react';
 import { IOrder } from '../types';
 import Button from 'erxes-ui/lib/components/Button';
+import { FinanceAmount } from '../../styles';
 
 type Props = {
   order: IOrder;
@@ -13,10 +11,10 @@ type Props = {
 
 function displayValue(order, name) {
   const value = _.get(order, name);
-  return formatValue(value);
+  return <FinanceAmount>{(value || 0).toLocaleString()}</FinanceAmount>;
 }
 
-function PutResponseRow({ order, history }: Props) {
+function PutResponseRow({ order }: Props) {
 
   const onClick = e => {
     e.stopPropagation();
@@ -31,6 +29,7 @@ function PutResponseRow({ order, history }: Props) {
       <td key={'cardAmount'}>{displayValue(order, 'cardAmount')}</td>
       <td key={'mobileAmount'}>{displayValue(order, 'mobileAmount')}</td>
       <td key={'totalAmount'}>{displayValue(order, 'totalAmount')}</td>
+      <td key={'customer'}>{order.customer ? order.customer.primaryEmail || order.customer.primaryPhone || order.customer.firstName : ''}</td>
       <td key={'pos'}>{order.posName || ''}</td>
       <td key={'user'}>{order.user ? order.user.email : ''}</td>
       <td key={'actions'}>

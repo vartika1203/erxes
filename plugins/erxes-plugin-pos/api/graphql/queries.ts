@@ -19,6 +19,10 @@ export const paginate = (
   return collection.limit(_limit).skip((_page - 1) * _limit);
 };
 
+export const escapeRegExp = (str: string) => {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 const generateFilterQuery = async (
   models,
   { brandId, tag, status, isOnline },
@@ -53,13 +57,89 @@ const generateFilterQuery = async (
   return query;
 };
 
+export const getPureDate = (date: Date) => {
+  const ndate = new Date(date);
+  const diffTimeZone = ndate.getTimezoneOffset() * 1000 * 60;
+  return new Date(ndate.getTime() - diffTimeZone)
+}
+
+export const getFullDate = (date: Date) => {
+  const ndate = getPureDate(date)
+  const year = ndate.getFullYear();
+  const month = ndate.getMonth();
+  const day = ndate.getDate();
+
+  const today = new Date(year, month, day);
+  today.setHours(0, 0, 0, 0)
+  return today;
+}
+
+export const getTomorrow = (date: Date) => {
+  return getFullDate(new Date(date.getTime() + 24 * 60 * 60 * 1000))
+}
+
 const generateFilterPosQuery = async (
-  _models, params, commonQuerySelector
+  _models, params, commonQuerySelector, currentUserId
 ) => {
   const query: any = commonQuerySelector;
+  const {
+    search,
+    paidStartDate,
+    paidEndDate,
+    createdStartDate,
+    createdEndDate,
+    paidDate,
+    userId,
+    customerId
+  } = params;
 
-  if (params.search) {
-    query.number = { $regex: new RegExp(params.search) }
+  if (search) {
+    query.number = { $regex: new RegExp(search) }
+  }
+
+  if (customerId) {
+    query.customerId = customerId
+  }
+
+  if (userId) {
+    let lastUserId = userId
+    if (userId === 'me') {
+      lastUserId = currentUserId;
+    }
+    if (userId === 'nothing') {
+      lastUserId = ''
+    }
+    query.userId = lastUserId
+  }
+
+  if (paidDate === 'today') {
+    const now = new Date()
+
+    const startDate = getFullDate(now)
+    const endDate = getTomorrow(now)
+    query.paidDate = { $gte: startDate, $lte: endDate }
+  }
+
+  const paidQry: any = {}
+  if (paidStartDate) {
+    paidQry.$gte = new Date(paidStartDate)
+  }
+  if (paidEndDate) {
+    paidQry.$lte = new Date(paidEndDate)
+  }
+  if (Object.keys(paidQry).length) {
+    query.paidDate = paidQry
+  }
+
+  const createdQry: any = {}
+  if (createdStartDate) {
+    createdQry.$gte = new Date(createdStartDate)
+  }
+  if (createdEndDate) {
+    createdQry.$lte = new Date(createdEndDate)
+  }
+  if (Object.keys(createdQry).length) {
+    query.createdAt = createdQry
   }
 
   return query
@@ -111,8 +191,8 @@ const queries = [
 
   {
     name: 'posOrders',
-    handler: async (_root, params, { models, commonQuerySelector }) => {
-      const query = await generateFilterPosQuery(models, params, commonQuerySelector)
+    handler: async (_root, params, { models, commonQuerySelector, user }) => {
+      const query = await generateFilterPosQuery(models, params, commonQuerySelector, user._id)
 
       return paginate(models.PosOrders.find(query), {
         page: params.page,
@@ -122,8 +202,8 @@ const queries = [
   },
   {
     name: 'posOrdersSummary',
-    handler: async (_root, params, { models, commonQuerySelector }) => {
-      const query = await generateFilterPosQuery(models, params, commonQuerySelector)
+    handler: async (_root, params, { models, commonQuerySelector, user }) => {
+      const query = await generateFilterPosQuery(models, params, commonQuerySelector, user._id)
 
       const res = await models.PosOrders.aggregate([
         { $match: { ...query } },
@@ -158,7 +238,72 @@ const queries = [
       }
 
     }
-  }
+  },
+  {
+    name: 'posProducts',
+    handler: async (_root, params, { models, commonQuerySelector, user }) => {
+      const orderQuery = await generateFilterPosQuery(models, params, commonQuerySelector, user._id);
+      const query: any = { status: { $ne: 'deleted' } };
+
+      if (params.categoryId) {
+        const category = await models.ProductCategories.getProductCatogery({
+          _id: params.categoryId,
+          status: { $in: [null, 'active'] }
+        });
+
+        const product_category_ids = await models.ProductCategories.find(
+          { order: { $regex: new RegExp(category.order) } },
+          { _id: 1 }
+        ).lean();
+
+        query.categoryId = { $in: product_category_ids }
+      }
+
+      if (params.searchValue) {
+        const fields = [
+          {
+            name: { $in: [new RegExp(`.*${escapeRegExp(params.searchValue)}.*`, 'i')] }
+          },
+          { code: { $in: [new RegExp(`.*${escapeRegExp(params.searchValue)}.*`, 'i')] } }
+        ];
+
+        query.$or = fields;
+      }
+      const limit = params.perPage || 20;
+      const skip = params.page ? (params.page - 1) * limit : 0;
+
+      const products = await models.Products.find(query)
+        .skip(skip).limit(limit).lean();
+
+      const productIds = products.map(p => p._id)
+
+      query['items.productId'] = { $in: productIds }
+
+      const items = await models.PosOrders.aggregate([
+        { $match: orderQuery },
+        { $unwind: '$items' },
+        { $match: { 'items.productId': { $in: productIds } } },
+        {
+          $project: {
+            productId: '$items.productId',
+            count: '$items.count',
+          }
+        },
+        {
+          $group: {
+            _id: '$productId',
+            count: { $sum: '$count' },
+          }
+        }
+      ]);
+
+      for (const product of products) {
+        product.count = (items.find(i => i._id === product._id) || {}).count || 0;
+      }
+
+      return products;
+    }
+  },
 ];
 
 export default queries;

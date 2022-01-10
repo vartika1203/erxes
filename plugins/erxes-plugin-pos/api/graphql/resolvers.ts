@@ -39,6 +39,24 @@ const resolvers = [
 
       return models.Users.findOne({ _id: order.userId }).lean();
     }
+  },
+  {
+    type: 'PosOrder',
+    field: 'customer',
+    handler: async (order, { }, { models }) => {
+      if (!order.customerId) {
+        return null;
+      }
+
+      return models.Customers.findOne({ _id: order.customerId }).lean();
+    }
+  },
+  {
+    type: 'PosProduct',
+    field: 'category',
+    handler: async (posProduct, { }, { models }) => {
+      return models.ProductCategories.findOne({ _id: posProduct.categoryId }).lean();
+    }
   }
 ];
 

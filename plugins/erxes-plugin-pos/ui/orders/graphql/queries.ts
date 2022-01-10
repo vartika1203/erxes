@@ -1,9 +1,18 @@
+import { queries as productQueries } from 'erxes-ui/lib/products/graphql';
+
 const listParamsDef = `
   $page: Int
   $perPage: Int
   $sortField: String
   $sortDirection: Int
   $search: String
+  $paidStartDate: Date
+  $paidEndDate: Date
+  $createdStartDate: Date
+  $createdEndDate: Date
+  $paidDate: String
+  $userId: String
+  $customerId: String
 `;
 
 const listParamsValue = `
@@ -12,6 +21,13 @@ const listParamsValue = `
   sortField: $sortField
   sortDirection: $sortDirection
   search: $search
+  paidStartDate: $paidStartDate
+  paidEndDate: $paidEndDate
+  createdStartDate: $createdStartDate
+  createdEndDate: $createdEndDate
+  paidDate: $paidDate
+  userId: $userId
+  customerId: $customerId
 `;
 
 const responseFields = `
@@ -43,6 +59,14 @@ const responseFields = `
     _id
     email
   }
+  customer {
+    _id
+    firstName
+    lastName
+    middleName
+    primaryEmail
+    primaryPhone
+  }
 `;
 
 const posOrders = `
@@ -64,8 +88,40 @@ const orderDetail = `
     orderDetail(_id: $_id)
   }
 `
+
+const posProducts = `
+  query posProducts(
+    $categoryId: String,
+    $searchValue: String,
+    ${listParamsDef}
+  ) {
+    posProducts(
+      categoryId: $categoryId,
+      searchValue: $searchValue,
+      ${listParamsValue}
+    ) {
+      _id
+      name
+      type
+      code
+      categoryId
+      unitPrice
+      category {
+        _id
+        code
+        name
+      }
+      count
+    }
+  }
+`;
+
+const productCategories = productQueries.productCategories;
+
 export default {
   posOrders,
   posOrdersSummary,
-  orderDetail
+  orderDetail,
+  posProducts,
+  productCategories,
 };

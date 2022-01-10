@@ -1,5 +1,7 @@
-import { IOrdersSummary } from "../types";
+import { IOrdersSummary, QueryResponse } from "../types";
 import { IUser } from 'erxes-ui/lib/auth/types';
+import {ICustomer} from 'erxes-ui/lib/customers/types';
+import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
 
 export type IOrder = {
   _id: string,
@@ -26,7 +28,8 @@ export type IOrder = {
   posToken: string,
   syncId: string,
   posName: string,
-  user: IUser
+  user: IUser,
+  customer: ICustomer
 }
 
 export type OrdersQueryResponse = {
@@ -46,3 +49,15 @@ export type OrdersSummaryQueryResponse = {
   loading: boolean;
   refetch: () => void;
 }
+
+export type IPosProduct = {
+  count: number;
+} & IProduct
+
+export type PosProductsQueryResponse = {
+  posProducts: IPosProduct[];
+} & QueryResponse;
+
+export type ProductCategoriesQueryResponse = {
+  productCategories: IProductCategory[];
+} & QueryResponse;

@@ -3,6 +3,7 @@ import List from './pos/containers/List';
 import PosContainer from './pos/containers/Pos';
 import queryString from 'query-string';
 import OrderList from './orders/containers/List'
+import PosProductList from './orders/containers/ProductList'
 
 const settingsComponent = ({ location, history }) => {
   return (
@@ -20,6 +21,14 @@ const posComponent = ({ match, location, history }) => {
 const OrderListComponent = ({ location, history }) => {
   return (
     <OrderList
+      queryParams={queryString.parse(location.search)}
+      history={history}
+    />
+  )
+}
+const OrderItemsComponent = ({ location, history }) => {
+  return (
+    <PosProductList
       queryParams={queryString.parse(location.search)}
       history={history}
     />
@@ -43,6 +52,10 @@ export default () => ({
     {
       path: '/pos-orders',
       component: OrderListComponent
+    },
+    {
+      path: '/pos-order-items',
+      component: OrderItemsComponent
     }
   ],
   settings: [
