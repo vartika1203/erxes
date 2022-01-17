@@ -5,7 +5,13 @@ import InboxRoutes from './routes';
 
 const Routes = () => (
   <Router>
-    <AppProvider currentUser={{_id: 'sss', username: 'any', email: 'anu.b@nma.c'}} >
+    <AppProvider
+      currentUser={{
+        _id: 'sss',
+        username: 'admin admin',
+        email: 'admin@erxes.io'
+      }}
+    >
       <InboxRoutes />
     </AppProvider>
   </Router>

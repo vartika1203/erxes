@@ -2,8 +2,8 @@ module.exports = {
   name: 'inbox',
   port: 3009,
   exposes: {
-    './routes': './src/routes.tsx',
-    './settings': './src/Settings.tsx'
+    './routes': './src/routes.tsx'
+    // './settings': './src/Settings.tsx'
   },
   routes: {
     url: 'http://localhost:3009/remoteEntry.js',

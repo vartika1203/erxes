@@ -7,10 +7,11 @@ import MailForm from '@erxes/ui-settings/src/integrations/containers/mail/MailFo
 import React from 'react';
 import { __ } from '@erxes/ui/src/utils';
 
-const Sidebar = asyncComponent(() =>
-  import(
-    /* webpackChunkName:"Inbox-Sidebar" */ '../containers/leftSidebar/Sidebar'
-  )
+const Sidebar = asyncComponent(
+  () => console.log('text helloo')
+  // import(
+  //   /* webpackChunkName:"Inbox-Sidebar" */ '../containers/leftSidebar/Sidebar'
+  // )
 );
 
 const ConversationDetail = asyncComponent(
