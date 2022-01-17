@@ -8,9 +8,18 @@ type Props = {
   unit: IUnit;
   deleteDepartment: (_id: string, callback: () => void) => void;
   refetch: () => void;
+  isOpen: boolean;
+  clickParent: (clickedId: string) => void;
+  clicked: string;
 };
 
-export default function Item({ unit, refetch, deleteDepartment }: Props) {
+export default function Item({
+  unit,
+  refetch,
+  deleteDepartment,
+  clickParent,
+  clicked
+}: Props) {
   const renderForm = ({ closeModal }) => {
     return <Form unit={unit} closeModal={closeModal} />;
   };
@@ -23,6 +32,9 @@ export default function Item({ unit, refetch, deleteDepartment }: Props) {
       deleteItem={deleteDepartment}
       refetch={refetch}
       queryParamName="unitId"
+      isOpen={true}
+      clickParent={clickParent}
+      parent={clicked}
     />
   );
 }

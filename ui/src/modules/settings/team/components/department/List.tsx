@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Form from '../../containers/department/Form';
 import Item from '../../containers/department/Item';
@@ -10,24 +10,32 @@ type Props = {
 };
 
 export default function List({ listQuery }: Props) {
+  const [clicked, setClicked] = useState('');
   const allDepartments = listQuery.data.departments || [];
 
   const renderForm = ({ closeModal }) => {
     return <Form closeModal={closeModal} />;
   };
 
+  const clickParent = clickedId => {
+    setClicked(clickedId);
+  };
   const renderChildren = (parentId?) => {
     return generateTree(
       allDepartments,
       parentId,
       (node, level) => {
         return (
-          <Item
-            key={node._id}
-            level={level}
-            department={node}
-            refetch={listQuery.refetch}
-          />
+          (clicked === node.parentId || node.parentId === null) && (
+            <Item
+              key={node._id}
+              level={level}
+              department={node}
+              refetch={listQuery.refetch}
+              clickParent={clickParent}
+              clicked={clicked}
+            />
+          )
         );
       },
       -1

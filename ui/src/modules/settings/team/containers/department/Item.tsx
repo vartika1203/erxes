@@ -11,6 +11,8 @@ type Props = {
   department: IDepartment;
   refetch: () => void;
   level?: number;
+  clickParent: (clickedId: string) => void;
+  clicked: string;
 };
 
 export default function ItemContainer(props: Props) {

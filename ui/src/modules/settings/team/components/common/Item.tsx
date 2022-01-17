@@ -21,6 +21,10 @@ type Props = {
   icon?: string;
   level?: number;
   queryParamName: string;
+  parentId?: string;
+  isOpen: boolean;
+  clickParent: (clickedId: string) => void;
+  parent: string;
 };
 
 type FinalProps = Props & IRouterProps;
@@ -35,7 +39,10 @@ function BlockItem({
   renderForm,
   level,
   history,
-  location
+  location,
+  isOpen,
+  clickParent,
+  parent
 }: FinalProps) {
   const trigger = (
     <Button btnStyle="link">
@@ -60,12 +67,12 @@ function BlockItem({
   };
 
   const queryParams = queryString.parse(location.search);
-
   return (
     <SideList
       isActive={queryParams[queryParamName] === item._id}
       key={item._id}
       level={level}
+      isOpen={isOpen}
     >
       <span onClick={() => onClick(item._id)}>
         {icon && <Icon icon={icon} />}
@@ -81,6 +88,9 @@ function BlockItem({
           />
         </Tip>
       </ActionButtons>
+      {(item.parentId === null || parent === item.parentId) && (
+        <Icon icon="angle-down" onClick={() => clickParent(item._id)} />
+      )}
     </SideList>
   );
 }

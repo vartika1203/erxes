@@ -9,13 +9,18 @@ type Props = {
   deleteDepartment: (_id: string, callback: () => void) => void;
   refetch: () => void;
   level?: number;
+  isOpen?: boolean;
+  clickParent: (clickedId: string) => void;
+  clicked: string;
 };
 
 export default function Item({
   department,
   refetch,
   deleteDepartment,
-  level
+  level,
+  clickParent,
+  clicked
 }: Props) {
   const renderForm = ({ closeModal }) => {
     return <Form department={department} closeModal={closeModal} />;
@@ -31,6 +36,9 @@ export default function Item({
       deleteItem={deleteDepartment}
       refetch={refetch}
       queryParamName="departmentId"
+      isOpen={true}
+      clickParent={clickParent}
+      parent={clicked}
     />
   );
 }

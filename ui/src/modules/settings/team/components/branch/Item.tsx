@@ -9,13 +9,21 @@ type Props = {
   deleteBranch: (_id: string, callback: () => void) => void;
   refetch: () => void;
   level?: number;
+  clickParent: (clickedId: string) => void;
+  clicked: string;
 };
 
-export default function Item({ branch, refetch, deleteBranch, level }: Props) {
+export default function Item({
+  branch,
+  refetch,
+  deleteBranch,
+  level,
+  clickParent,
+  clicked
+}: Props) {
   const renderForm = ({ closeModal }) => {
     return <Form branch={branch} closeModal={closeModal} />;
   };
-
   return (
     <BlockItem
       item={branch}
@@ -26,6 +34,9 @@ export default function Item({ branch, refetch, deleteBranch, level }: Props) {
       deleteItem={deleteBranch}
       refetch={refetch}
       queryParamName="branchId"
+      isOpen={true}
+      clickParent={clickParent}
+      parent={clicked}
     />
   );
 }

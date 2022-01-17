@@ -10,6 +10,8 @@ import { IUnit } from '../../types';
 type Props = {
   unit: IUnit;
   refetch: () => void;
+  clickParent: (clickedId: string) => void;
+  clicked: string;
 };
 
 export default function ItemContainer(props: Props) {
@@ -29,5 +31,5 @@ export default function ItemContainer(props: Props) {
     });
   };
 
-  return <Item {...props} deleteDepartment={deleteDepartment} />;
+  return <Item {...props} deleteDepartment={deleteDepartment} isOpen={true} />;
 }

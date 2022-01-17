@@ -90,6 +90,7 @@ const FormTable = styled.table`
 const SideList = styledTS<{
   isActive?: boolean;
   level?: number;
+  isOpen?: boolean;
 }>(styled(SidebarListItem))`
   white-space: normal !important;
   border: 0;
