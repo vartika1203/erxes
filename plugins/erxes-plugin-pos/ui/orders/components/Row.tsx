@@ -7,6 +7,7 @@ import { FinanceAmount } from '../../styles';
 type Props = {
   order: IOrder;
   history: any;
+  onSyncErkhet: (orderId: string) => void;
 };
 
 function displayValue(order, name) {
@@ -14,10 +15,11 @@ function displayValue(order, name) {
   return <FinanceAmount>{(value || 0).toLocaleString()}</FinanceAmount>;
 }
 
-function PutResponseRow({ order }: Props) {
+function PutResponseRow({ order, onSyncErkhet }: Props) {
 
   const onClick = e => {
     e.stopPropagation();
+    onSyncErkhet(order._id);
   };
 
 
@@ -33,12 +35,15 @@ function PutResponseRow({ order }: Props) {
       <td key={'pos'}>{order.posName || ''}</td>
       <td key={'user'}>{order.user ? order.user.email : ''}</td>
       <td key={'actions'}>
-        <Button
-          btnStyle="link"
-          size="small"
-          icon="external-link-alt"
-          onClick={onClick}
-        ></Button>
+        {
+          !order.syncedErkhet &&
+          <Button
+            btnStyle="link"
+            size="small"
+            icon="external-link-alt"
+            onClick={onClick}
+          ></Button>
+        }
       </td>
     </tr>
   );

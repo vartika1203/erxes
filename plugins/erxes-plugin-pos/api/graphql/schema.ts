@@ -102,7 +102,9 @@ export const types = `
 
     posName: String,
     user: User,
-    customer: Customer
+    customer: Customer,
+
+    syncedErkhet: Boolean
   }
 
   type PosProduct {
@@ -157,4 +159,5 @@ export const mutations = `
   posRemove(_id: String!): JSON
   productGroupsAdd(${groupCommonFields}): ProductGroups
   productGroupsBulkInsert(posId: String, groups:[GroupInput]): [ProductGroups]
+  posOrderSyncErkhet(_id: String!): PosOrder
 `;

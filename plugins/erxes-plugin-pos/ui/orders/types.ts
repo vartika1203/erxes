@@ -29,7 +29,9 @@ export type IOrder = {
   syncId: string,
   posName: string,
   user: IUser,
-  customer: ICustomer
+  customer: ICustomer,
+
+  syncedErkhet: boolean,
 }
 
 export type OrdersQueryResponse = {
@@ -61,3 +63,8 @@ export type PosProductsQueryResponse = {
 export type ProductCategoriesQueryResponse = {
   productCategories: IProductCategory[];
 } & QueryResponse;
+
+// mutation
+export type PosOrderSyncErkhetMutationResponse = {
+  posOrderSyncErkhet: (mutation: { variables: { _id: string } }) => Promise<any>;
+};

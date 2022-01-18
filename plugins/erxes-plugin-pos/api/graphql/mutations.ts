@@ -1,5 +1,6 @@
 import { IPOS } from '../types';
 import { sendMessage } from '../messageBrokers';
+import { orderToErkhet } from '../utils';
 
 const mutations = [
   /**
@@ -98,6 +99,30 @@ const mutations = [
       return models.ProductGroups.groups(models, posId);
     },
   },
+
+  {
+    name: 'posOrderSyncErkhet',
+    handler: async (_root, { _id }: { _id: string }, { models, messageBroker, memoryStorage }) => {
+      const order = await models.PosOrders.findOne({ _id }).lean();
+      if (!order) {
+        throw new Error('not found order');
+      }
+
+      const pos = await models.Pos.findOne({ token: order.posToken }).lean();
+      const putRes = await models.PutResponses.putHistories(models, { contentType: 'pos', contentId: _id });
+
+      if (!pos) {
+        throw new Error('not found pos');
+      }
+
+      if (!putRes) {
+        throw new Error('not found put response');
+      }
+
+      await orderToErkhet(models, messageBroker, memoryStorage, pos, _id, putRes._id);
+      return await models.PosOrders.findOne({ _id }).lean()
+    }
+  }
 ];
 
 export default mutations;

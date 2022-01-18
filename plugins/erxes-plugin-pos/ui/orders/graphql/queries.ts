@@ -30,7 +30,7 @@ const listParamsValue = `
   customerId: $customerId
 `;
 
-const responseFields = `
+export const responseFields = `
   _id
   createdAt
   status
@@ -53,6 +53,8 @@ const responseFields = `
   items
   posToken
   syncId
+
+  syncedErkhet
 
   posName
   user {

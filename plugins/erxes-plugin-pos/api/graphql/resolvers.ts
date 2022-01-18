@@ -1,3 +1,5 @@
+import { getConfig } from 'erxes-api-utils'
+
 const resolvers = [
   {
     type: 'Pos',
@@ -49,6 +51,22 @@ const resolvers = [
       }
 
       return models.Customers.findOne({ _id: order.customerId }).lean();
+    }
+  },
+  {
+    type: 'PosOrder',
+    field: 'syncedErkhet',
+    handler: async (order, { }, { models, memoryStorage }) => {
+      if (order.syncedErkhet) {
+        return true;
+      }
+
+      const erkhetConfig = await getConfig(models, memoryStorage, 'ERKHET', {});
+      if (!erkhetConfig || !erkhetConfig.apiToken) {
+        return true;
+      }
+
+      return order.syncedErkhet;
     }
   },
   {

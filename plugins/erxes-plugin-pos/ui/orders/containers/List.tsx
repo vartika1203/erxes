@@ -5,10 +5,10 @@ import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { IRouterProps } from 'erxes-ui/lib/types';
-import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse } from '../types';
-import { queries } from '../graphql';
+import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse, PosOrderSyncErkhetMutationResponse } from '../types';
+import { mutations, queries } from '../graphql';
 import { withRouter } from 'react-router-dom';
-import { Bulk, withProps, router, } from 'erxes-ui';
+import { Bulk, withProps, router, Alert } from 'erxes-ui';
 import { FILTER_PARAMS } from '../../constants';
 
 type Props = {
@@ -20,7 +20,7 @@ type FinalProps = {
   ordersQuery: OrdersQueryResponse;
   ordersSummaryQuery: OrdersSummaryQueryResponse
 } & Props &
-  IRouterProps;
+  IRouterProps & PosOrderSyncErkhetMutationResponse;
 
 type State = {
   loading: boolean;
@@ -74,6 +74,24 @@ class OrdersContainer extends React.Component<FinalProps, State> {
     router.removeParams(this.props.history, ...Object.keys(params));
   };
 
+  onSyncErkhet = (posId) => {
+    const { posOrderSyncErkhet, ordersQuery } = this.props;
+
+    posOrderSyncErkhet({
+      variables: { _id: posId }
+    })
+      .then(() => {
+        // refresh queries
+        ordersQuery.refetch();
+
+        Alert.success('You successfully synced erkhet.');
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
+
+  }
+
   render() {
     const {
       ordersQuery,
@@ -91,7 +109,8 @@ class OrdersContainer extends React.Component<FinalProps, State> {
       onSearch: this.onSearch,
       isFiltered: this.isFiltered(),
       clearFilter: this.clearFilter,
-      summaryQuery: ordersSummaryQuery
+      summaryQuery: ordersSummaryQuery,
+      onSyncErkhet: this.onSyncErkhet
     };
 
     const ordersList = props => {
@@ -139,6 +158,12 @@ export default withProps<Props>(
       {
         name: 'ordersSummaryQuery',
         options: generateParams
+      }
+    ),
+    graphql<Props, PosOrderSyncErkhetMutationResponse, { _id: string }>(
+      gql(mutations.posOrderSyncErkhet),
+      {
+        name: 'posOrderSyncErkhet',
       }
     ),
   )(withRouter<IRouterProps>(OrdersContainer))
