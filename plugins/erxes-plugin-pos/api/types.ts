@@ -13,4 +13,5 @@ export interface IPOS {
   formSectionTitle: string;
   formIntegrationIds: string[];
   ebarimtConfig: any;
+  erkhetConfig: any;
 }

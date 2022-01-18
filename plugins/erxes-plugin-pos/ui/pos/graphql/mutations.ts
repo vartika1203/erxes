@@ -26,6 +26,7 @@ const commonFields = `
   $formSectionTitle: String
   $formIntegrationIds: [String]
   $ebarimtConfig: JSON
+  $erkhetConfig: JSON
   $catProdMappings: [CatProdInput]
 `;
 
@@ -47,6 +48,7 @@ const commonVariables = `
   formSectionTitle: $formSectionTitle
   formIntegrationIds: $formIntegrationIds
   ebarimtConfig: $ebarimtConfig
+  erkhetConfig: $erkhetConfig
   catProdMappings: $catProdMappings
 `;
 

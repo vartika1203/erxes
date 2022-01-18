@@ -61,6 +61,7 @@ const posCommonFields = `
   formSectionTitle
   formIntegrationIds
   ebarimtConfig
+  erkhetConfig
 
   catProdMappings {
     _id

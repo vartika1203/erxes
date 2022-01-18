@@ -27,6 +27,7 @@ const posCommonFields = `
   formIntegrationIds: [String]
   token: String
   ebarimtConfig: JSON
+  erkhetConfig: JSON
 `;
 
 const catProd = `

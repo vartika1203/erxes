@@ -52,6 +52,7 @@ export type IPos = {
   formSectionTitle?: string;
   formIntegrationIds: string[];
   ebarimtConfig: any;
+  erkhetConfig: any;
   catProdMappings?: CatProd[];
 };
 

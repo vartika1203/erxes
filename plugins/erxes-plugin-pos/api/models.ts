@@ -25,6 +25,7 @@ export const posSChema = {
   formIntegrationIds: { type: [String], label: 'Form integration ids' },
   token: { type: String, label: 'Pos token' },
   ebarimtConfig: { type: Object, label: 'Ebarimt Config' },
+  erkhetConfig: { type: Object, label: 'Erkhet Config' },
   syncInfos: { type: Object, label: 'sync info' },
   catProdMappings: { type: [Object], label: 'Category product mappings', optional: true }
 };
@@ -196,7 +197,9 @@ const posOrdersSchema = {
   items: { type: posOrderItemSchema, label: 'items' },
   branchId: { type: String, label: 'Branch' },
   posToken: { type: String, optional: true },
-  syncId: { type: String, optional: true }
+  syncId: { type: String, optional: true },
+
+  syncedErkhet: { type: Boolean, default: false }
 };
 
 

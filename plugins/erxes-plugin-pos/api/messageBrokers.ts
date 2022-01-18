@@ -1,8 +1,10 @@
+import { orderToErkhet } from "./utils";
+
 export default [
   {
     method: 'queue',
     channel: 'vrpc_queue:erxes-pos-to-api',
-    handler: async (msg, { models, messageBroker }) => {
+    handler: async (msg, { models, messageBroker, memoryStorage }) => {
       const { posToken, syncId, response, order, items } = msg;
 
       const pos = await models.Pos.findOne({ token: posToken }).lean();
@@ -14,6 +16,8 @@ export default [
       await models.PosOrders.updateOne({ _id: order._id }, { $set: { ...order, posToken, syncId, items, branchId: pos.branchId } }, { upsert: true });
 
       messageBroker().sendMessage(`vrpc_queue:erxes-pos-from-api_${syncId}`, { status: 'ok', posToken, syncId, responseId: response._id, orderId: order._id })
+
+      await orderToErkhet(models, messageBroker, memoryStorage, pos, order._id, response._id);
     }
   },
   {

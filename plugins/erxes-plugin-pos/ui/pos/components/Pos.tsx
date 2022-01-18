@@ -23,6 +23,7 @@ import GeneralStep from './step/GeneralStep';
 import { PLUGIN_URL } from '../../constants';
 import Appearance, { IUIOptions } from './step/Appearance';
 import EbarimtConfig from './step/EbarimtConfig';
+import ErkhetConfig from './step/ErkhetConfig';
 
 type Props = {
   integration?: IIntegration;
@@ -51,6 +52,7 @@ type State = {
   formData?: any;
   isSkip: boolean;
   ebarimtConfig: any;
+  erkhetConfig: any;
 };
 
 class Pos extends React.Component<Props, State> {
@@ -80,13 +82,14 @@ class Pos extends React.Component<Props, State> {
       uiOptions,
       isSkip: false,
       ebarimtConfig: pos.ebarimtConfig,
+      erkhetConfig: pos.erkhetConfig,
     };
   }
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { brand, pos, groups, uiOptions, ebarimtConfig } = this.state;
+    const { brand, pos, groups, uiOptions, ebarimtConfig, erkhetConfig } = this.state;
 
     if (!pos.name) {
       return Alert.error('Enter POS name');
@@ -121,6 +124,7 @@ class Pos extends React.Component<Props, State> {
       formIntegrationIds: pos.formIntegrationIds,
       uiOptions,
       ebarimtConfig,
+      erkhetConfig,
       catProdMappings: cleanMappings,
       isOnline: pos.isOnline,
       waitingScreen: pos.waitingScreen,
@@ -288,6 +292,17 @@ class Pos extends React.Component<Props, State> {
                 noButton={true}
               >
                 <EbarimtConfig
+                  onChange={this.onChange}
+                  pos={pos}
+                />
+              </Step>
+              <Step
+                img="/images/icons/erxes-07.svg"
+                title={'erkhet Config'}
+                onClick={this.onStepClick}
+                noButton={true}
+              >
+                <ErkhetConfig
                   onChange={this.onChange}
                   pos={pos}
                 />
