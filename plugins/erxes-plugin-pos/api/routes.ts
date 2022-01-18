@@ -1,3 +1,5 @@
+import { getConfig } from 'erxes-api-utils'
+
 const getChildCategories = async (models, categories) => {
   let catIds = []
   for (const category of categories) {
@@ -286,6 +288,28 @@ export default {
         } catch (e) {
           return { error: e.message }
         }
+      }
+    },
+
+    // from erkhet, unSync order
+    {
+      method: 'POST',
+      path: '/api/unfetch-order-info',
+      handler: async ({ req, models, memoryStorage }) => {
+        const { orderId, token } = req.body;
+        let erkhetConfig = await getConfig(models, memoryStorage, 'ERKHET', {});
+
+        if (!erkhetConfig || !erkhetConfig.apiToken || erkhetConfig.apiToken !== token) {
+          return { error: 'not found token' }
+        }
+
+        const order = await models.PosOrders.findOne({ _id: orderId }).lean();
+        if (!order) {
+          return { error: 'not found order' }
+        }
+
+        await models.PosOrders.updateOne({ _id: orderId }, { $set: { syncedErkhet: false } });
+        return { status: 'done' }
       }
     }
   ]
