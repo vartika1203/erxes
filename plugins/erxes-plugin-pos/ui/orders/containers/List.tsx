@@ -8,7 +8,7 @@ import { IRouterProps } from 'erxes-ui/lib/types';
 import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse, PosOrderSyncErkhetMutationResponse } from '../types';
 import { mutations, queries } from '../graphql';
 import { withRouter } from 'react-router-dom';
-import { Bulk, withProps, router, Alert } from 'erxes-ui';
+import { Bulk, withProps, router, Alert, Spinner } from 'erxes-ui';
 import { FILTER_PARAMS } from '../../constants';
 
 type Props = {
@@ -98,18 +98,23 @@ class OrdersContainer extends React.Component<FinalProps, State> {
       ordersSummaryQuery
     } = this.props;
 
+    if (ordersSummaryQuery.loading || ordersQuery.loading) {
+      return <Spinner />
+    }
+
+    const summary = ordersSummaryQuery.posOrdersSummary;
     const list = ordersQuery.posOrders || [];
 
     const updatedProps = {
       ...this.props,
       orders: list,
+      summary,
       loading: ordersQuery.loading,
 
       onSelect: this.onSelect,
       onSearch: this.onSearch,
       isFiltered: this.isFiltered(),
       clearFilter: this.clearFilter,
-      summaryQuery: ordersSummaryQuery,
       onSyncErkhet: this.onSyncErkhet
     };
 

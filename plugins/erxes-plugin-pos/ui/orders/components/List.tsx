@@ -7,7 +7,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { TableWrapper } from '../../styles';
-import { IOrder, OrdersSummaryQueryResponse } from '../types';
+import { IOrder } from '../types';
 import HeaderDescription from './MainHead';
 import RightMenu from './RightMenu';
 import Row from './Row';
@@ -15,7 +15,6 @@ import Row from './Row';
 interface IProps extends IRouterProps {
   orders: IOrder[];
   loading: boolean;
-  totalCount: number;
   bulk: any[];
   isAllSelected: boolean;
   history: any;
@@ -25,7 +24,7 @@ interface IProps extends IRouterProps {
   onSelect: (values: string[] | string, key: string) => void;
   isFiltered: boolean;
   clearFilter: () => void;
-  summaryQuery: OrdersSummaryQueryResponse;
+  summary: any;
 
   onSyncErkhet: (orderId: string) => void;
 }
@@ -54,13 +53,12 @@ class Orders extends React.Component<IProps, {}> {
       orders,
       history,
       loading,
-      totalCount,
       queryParams,
       onSelect,
       onSearch,
       isFiltered,
       clearFilter,
-      summaryQuery,
+      summary,
       onSyncErkhet
     } = this.props;
 
@@ -78,12 +76,11 @@ class Orders extends React.Component<IProps, {}> {
       </BarItems>
     );
 
-
     const header = (
       <HeaderDescription
         icon="/images/actions/26.svg"
         title={__('Summary')}
-        summaryQuery={summaryQuery}
+        summary={summary}
         actionBar={actionBarRight}
       />
     );
@@ -149,7 +146,7 @@ class Orders extends React.Component<IProps, {}> {
           />
         }
         mainHead={header}
-        footer={<Pagination count={totalCount} />}
+        footer={<Pagination count={summary.count} />}
         content={
           <DataWithLoader
             data={mainContent}

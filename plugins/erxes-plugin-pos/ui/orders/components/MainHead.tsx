@@ -1,9 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
-import { __, dimensions, Button, Tip, Icon, Spinner, ControlLabel } from 'erxes-ui';
+import { __, dimensions, Button, Tip, Icon, ControlLabel } from 'erxes-ui';
 import { IOrdersSummary } from '../../types';
-import { OrdersSummaryQueryResponse } from '../types';
 
 const MainDescription = styledTS<{
   expand: boolean;
@@ -87,7 +86,7 @@ const HeaderContentSmall = styled.div`
 type Props = {
   icon: string;
   title: string;
-  summaryQuery: OrdersSummaryQueryResponse;
+  summary: any
   actionBar: React.ReactNode;
 };
 
@@ -151,13 +150,7 @@ class HeaderDescription extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { icon, title, summaryQuery, actionBar } = this.props;
-
-    if (summaryQuery.loading) {
-      return <Spinner />
-    }
-
-    const summary = summaryQuery.posOrdersSummary;
+    const { icon, title, summary, actionBar } = this.props;
 
     return (
       <>
