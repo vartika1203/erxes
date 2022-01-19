@@ -3,6 +3,7 @@ import React from 'react';
 import { IOrder } from '../types';
 import Button from 'erxes-ui/lib/components/Button';
 import { FinanceAmount } from '../../styles';
+import * as dayjs from 'dayjs';
 
 type Props = {
   order: IOrder;
@@ -26,7 +27,7 @@ function PutResponseRow({ order, onSyncErkhet }: Props) {
   return (
     <tr>
       <td key={'BillID'}>{order.number} </td>
-      <td key={'Date'}>{order.paidDate || order.createdAt}</td>
+      <td key={'Date'}>{dayjs(order.paidDate || order.createdAt).format('lll')}</td>
       <td key={'cashAmount'}>{displayValue(order, 'cashAmount')}</td>
       <td key={'cardAmount'}>{displayValue(order, 'cardAmount')}</td>
       <td key={'mobileAmount'}>{displayValue(order, 'mobileAmount')}</td>
