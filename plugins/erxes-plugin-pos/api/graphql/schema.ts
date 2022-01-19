@@ -119,6 +119,11 @@ export const types = `
     count: Float
     category: ProductCategory
   }
+
+  type PosProducts {
+    products: [PosProduct],
+    totalCount: Float,
+  }
 `;
 
 const queryParams = `
@@ -149,7 +154,7 @@ export const queries = `
   productGroups(posId: String!): [ProductGroups]
 
   posOrders(${queryParams}): [PosOrder]
-  posProducts(${queryParams} categoryId: String, searchValue: String): [PosProduct]
+  posProducts(${queryParams} categoryId: String, searchValue: String): PosProducts
   posOrdersSummary(${queryParams}): JSON
 `;
 

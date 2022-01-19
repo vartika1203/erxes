@@ -57,7 +57,7 @@ export type IPosProduct = {
 } & IProduct
 
 export type PosProductsQueryResponse = {
-  posProducts: IPosProduct[];
+  posProducts: { products: IPosProduct[]; totalCount: number };
 } & QueryResponse;
 
 export type ProductCategoriesQueryResponse = {

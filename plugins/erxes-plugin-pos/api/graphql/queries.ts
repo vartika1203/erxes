@@ -256,6 +256,8 @@ const queries = [
       const products = await models.Products.find(query)
         .skip(skip).limit(limit).lean();
 
+      const totalCount = await models.Products.find(query).countDocuments();
+
       const productIds = products.map(p => p._id)
 
       query['items.productId'] = { $in: productIds }
@@ -282,7 +284,7 @@ const queries = [
         product.count = (items.find(i => i._id === product._id) || {}).count || 0;
       }
 
-      return products;
+      return {totalCount, products};
     }
   },
 ];

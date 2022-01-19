@@ -102,18 +102,22 @@ const posProducts = `
       searchValue: $searchValue,
       ${listParamsValue}
     ) {
-      _id
-      name
-      type
-      code
-      categoryId
-      unitPrice
-      category {
+      products {
         _id
-        code
         name
+        type
+        code
+        categoryId
+        unitPrice
+        category {
+          _id
+          code
+          name
+        }
+        count
       }
-      count
+
+      totalCount
     }
   }
 `;

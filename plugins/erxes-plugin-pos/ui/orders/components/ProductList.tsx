@@ -22,6 +22,7 @@ interface IProps extends IRouterProps {
   history: any;
   queryParams: any;
   products: IPosProduct[];
+  totalCount: number;
   loading: boolean;
   searchValue: string;
   currentCategory: IProductCategory;
@@ -91,7 +92,7 @@ class List extends React.Component<IProps, State> {
       onSearch,
       isFiltered,
       clearFilter,
-      currentCategory,
+      totalCount
     } = this.props;
 
     const rightMenuProps = {
@@ -133,7 +134,7 @@ class List extends React.Component<IProps, State> {
       </>
     );
 
-    if (currentCategory && currentCategory.productCount === 0) {
+    if (totalCount === 0) {
       content = (
         <EmptyState
           image="/images/actions/8.svg"
@@ -157,7 +158,7 @@ class List extends React.Component<IProps, State> {
         leftSidebar={
           <CategoryList queryParams={queryParams} history={history} />
         }
-        footer={<Pagination />}
+        footer={<Pagination count={totalCount} />}
         content={
           <DataWithLoader
             data={content}

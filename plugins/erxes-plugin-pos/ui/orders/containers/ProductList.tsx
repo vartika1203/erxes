@@ -2,7 +2,7 @@ import * as compose from 'lodash.flowright';
 import gql from 'graphql-tag';
 import List from '../components/ProductList';
 import React from 'react';
-import { Bulk, withProps, router } from 'erxes-ui';
+import { Bulk, withProps, router, Spinner } from 'erxes-ui';
 import { graphql } from 'react-apollo';
 import { IRouterProps } from 'erxes-ui/lib/types';
 import { PosProductsQueryResponse } from '../types';
@@ -77,7 +77,11 @@ class ProductListContainer extends React.Component<FinalProps> {
       queryParams,
     } = this.props;
 
-    const products = posProductsQuery.posProducts || [];
+    if (posProductsQuery.loading) {
+      return <Spinner />
+    }
+    const products = posProductsQuery.posProducts && posProductsQuery.posProducts.products || [];
+    const totalCount = posProductsQuery.posProducts && posProductsQuery.posProducts.totalCount || 0;
 
     const searchValue = this.props.queryParams.searchValue || '';
 
@@ -85,6 +89,7 @@ class ProductListContainer extends React.Component<FinalProps> {
       ...this.props,
       queryParams,
       products,
+      totalCount,
       loading: posProductsQuery.loading,
       searchValue,
 
