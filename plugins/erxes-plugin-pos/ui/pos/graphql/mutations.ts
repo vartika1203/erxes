@@ -28,6 +28,7 @@ const commonFields = `
   $ebarimtConfig: JSON
   $erkhetConfig: JSON
   $catProdMappings: [CatProdInput]
+  $initialCategoryIds: [String]
 `;
 
 const commonVariables = `
@@ -50,6 +51,7 @@ const commonVariables = `
   ebarimtConfig: $ebarimtConfig
   erkhetConfig: $erkhetConfig
   catProdMappings: $catProdMappings
+  initialCategoryIds: $initialCategoryIds
 `;
 
 const commonPosFields = `

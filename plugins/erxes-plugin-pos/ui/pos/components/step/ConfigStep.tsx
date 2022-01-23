@@ -1,3 +1,10 @@
+import CatProdItem from '../../components/productGroup/CatProdItem';
+import GroupForm from '../../components/productGroup/GroupForm';
+import React from 'react';
+import { CatProd, IPos, IProductGroup } from '../../../types';
+import { IProduct, IProductCategory } from 'erxes-ui/lib/products/types';
+import { LeftItem } from 'erxes-ui/lib/components/step/styles';
+import Select from 'react-select-plus';
 import {
   FormGroup,
   ControlLabel,
@@ -7,10 +14,6 @@ import {
   ModalTrigger,
   __,
 } from "erxes-ui";
-import { LeftItem } from "erxes-ui/lib/components/step/styles";
-import React from "react";
-import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
-
 import {
   ActionButtons,
   Description,
@@ -19,9 +22,6 @@ import {
   Block,
   BlockRow,
 } from "../../../styles";
-import { IPos, IProductGroup, CatProd } from "../../../types";
-import GroupForm from "../../components/productGroup/GroupForm";
-import CatProdItem from '../../components/productGroup/CatProdItem';
 
 type Props = {
   onChange: (name: "pos" | "description" | "groups", value: any) => void;
@@ -36,6 +36,7 @@ type State = {
   groups: IProductGroup[];
   currentMode: "create" | "update" | undefined;
   mappings: CatProd[];
+  initialCategoryIds: string[];
 };
 
 export default class ConfigStep extends React.Component<Props, State> {
@@ -47,7 +48,8 @@ export default class ConfigStep extends React.Component<Props, State> {
     this.state = {
       groups,
       currentMode: undefined,
-      mappings: pos && pos.catProdMappings ? pos.catProdMappings : []
+      mappings: pos && pos.catProdMappings ? pos.catProdMappings : [],
+      initialCategoryIds: pos && pos.initialCategoryIds || []
     };
   }
 
@@ -137,7 +139,7 @@ export default class ConfigStep extends React.Component<Props, State> {
     const cleanFields = (cat: CatProd) => ({ _id: cat._id, categoryId: cat.categoryId, productId: cat.productId });
 
     // for omitting react __typename field
-    const mappings = this.state.mappings.map(m => 
+    const mappings = this.state.mappings.map(m =>
       ({ _id: m._id, categoryId: m.categoryId, productId: m.productId })
     );
 
@@ -180,9 +182,18 @@ export default class ConfigStep extends React.Component<Props, State> {
     );
   }
 
+  onChangeInitialCategory = (values) => {
+    const { pos, onChange } = this.props;
+    const initialCategoryIds = values.map(v => (v.value))
+    this.setState({ initialCategoryIds });
+
+    pos.initialCategoryIds = initialCategoryIds;
+    onChange('pos', pos)
+  }
+
   render() {
-    const { groups } = this.props;
-    const { mappings = [] } = this.state;
+    const { groups, productCategories } = this.props;
+    const { mappings = [], initialCategoryIds } = this.state;
 
     const groupTrigger = (
       <Button btnStyle="primary" icon="plus-circle">
@@ -214,6 +225,22 @@ export default class ConfigStep extends React.Component<Props, State> {
 
               {this.renderGroupFormTrigger(groupTrigger)}
             </Block>
+
+            <Block>
+              <h4>{__("Initial product categories")}</h4>
+              <Description>
+              </Description>
+              <FormGroup>
+                <ControlLabel>Product Category</ControlLabel>
+                <Select
+                  options={productCategories.map(e => ({ value: e._id, label: e.name }))}
+                  value={initialCategoryIds}
+                  onChange={this.onChangeInitialCategory}
+                  multi={true}
+                />
+              </FormGroup>
+            </Block>
+
             <Block>
               <h4>{__("Product & category mappings")}</h4>
               <Description>

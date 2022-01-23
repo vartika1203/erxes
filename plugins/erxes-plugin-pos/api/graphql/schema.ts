@@ -28,6 +28,7 @@ const posCommonFields = `
   token: String
   ebarimtConfig: JSON
   erkhetConfig: JSON
+  initialCategoryIds: [String]
 `;
 
 const catProd = `

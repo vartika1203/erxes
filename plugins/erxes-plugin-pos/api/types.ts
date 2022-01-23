@@ -14,4 +14,5 @@ export interface IPOS {
   formIntegrationIds: string[];
   ebarimtConfig: any;
   erkhetConfig: any;
+  initialCategoryIds: string[];
 }

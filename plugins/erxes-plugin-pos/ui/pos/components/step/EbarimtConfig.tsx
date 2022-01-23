@@ -35,7 +35,8 @@ class EbarimtConfig extends React.Component<Props, { config: any }> {
       companyRD: '',
       defaultGSCode: '',
       vatPercent: 0,
-      cityTaxPercent: 0
+      cityTaxPercent: 0,
+      footerText: '',
     }
 
     this.state = {
@@ -139,6 +140,13 @@ class EbarimtConfig extends React.Component<Props, { config: any }> {
               <BlockRow>
                 {this.renderCheckbox('hasCitytax', 'Has UB city tax', '')}
                 {this.renderInput('cityTaxPercent', 'UB city tax Percent', '', 'number')}
+              </BlockRow>
+            </Block>
+            <Block/>
+            <Block>
+              <h4>{__("Footer")}</h4>
+              <BlockRow>
+                {this.renderInput('footerText', 'Footer text', '')}
               </BlockRow>
             </Block>
             <Block/>

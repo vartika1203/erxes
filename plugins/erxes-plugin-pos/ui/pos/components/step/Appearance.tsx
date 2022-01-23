@@ -164,6 +164,12 @@ class Appearance extends React.Component<Props, State> {
                     "Secondary",
                     "#3fc7cc"
                   )}
+                  {this.renderPicker(
+                    "colors",
+                    "third",
+                    "Third",
+                    "#3fc700"
+                  )}
                 </ColorPickerWrap>
               </AppearanceRow>
             </FormGroup>

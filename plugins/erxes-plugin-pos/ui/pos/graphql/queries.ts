@@ -68,6 +68,7 @@ const posCommonFields = `
     categoryId
     productId
   }
+  initialCategoryIds
 `;
 
 const commonParamDefs = `

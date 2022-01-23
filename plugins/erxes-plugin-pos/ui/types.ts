@@ -54,6 +54,7 @@ export type IPos = {
   ebarimtConfig: any;
   erkhetConfig: any;
   catProdMappings?: CatProd[];
+  initialCategoryIds?: string[];
 };
 
 // query types

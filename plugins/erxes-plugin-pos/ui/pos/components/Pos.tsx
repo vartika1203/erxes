@@ -131,7 +131,8 @@ class Pos extends React.Component<Props, State> {
       kitchenScreen: pos.kitchenScreen,
       branchId: pos.branchId,
       allowBranchIds: pos.allowBranchIds,
-      beginNumber: pos.beginNumber
+      beginNumber: pos.beginNumber,
+      initialCategoryIds: pos.initialCategoryIds || []
     };
 
     if (pos.isOnline) {

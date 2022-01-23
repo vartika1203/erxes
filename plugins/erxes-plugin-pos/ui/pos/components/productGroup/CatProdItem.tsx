@@ -39,7 +39,7 @@ export default class CatProdItem extends React.Component<Props, State> {
     const onSelectChange = (field: string, option: any) => {
       const value = option && option.value ? option.value : '';
 
-      this.setState({ [field]: value });
+      this.setState({ [field]: value } as any);
 
       editMapping({ productId, categoryId, [field]: value, _id: item._id });
     };
