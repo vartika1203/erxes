@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'inbox',
+  name: 'app2',
   port: 3009,
   exposes: {
     './routes': './src/routes.tsx',

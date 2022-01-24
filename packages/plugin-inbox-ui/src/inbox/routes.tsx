@@ -1,31 +1,27 @@
-import asyncComponent from '@erxes/ui/src/components/AsyncComponent';
 import { IRouterProps } from '@erxes/ui/src/types';
-import queryString from 'query-string';
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Route } from 'react-router-dom';
+import { AppContext } from 'core_ui/appContext';
 
-const InboxComponent = asyncComponent(() =>
-  import(/* webpackChunkName: "InboxCore" */ './containers/InboxCore')
-);
+const InboxComponent = () => {
+  const context: any = useContext(AppContext);
 
-const index = ({ location }) => {
-  return <Redirect to={`/inbox/index${location.search}`} />;
+  console.log('mmmmmmmmmmmm', context)
+
+  const { currentUser } = context;
+
+  return <div>Inbox {currentUser ? currentUser.username : "none"}</div>;
 };
 
 const inbox = (props: IRouterProps) => {
   return (
-    <InboxComponent
-      history={props.history}
-      queryParams={queryString.parse(props.location.search)}
-    />
+    <InboxComponent />
   );
 };
 
 const routes = () => {
   return (
     <React.Fragment>
-      <Route exact={true} path='/' key='root' render={index} />
-      <Route exact={true} path='/inbox' key='inbox' render={index} />
       <Route
         exact={true}
         path='/inbox/index'

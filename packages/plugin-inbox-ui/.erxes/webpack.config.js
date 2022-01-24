@@ -103,14 +103,12 @@ module.exports = {
     new ModuleFederationPlugin({
       name: configs.name,
       filename: "remoteEntry.js",
-      remotes: {},
+      remotes: {
+        "core_ui": "core_ui@http://localhost:3000/remoteEntry.js"
+      },
       exposes,
       shared: {
-        ...shared,
-        "@erxes/ui": {
-          requiredVersion: "1.0.0",
-          singleton: true
-        }
+        ...shared
       },
     }),
     new HtmlWebPackPlugin({
