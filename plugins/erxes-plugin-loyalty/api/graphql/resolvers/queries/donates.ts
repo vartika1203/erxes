@@ -3,13 +3,13 @@ import { paginate } from 'erxes-api-utils'
 export default [
   {
     name: 'donates',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       return models.Donates.getDonates(models, { ...params, statuses: ['new'] })
     }
   },
   {
     name: 'donatesMain',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter: any = {};
 
       if (params.compaignId) {

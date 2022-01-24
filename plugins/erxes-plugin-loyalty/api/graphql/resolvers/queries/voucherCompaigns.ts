@@ -28,7 +28,7 @@ const generateFilter = async (models, params) => {
 export default [
   {
     name: 'voucherCompaigns',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params)
 
       return paginate(
@@ -44,13 +44,13 @@ export default [
   },
   {
     name: 'voucherCompaignDetail',
-    handler: async (_root, { _id }, { models, checkPermission, user }) => {
+    handler: async (_root, { _id }, { models }) => {
       return models.VoucherCompaigns.getVoucherCompaign(models, _id)
     }
   },
   {
     name: 'voucherCompaignsCount',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params);
 
       return models.VoucherCompaigns.find(

@@ -1,6 +1,6 @@
 import { paginate } from 'erxes-api-utils'
 
-const generateFilter = async (models, params) => {
+const generateFilter = async (params) => {
   const filter: any = {};
 
   if (params.searchValue) {
@@ -17,8 +17,8 @@ const generateFilter = async (models, params) => {
 export default [
   {
     name: 'donateCompaigns',
-    handler: async (_root, params, { models, checkPermission, user }) => {
-      const filter = await generateFilter(models, params)
+    handler: async (_root, params, { models }) => {
+      const filter = await generateFilter(params)
 
       return paginate(
         models.DonateCompaigns.find(
@@ -33,14 +33,14 @@ export default [
   },
   {
     name: 'donateCompaignDetail',
-    handler: async (_root, { _id }, { models, checkPermission, user }) => {
+    handler: async (_root, { _id }, { models }) => {
       return models.DonateCompaigns.getDonateCompaign(models, _id)
     }
   },
   {
     name: 'donateCompaignsCount',
-    handler: async (_root, params, { models, checkPermission, user }) => {
-      const filter = await generateFilter(models, params);
+    handler: async (_root, params, { models }) => {
+      const filter = await generateFilter(params);
 
       return models.DonateCompaigns.find(
         filter

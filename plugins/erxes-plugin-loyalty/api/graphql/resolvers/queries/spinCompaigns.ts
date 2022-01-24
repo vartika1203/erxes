@@ -17,7 +17,7 @@ const generateFilter = async (models, params) => {
 export default [
   {
     name: 'spinCompaigns',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params)
 
       return paginate(
@@ -33,13 +33,13 @@ export default [
   },
   {
     name: 'spinCompaignDetail',
-    handler: async (_root, { _id }, { models, checkPermission, user }) => {
+    handler: async (_root, { _id }, { models }) => {
       return models.SpinCompaigns.getSpinCompaign(models, _id)
     }
   },
   {
     name: 'spinCompaignsCount',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params);
 
       return models.SpinCompaigns.find(

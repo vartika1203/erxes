@@ -4,7 +4,7 @@ export default [
    */
   {
     name: 'customerLoyalty',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       return {
         customerId: params.customerId,
         loyalty: await models.Loyalties.getLoyaltyValue(models, params.customerId)

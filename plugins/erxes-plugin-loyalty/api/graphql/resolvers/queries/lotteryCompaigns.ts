@@ -17,7 +17,7 @@ const generateFilter = async (models, params) => {
 export default [
   {
     name: 'lotteryCompaigns',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params)
 
       return paginate(
@@ -33,13 +33,13 @@ export default [
   },
   {
     name: 'lotteryCompaignDetail',
-    handler: async (_root, { _id }, { models, checkPermission, user }) => {
+    handler: async (_root, { _id }, { models }) => {
       return models.LotteryCompaigns.getLotteryCompaign(models, _id)
     }
   },
   {
     name: 'lotteryCompaignsCount',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter = await generateFilter(models, params);
 
       return models.LotteryCompaigns.find(

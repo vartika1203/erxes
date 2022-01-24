@@ -3,13 +3,13 @@ import { paginate } from 'erxes-api-utils'
 export default [
   {
     name: 'spins',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       return models.Spins.getSpins(models, { ...params, statuses: ['new'] })
     }
   },
   {
     name: 'spinsMain',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const filter: any = {};
 
       if (params.compaignId) {

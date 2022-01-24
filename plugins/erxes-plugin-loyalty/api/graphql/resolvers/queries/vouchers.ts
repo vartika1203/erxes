@@ -1,13 +1,13 @@
 export default [
   {
     name: 'vouchers',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       return models.Vouchers.getVouchers(models, { ...params, statuses: ['new'] })
     }
   },
   {
     name: 'vouchersMain',
-    handler: async (_root, params, { models, checkPermission, user }) => {
+    handler: async (_root, params, { models }) => {
       const { page = 0, perPage = 0 } = params;
 
       const _page = Number(page || "1");
