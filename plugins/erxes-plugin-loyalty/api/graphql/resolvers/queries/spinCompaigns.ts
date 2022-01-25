@@ -1,6 +1,6 @@
 import { paginate } from 'erxes-api-utils'
 
-const generateFilter = async (models, params) => {
+const generateFilter = async (params) => {
   const filter: any = {};
 
   if (params.searchValue) {
@@ -18,7 +18,7 @@ export default [
   {
     name: 'spinCompaigns',
     handler: async (_root, params, { models }) => {
-      const filter = await generateFilter(models, params)
+      const filter = await generateFilter(params)
 
       return paginate(
         models.SpinCompaigns.find(
@@ -40,7 +40,7 @@ export default [
   {
     name: 'spinCompaignsCount',
     handler: async (_root, params, { models }) => {
-      const filter = await generateFilter(models, params);
+      const filter = await generateFilter(params);
 
       return models.SpinCompaigns.find(
         filter
