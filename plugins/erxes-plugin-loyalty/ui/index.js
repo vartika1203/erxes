@@ -133,7 +133,7 @@ export default () => ({
     label: 'Loyalty',
     icon: 'icon-piggybank',
     link: '/vouchers',
-    // permission: 'showContracts'
+    permission: 'showLoyalties'
   },
   customerRightSidebarSection: {
     section: customerSection,
