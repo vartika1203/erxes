@@ -1,7 +1,7 @@
 import 'erxes-icon/css/erxes.min.css';
 import gql from 'graphql-tag';
 import client from '../apollo-client';
-import { getLocalStorageItem, initStorage } from '../common';
+import { getLocalStorageItem, initStorage, setLocalStorageItem } from '../common';
 import { setLocale } from '../utils';
 import widgetConnect from '../widgetConnect';
 import { connection } from './connection';
@@ -22,6 +22,16 @@ widgetConnect({
     connection.hasPopupHandlers = hasPopupHandlers;
 
     initStorage(storage);
+
+    const { data } = setting;
+    
+		if (data && data.customerId) {
+			setLocalStorageItem(
+				'customerId',
+				data.customerId,
+				connection.setting
+			);
+		}
 
     // call connect mutation
     return client.mutate({
