@@ -50,7 +50,7 @@ export const delQpayConfigs = async (code, models, doc) => {
   return selected;
 };
 
-export const getQpayConfigs = async (code, models, params) => {
+export const getQpayConfigs = async (code, models, _params) => {
   const addresses = await models.Configs.findOne({ code });
   const value = addresses && addresses.value ? addresses.value : [];
   const actives = value.filter(function(i) {
