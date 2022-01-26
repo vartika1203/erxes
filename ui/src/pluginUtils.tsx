@@ -197,9 +197,18 @@ class Setting extends React.Component<any, any> {
   }
 }
 
-export const pluginsSettingsNavigations = () => {
+export const pluginsSettingsNavigations = (
+  renderBox: (
+    name: string,
+    image: string,
+    to: string,
+    action: string,
+    permissions?: string[]
+  ) => React.ReactNode
+) => {
   const plugins: any[] = (window as any).plugins || [];
   const navigationMenus: any[] = [];
+  const pluginBox: any[] = [];
 
   for (const plugin of plugins) {
     for (const menu of plugin.menus || []) {
@@ -215,7 +224,36 @@ export const pluginsSettingsNavigations = () => {
     }
   }
 
-  return navigationMenus;
+  for (const plugin of plugins) {
+    for (const menu of plugin.menus || []) {
+      if (menu.location === 'settings') {
+        pluginBox.push(
+          <span key={Math.random()}>
+            {renderBox(
+              menu.name,
+              menu.image,
+              menu.to,
+              menu.action,
+              menu.permissions
+            )}
+          </span>
+        );
+      }
+    }
+  }
+  console.log(navigationMenus, 'navigation menus');
+  return (
+    <>
+      <Divider />
+      <Row>
+        <RowTitle>
+          {__('Plugins Settings')}
+          <span>{__('Setup and manage plugin settings')}</span>
+        </RowTitle>
+        <div id={'settingsPluginsSettings'}>{pluginBox}</div>
+      </Row>
+    </>
+  );
 };
 
 export const pluginRouters = () => {

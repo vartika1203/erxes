@@ -404,7 +404,7 @@ class Settings extends React.PureComponent {
 
         {pluginsOfSettings(this.renderBox)}
 
-        {pluginsSettingsNavigations()}
+        {pluginsSettingsNavigations(this.renderBox)}
       </MenusContainer>
     );
 

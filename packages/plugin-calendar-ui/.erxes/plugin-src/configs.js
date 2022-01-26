@@ -21,8 +21,22 @@ module.exports = {
       text: 'Calendar settings',
       icon: 'icon-calendar-alt',
       location: 'settings',
-      scope: 'calendar',
-      component: './settings'
+      scope: 'plugin',
+      component: './settings',
+      name: 'Calendar',
+      image: '/images/icons/erxes-21.svg',
+      to: '/settings/calendars',
+      action: 'calendarsAll',
+      permissions: [
+        'calendarsAdd',
+        'calendarsEdit',
+        'calendarsRemove',
+        'showCalendars',
+        'showCalendarGroups',
+        'calendarGroupsAdd',
+        'calendarGroupsEdit',
+        'calendarGroupsRemove'
+      ]
     }
   ]
 };

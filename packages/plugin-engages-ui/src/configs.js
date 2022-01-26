@@ -21,8 +21,27 @@ module.exports = {
       text: 'Campaigns settings',
       icon: 'icon-megaphone',
       location: 'settings',
-      scope: 'engages',
-      component: './settings'
+      scope: 'plugins',
+      component: './settings',
+      name: "Campaigns settings",
+      image: "/images/icons/erxes-19.svg",
+      to: "/settings/boards/ticket",
+      action: "ticketsAll",
+      permissions: [
+        "ticketBoardsAdd",
+        "ticketBoardsEdit",
+        "ticketBoardsRemove",
+        "ticketPipelinesAdd",
+        "ticketPipelinesEdit",
+        "ticketPipelinesUpdateOrder",
+        "ticketPipelinesRemove",
+        "ticketPipelinesArchive",
+        "ticketPipelinesCopied",
+        "ticketStagesAdd",
+        "ticketStagesEdit",
+        "ticketStagesUpdateOrder",
+        "ticketStagesRemove",
+      ],
     }
   ]
 };
