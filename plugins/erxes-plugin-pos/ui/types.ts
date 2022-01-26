@@ -18,9 +18,9 @@ export type IProductGroup = {
   categoryIds: string[];
   excludedCategoryIds: string[];
   excludedProductIds: string[];
-  categories: IProductCategory[];
-  excludedCategories: IProductCategory[];
-  excludedProducts: IProduct[];
+  categories?: IProductCategory[];
+  excludedCategories?: IProductCategory[];
+  excludedProducts?: IProduct[];
 };
 
 export type IScreenConfig = {
@@ -55,6 +55,7 @@ export type IPos = {
   erkhetConfig: any;
   catProdMappings?: CatProd[];
   initialCategoryIds?: string[];
+  kioskExcludeProductIds?: string[];
 };
 
 // query types
@@ -211,10 +212,6 @@ export type IButtonMutateProps = {
 
 export type ProductCategoriesQueryResponse = {
   productCategories: IProductCategory[];
-} & QueryResponse;
-
-export type ProductsQueryResponse = {
-  products: IProduct[];
 } & QueryResponse;
 
 export type GroupsBulkInsertMutationResponse = {

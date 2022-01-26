@@ -29,6 +29,7 @@ const posCommonFields = `
   ebarimtConfig: JSON
   erkhetConfig: JSON
   initialCategoryIds: [String]
+  kioskExcludeProductIds: [String]
 `;
 
 const catProd = `

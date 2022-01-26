@@ -1,8 +1,13 @@
-import { Button, FormControl, Form, FormGroup, ControlLabel } from 'erxes-ui';
-import { IFormProps } from 'erxes-ui/lib/types';
-import { IButtonMutateProps } from '../../types';
 import React from 'react';
-import { IBrand } from 'erxes-ui/lib/products/types';
+import {
+  Button,
+  ControlLabel,
+  Form,
+  FormControl,
+  FormGroup
+} from 'erxes-ui';
+import { IBrand, IFormProps } from 'erxes-ui/lib/types';
+import { IButtonMutateProps } from '../../types';
 import { ModalFooter } from 'erxes-ui/lib/styles/main';
 
 type Props = {

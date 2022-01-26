@@ -15,4 +15,5 @@ export interface IPOS {
   ebarimtConfig: any;
   erkhetConfig: any;
   initialCategoryIds: string[];
+  kioskExcludeProductIds: string[];
 }

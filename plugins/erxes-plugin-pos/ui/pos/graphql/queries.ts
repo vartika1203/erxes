@@ -69,6 +69,7 @@ const posCommonFields = `
     productId
   }
   initialCategoryIds
+  kioskExcludeProductIds
 `;
 
 const commonParamDefs = `

@@ -28,7 +28,8 @@ export const posSChema = {
   erkhetConfig: { type: Object, label: 'Erkhet Config' },
   syncInfos: { type: Object, label: 'sync info' },
   catProdMappings: { type: [Object], label: 'Category product mappings', optional: true },
-  initialCategoryIds: {type: [String], label: 'Pos initial categories'}
+  initialCategoryIds: {type: [String], label: 'Pos initial categories'},
+  kioskExcludeProductIds: {type: [String], label: 'Kiosk exclude products'},
 };
 
 class Pos {

@@ -29,6 +29,7 @@ const commonFields = `
   $erkhetConfig: JSON
   $catProdMappings: [CatProdInput]
   $initialCategoryIds: [String]
+  $kioskExcludeProductIds: [String]
 `;
 
 const commonVariables = `
@@ -52,6 +53,7 @@ const commonVariables = `
   erkhetConfig: $erkhetConfig
   catProdMappings: $catProdMappings
   initialCategoryIds: $initialCategoryIds
+  kioskExcludeProductIds: $kioskExcludeProductIds
 `;
 
 const commonPosFields = `

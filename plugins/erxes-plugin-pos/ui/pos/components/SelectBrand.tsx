@@ -1,16 +1,15 @@
+import BrandForm from './BrandForm';
 import React from 'react';
 import {
   __,
-  ControlLabel,
-  FormGroup,
-  FormControl,
   Button,
+  ControlLabel,
+  FormControl,
+  FormGroup,
   ModalTrigger
 } from 'erxes-ui';
-import { IBrand } from 'erxes-ui/lib/products/types';
-import { IFormProps } from 'erxes-ui/lib/types';
+import { IBrand, IFormProps } from 'erxes-ui/lib/types';
 import { IButtonMutateProps } from '../../types';
-import BrandForm from './BrandForm';
 import { Row } from '../../styles';
 
 type Props = {

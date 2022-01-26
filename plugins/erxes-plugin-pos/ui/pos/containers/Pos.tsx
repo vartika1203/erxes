@@ -18,7 +18,7 @@ import {
   IProductGroup,
   PosDetailQueryResponse
 } from '../../types';
-import { IPos, ProductCategoriesQueryResponse, ProductsQueryResponse, BranchesQueryResponse } from '../../types';
+import { IPos, ProductCategoriesQueryResponse, BranchesQueryResponse } from '../../types';
 import { mutations, queries } from '../graphql';
 import { PLUGIN_URL } from '../../constants';
 
@@ -36,7 +36,6 @@ type FinalProps = {
   posDetailQuery: PosDetailQueryResponse;
   groupsQuery: GroupsQueryResponse;
   integrationsQuery: IntegrationsQueryResponse;
-  productsQuery: ProductsQueryResponse;
   productCategoriesQuery: ProductCategoriesQueryResponse;
   branchesQuery: BranchesQueryResponse;
 } & Props &
@@ -61,7 +60,6 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       productGroupsBulkInsertMutation,
       history,
       integrationsQuery,
-      productsQuery,
       productCategoriesQuery,
       branchesQuery
     } = this.props;
@@ -70,7 +68,6 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       posDetailQuery && posDetailQuery.loading ||
       groupsQuery.loading ||
       integrationsQuery.loading ||
-      productsQuery.loading ||
       productCategoriesQuery.loading ||
       branchesQuery.loading
     ) {
@@ -136,7 +133,6 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       branches,
       isActionLoading: this.state.isLoading,
       currentMode: 'update',
-      products: productsQuery.products,
       productCategories: productCategoriesQuery.productCategories
     };
 
@@ -206,13 +202,6 @@ export default withProps<FinalProps>(
         })
       }
     ),
-    graphql<Props, ProductsQueryResponse>(gql(productQueries.products), {
-      name: 'productsQuery',
-      options: () => ({
-        fetchPolicy: 'network-only',
-        variables: { perPage: 100 }
-      })
-    }),
     graphql<Props, BranchesQueryResponse>(gql(queries.branches), {
       name: 'branchesQuery',
       options: () => ({

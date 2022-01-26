@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select-plus';
-import { FormGroup, ControlLabel, Button } from 'erxes-ui';
-import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
+import { FormGroup, ControlLabel, Button, SelectProducts } from 'erxes-ui';
+import { IProductCategory } from 'erxes-ui/lib/products/types';
 
 import { FlexRow } from '../../../styles';
 import { CatProd } from '../../../types';
@@ -12,7 +12,6 @@ type Props = {
   key: string;
   item: CatProd;
   productCategories: IProductCategory[];
-  products: IProduct[];
 }
 
 type State = {
@@ -33,11 +32,11 @@ export default class CatProdItem extends React.Component<Props, State> {
   }
 
   render() {
-    const { productCategories, products, item, editMapping, removeMapping } = this.props;
+    const { productCategories, item, editMapping, removeMapping } = this.props;
     const { productId, categoryId } = this.state;
 
     const onSelectChange = (field: string, option: any) => {
-      const value = option && option.value ? option.value : '';
+      const value = option && option.value ? option.value : '' || option;
 
       this.setState({ [field]: value } as any);
 
@@ -45,7 +44,6 @@ export default class CatProdItem extends React.Component<Props, State> {
     };
 
     const categoryOptions = productCategories.map(e => ({ value: e._id, label: e.name }));
-    const productOptions = products.map(e => ({ value: e._id, label: e.name }));
 
     return (
       <FlexRow key={item._id}>
@@ -59,10 +57,12 @@ export default class CatProdItem extends React.Component<Props, State> {
         </FormGroup>
         <FormGroup>
           <ControlLabel>Product</ControlLabel>
-          <Select
-            options={productOptions}
-            value={productId}
-            onChange={(option) => onSelectChange('productId', option)}
+          <SelectProducts
+            label={''}
+            name="kioskExcludeProductIds"
+            onSelect={(option) => onSelectChange('productId', option)}
+            initialValue={productId}
+            multi={false}
           />
         </FormGroup>
         <Button btnStyle="danger" icon="trash" onClick={() => removeMapping(item._id)} />

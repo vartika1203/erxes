@@ -1,17 +1,20 @@
-
-import { LeftItem } from "erxes-ui/lib/components/step/styles";
-import { __, uploadHandler, FormGroup, AvatarUpload } from "erxes-ui";
-import React from "react";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Popover from "react-bootstrap/Popover";
-import TwitterPicker from "react-color/lib/Twitter";
 import ControlLabel from 'erxes-ui/lib/components/form/Label';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import React from 'react';
+import TwitterPicker from 'react-color/lib/Twitter';
+import { LeftItem } from 'erxes-ui/lib/components/step/styles';
+import {
+  __,
+  AvatarUpload,
+  FormControl,
+  FormGroup,
+} from 'erxes-ui';
 import {
   AppearanceRow,
   ColorPick,
   ColorPicker,
   FlexItem,
-  SubItem,
   Block,
   LogoWrapper,
   ColorPickerWrap,
@@ -28,6 +31,7 @@ export interface IUIOptions {
   bgImage: string;
   favIcon: string;
   receiptIcon: string;
+  texts: IColor;
 }
 
 type Props = {
@@ -53,7 +57,16 @@ class Appearance extends React.Component<Props, State> {
       favIcon: '',
       bgImage: '',
       receiptIcon: '',
+      texts: {},
     };
+
+    if (!uiOptions.colors) {
+      uiOptions.colors = {}
+    }
+
+    if (!uiOptions.texts) {
+      uiOptions.texts = {}
+    }
 
     this.state = { uiOptions };
   }
@@ -86,6 +99,28 @@ class Appearance extends React.Component<Props, State> {
       </LogoWrapper>
     );
   }
+
+  renderInput = (key: string, title?: string, description?: string) => {
+    const { uiOptions } = this.state;
+
+    const onChangeInput = (e) => {
+      uiOptions['texts'][key] = e.target.value;
+
+      this.onChangeFunction("uiOptions", uiOptions);
+    };
+
+    const defaultValue = (uiOptions['texts'] || {})[key];
+    return (
+      <FormGroup>
+        <ControlLabel>{title || key}</ControlLabel>
+        {description && <p>{__(description)}</p>}
+        <FormControl
+          defaultValue={defaultValue}
+          onChange={onChangeInput}
+        />
+      </FormGroup>
+    );
+  };
 
   renderPicker(group, key, title, colour) {
     const { uiOptions } = this.props;
@@ -172,6 +207,13 @@ class Appearance extends React.Component<Props, State> {
                   )}
                 </ColorPickerWrap>
               </AppearanceRow>
+            </FormGroup>
+          </Block>
+          <Block>
+            <h4>{__("Infos")}</h4>
+            <FormGroup>
+              {this.renderInput('website', 'WebSite', '')}
+              {this.renderInput('phone', 'Phone', '')}
             </FormGroup>
           </Block>
         </LeftItem>

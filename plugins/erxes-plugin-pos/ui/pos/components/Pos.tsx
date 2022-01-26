@@ -1,29 +1,24 @@
-import {
-  ControlWrapper,
-  Indicator,
-  StepWrapper
-} from 'erxes-ui/lib/components/step/styles';
-import {
-  Step,
-  Steps,
-  Button,
-  Alert,
-  __,
-  Wrapper,
-  ButtonMutate
-} from 'erxes-ui';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
-
-import { IIntegration, IPos, IProductGroup } from '../../types';
-import { LeftContent, Content } from '../../styles';
-import ConfigStep from './step/ConfigStep';
-import GeneralStep from './step/GeneralStep';
-import { PLUGIN_URL } from '../../constants';
 import Appearance, { IUIOptions } from './step/Appearance';
+import ConfigStep from './step/ConfigStep';
 import EbarimtConfig from './step/EbarimtConfig';
 import ErkhetConfig from './step/ErkhetConfig';
+import GeneralStep from './step/GeneralStep';
+import React from 'react';
+import {
+  __,
+  Alert,
+  Button,
+  ButtonMutate,
+  Step,
+  Steps,
+  Wrapper
+} from 'erxes-ui';
+import { Content, LeftContent } from '../../styles';
+import { ControlWrapper, Indicator, StepWrapper } from 'erxes-ui/lib/components/step/styles';
+import { IIntegration, IPos, IProductGroup } from '../../types';
+import { IProductCategory } from 'erxes-ui/lib/products/types';
+import { Link } from 'react-router-dom';
+import { PLUGIN_URL } from '../../constants';
 
 type Props = {
   integration?: IIntegration;
@@ -34,7 +29,6 @@ type Props = {
   formIntegrations: IIntegration[];
   save: (params: any) => void;
   productCategories: IProductCategory[];
-  products: IProduct[];
   branches: any[];
 };
 
@@ -132,7 +126,8 @@ class Pos extends React.Component<Props, State> {
       branchId: pos.branchId,
       allowBranchIds: pos.allowBranchIds,
       beginNumber: pos.beginNumber,
-      initialCategoryIds: pos.initialCategoryIds || []
+      initialCategoryIds: pos.initialCategoryIds || [],
+      kioskExcludeProductIds: pos.kioskExcludeProductIds || [],
     };
 
     if (pos.isOnline) {
@@ -230,7 +225,7 @@ class Pos extends React.Component<Props, State> {
 
   render() {
     const { pos, groups, currentMode, uiOptions } = this.state;
-    const { integration, formIntegrations, productCategories, products, branches } = this.props;
+    const { integration, formIntegrations, productCategories, branches } = this.props;
     const brand = integration && integration.brand;
     const breadcrumb = [
       { title: 'POS List', link: `${PLUGIN_URL}/pos` },
@@ -271,7 +266,6 @@ class Pos extends React.Component<Props, State> {
                   groups={groups}
                   catProdMappings={pos.catProdMappings}
                   productCategories={productCategories}
-                  products={products}
                 />
               </Step>
               <Step
