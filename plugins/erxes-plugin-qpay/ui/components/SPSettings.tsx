@@ -38,7 +38,6 @@ class GeneralSettings extends React.Component<Props, State> {
 
   onChangeConfig = (code: string, e) => {
     const { configsMap } = this.state;
-    console.log(e.target.value, code);
     configsMap[code] = e.target.value;
     this.setState({ configsMap });
   };

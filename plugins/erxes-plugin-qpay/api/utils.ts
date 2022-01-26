@@ -51,7 +51,6 @@ export const delQpayConfigs = async (code, models, doc) => {
 };
 
 export const getQpayConfigs = async (code, models, params) => {
-  console.log(params);
   const addresses = await models.Configs.findOne({ code });
   const value = addresses && addresses.value ? addresses.value : [];
   const actives = value.filter(function(i) {
@@ -96,7 +95,6 @@ export const fetchUrl = async (url, requestOptions) => {
   await fetch(`${url}`, requestOptions)
     .then(response => response.text())
     .then(result => {
-      console.log(result);
       try {
         returnData = JSON.parse(result);
       } catch (error) {
