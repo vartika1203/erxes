@@ -184,10 +184,9 @@ const PasswordWithEye = styled.div`
   }
 `;
 
-const LeftNavigation = styledTS<{ collapsed: boolean }>(styled.aside)`
-  width: ${props =>
-    props.collapsed ? wideNavigation : dimensions.headerSpacingWide}px;
-  background: ${colors.colorPrimaryDark};
+const LeftNavigation = styledTS(styled.aside)`
+  width: ${dimensions.headerSpacing * 2 - 1}px;
+  background: ${colors.colorWhite};
   box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
   z-index: 11;
   flex-shrink: 0;
@@ -204,7 +203,7 @@ const LeftNavigation = styledTS<{ collapsed: boolean }>(styled.aside)`
     align-items: center;
 
     img {
-      max-height: ${props => (props.collapsed ? '35' : '28')}px;
+      max-height: ${dimensions.coreSpacing + 15}px;
       transition: all 0.3s ease;
       max-width: 80%;
 
@@ -215,36 +214,41 @@ const LeftNavigation = styledTS<{ collapsed: boolean }>(styled.aside)`
   }
 `;
 
-const Nav = styledTS<{ collapsed: boolean }>(styled.nav)`
+const Nav = styledTS(styled.nav)`
   display: block;
   margin-top: ${dimensions.unitSpacing / 2}px;
   height: calc(100% - 130px);
 
   > div > a {
     display: flex;
-    align-items: center;
     color: ${colors.bgLight}
-    height: ${dimensions.headerSpacing + 10}px;
-    justify-content: ${props => !props.collapsed && 'center'};
+    height: ${dimensions.headerSpacingWide}px;
+    justify-content: center;
     position: relative;
     transition: all 0.3s ease;
 
     i, label {
-      opacity: .8;
       cursor: pointer;
     }
 
     i {
-      padding: ${props => props.collapsed && '0 15px 0 20px'};
+      padding:0px, 14px, 0px, 0px;
       transition: all 0.3s ease;
+    }
+
+    label {
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      position: absolute;
+      bottom: 9px;
+      padding: 3px;
+      text-align: center
+      color: rgba(0, 0, 0, 0.62);
     }
 
     span {
       position: absolute;
-      left: ${props =>
-        props.collapsed
-          ? dimensions.coreSpacing + dimensions.unitSpacing
-          : dimensions.coreSpacing + dimensions.coreSpacing - 1}px;
+      left: ${dimensions.coreSpacing + dimensions.coreSpacing - 1}px;
       bottom: 12px;
       padding: 4px;
       min-width: 19px;
@@ -253,23 +257,25 @@ const Nav = styledTS<{ collapsed: boolean }>(styled.nav)`
     }
 
     &.active {
-      background: rgba(0, 0, 0, 0.13);
+      background: rgba(79, 51, 175, 0.08);
 
       &:before {
         content: "";
         width: 3px;
-        background: ${colors.colorCoreTeal};
+        background: ${colors.colorPrimary};
+        height: 70px;
         position: absolute;
         display: block;
         left: 0;
-        top: 5px;
-        bottom: 5px;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
+        top:0;
+        box-shadow: 0px 12px 24px rgba(79, 51, 175, 0.24), 0px 2px 6px rgba(79, 51, 175, 0.16), 0px 0px 1px rgba(79, 51, 175, 0.08);
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
       }
 
       > i, label {
         opacity: 1;
+        color: ${colors.colorPrimary};
       }
     }
 
@@ -282,6 +288,7 @@ const Nav = styledTS<{ collapsed: boolean }>(styled.nav)`
 
       > i, label {
         opacity: 1;
+        color: ${colors.colorPrimary};
       }
     }
 
@@ -306,18 +313,15 @@ const Nav = styledTS<{ collapsed: boolean }>(styled.nav)`
 `;
 
 const NavIcon = styled.i`
-  font-size: 16px;
-  line-height: ${dimensions.headerSpacing + 10}px;
-  color: ${colors.colorWhite};
+  font-size: 20px;
+  margin-top: 9px;
+  color: rgba(0, 0, 0, 0.62);
 `;
 
-const SubNav = styledTS<{ collapsed: boolean }>(styled.ul)`
-  background: ${colors.colorSecondary};
+const SubNav = styledTS(styled.ul)`
+  background: ${colors.colorWhite};
   position: absolute;
-  left: ${props =>
-    props.collapsed
-      ? wideNavigation
-      : dimensions.headerSpacing + dimensions.coreSpacing}px;
+  left: ${dimensions.headerSpacing * 2}px;
   word-wrap: break-word;
   width: 200px;
   max-height: 100vh;
@@ -327,27 +331,10 @@ const SubNav = styledTS<{ collapsed: boolean }>(styled.ul)`
   top: 0;
   margin: 0;
   padding: 0;
-  color: ${colors.colorShadowGray};
+  color: rgba(0, 0, 0, 0.62);
   list-style: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-
-  &:after {
-    content: " ";
-    border: solid transparent;
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-    border-width: ${dimensions.unitSpacing}px;
-    top: ${dimensions.coreSpacing}px;
-    left: -${dimensions.coreSpacing}px;
-    z-index: 10000;
-    border-right-color: ${colors.colorSecondary};
-
-    @media (max-height: 760px) {
-      top: ${dimensions.coreSpacing - 5}px;
-    }
   }
 `;
 
@@ -355,14 +342,13 @@ const SubNavItem = styledTS<{ additional: boolean }>(styled.li)`
     > a {
       padding: ${dimensions.unitSpacing - 4}px ${dimensions.unitSpacing}px;
       margin: ${dimensions.unitSpacing - 5}px ${dimensions.unitSpacing}px;
-      color: ${colors.colorWhite};
-      opacity: .8;
+      color: rgba(0, 0, 0, 0.62);
       display: flex;
       align-items: center;
       border-radius: ${props =>
         !props.additional && dimensions.unitSpacing - 5}px;
       border-top: ${props =>
-        props.additional && `1px solid ${rgba(colors.borderPrimary, 0.6)}`};
+        props.additional && `1px solid rgba(0, 0, 0, 0.08)`};
       border-bottom-left-radius: ${props =>
         props.additional && dimensions.unitSpacing - 5}px;
       border-bottom-right-radius: ${props =>
@@ -371,6 +357,7 @@ const SubNavItem = styledTS<{ additional: boolean }>(styled.li)`
       > i {
         font-size: 16px;
         margin-right: ${dimensions.unitSpacing}px;
+        color: ${colors.colorPrimary};
       }
 
       &.active {
@@ -427,65 +414,6 @@ const DropNav = styled.a`
   &:hover {
     ul {
       visibility: visible;
-    }
-  }
-`;
-
-const DropSubNav = styled.ul`
-  background: ${colors.colorSecondary};
-  word-wrap: break-word;
-  width: auto;
-  top: 0;
-  margin: 0;
-  padding: ${dimensions.unitSpacing - 5}px;
-  list-style: none;
-  transition: all 0.9s ease-out;
-
-  &:after {
-    content: ' ';
-    position: absolute;
-    pointer-events: none;
-    z-index: 10000;
-    left: ${dimensions.headerSpacing + 15}px;
-    top: ${dimensions.headerSpacing}px;
-    width: 0;
-    height: 0;
-    border-left: ${dimensions.unitSpacing + 2}px solid transparent;
-    border-right: ${dimensions.unitSpacing + 2}px solid transparent;
-    border-bottom: ${dimensions.unitSpacing}px solid ${colors.colorSecondary};
-
-    @media (max-height: 760px) {
-      top: ${dimensions.headerSpacing - 10}px;
-    }
-  }
-`;
-
-const DropSubNavItem = styled.li`
-  padding: ${dimensions.unitSpacing - 6}px;
-
-  > a {
-    padding: ${dimensions.unitSpacing - 3}px ${dimensions.unitSpacing + 2}px;
-    color: ${colors.colorWhite};
-    opacity: 0.8;
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-
-    > i {
-      font-size: 14px;
-      margin-right: ${dimensions.unitSpacing}px;
-    }
-
-    &.active {
-      opacity: 1;
-      font-weight: bold;
-      position: relative;
-      background: ${rgba(colors.colorBlack, 0.07)};
-    }
-
-    &:hover {
-      background: ${rgba(colors.colorBlack, 0.06)};
-      opacity: 1;
     }
   }
 `;
@@ -568,8 +496,6 @@ export {
   NavItem,
   SubNavTitle,
   SubNavItem,
-  DropSubNav,
-  DropSubNavItem,
   DropNav,
   ExpandIcon,
   SmallLabel

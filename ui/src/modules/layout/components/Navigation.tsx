@@ -1,6 +1,6 @@
 import Label from 'modules/common/components/Label';
 import WithPermission from 'modules/common/components/WithPermission';
-import { __, getEnv, setBadge, readFile } from 'modules/common/utils';
+import { __, getEnv, setBadge } from 'modules/common/utils';
 import { pluginNavigations, pluginsOfNavigations } from 'pluginUtils';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
@@ -10,16 +10,11 @@ import {
   Nav,
   SubNav,
   NavItem,
-  SubNavTitle,
   SubNavItem,
-  DropSubNav,
-  DropSubNavItem,
-  ExpandIcon,
   SmallLabel
 } from '../styles';
 import Tip from 'modules/common/components/Tip';
 import Icon from 'modules/common/components/Icon';
-import { getThemeItem } from 'utils';
 
 const { REACT_APP_DASHBOARD_URL } = getEnv();
 
@@ -86,42 +81,13 @@ class Navigation extends React.Component<IProps> {
     );
   };
 
-  renderChildren(
-    collapsed: boolean,
-    url: string,
-    text: string,
-    childrens?: ISubNav[]
-  ) {
+  renderChildren(url: string, text: string, childrens?: ISubNav[]) {
     if (!childrens || childrens.length === 0) {
       return null;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const parent = urlParams.get('parent');
-
-    if (
-      collapsed &&
-      (parent === url || window.location.pathname.startsWith(url))
-    ) {
-      return (
-        <DropSubNav>
-          {childrens.map((child, index) => (
-            <WithPermission key={index} action={child.permission}>
-              <DropSubNavItem>
-                <NavLink to={this.getLink(`${child.link}?parent=${url}`)}>
-                  <i className={child.icon} />
-                  {__(child.value)}
-                </NavLink>
-              </DropSubNavItem>
-            </WithPermission>
-          ))}
-        </DropSubNav>
-      );
-    }
-
     return (
-      <SubNav collapsed={collapsed}>
-        {!collapsed && <SubNavTitle>{__(text)}</SubNavTitle>}
+      <SubNav>
         {childrens.map((child, index) => this.renderSubNavItem(child, index))}
       </SubNav>
     );
@@ -135,29 +101,25 @@ class Navigation extends React.Component<IProps> {
     childrens?: ISubNav[],
     label?: React.ReactNode
   ) => {
-    const { collapsed } = this.props;
-
     const item = (
       <NavItem>
         <NavLink to={this.getLink(url)}>
           <NavIcon className={icon} />
-          {collapsed && <label>{__(text)}</label>}
+          <label>{__(text)}</label>
           {label}
         </NavLink>
-        {this.renderChildren(collapsed, url, text, childrens)}
+        {this.renderChildren(url, text, childrens)}
       </NavItem>
     );
 
     if (!childrens || childrens.length === 0) {
-      if (!collapsed) {
-        return (
-          <WithPermission key={url} action={permission}>
-            <Tip placement="right" key={Math.random()} text={__(text)}>
-              {item}
-            </Tip>
-          </WithPermission>
-        );
-      }
+      return (
+        <WithPermission key={url} action={permission}>
+          <Tip placement="right" key={Math.random()} text={__(text)}>
+            {item}
+          </Tip>
+        </WithPermission>
+      );
     }
 
     return (
@@ -167,24 +129,24 @@ class Navigation extends React.Component<IProps> {
     );
   };
 
-  renderCollapse() {
-    const { onCollapseNavigation, collapsed } = this.props;
-    const icon = collapsed ? 'angle-double-left' : 'angle-double-right';
-    const tooltipText = collapsed ? 'Collapse menu' : 'Expand menu';
+  // renderCollapse() {
+  //   const { onCollapseNavigation, collapsed } = this.props;
+  //   const icon = collapsed ? 'angle-double-left' : 'angle-double-right';
+  //   const tooltipText = collapsed ? 'Collapse menu' : 'Expand menu';
 
-    return (
-      <Tip placement="right" text={__(tooltipText)}>
-        <ExpandIcon onClick={onCollapseNavigation} collapsed={collapsed}>
-          <Icon icon={icon} size={22} />
-        </ExpandIcon>
-      </Tip>
-    );
-  }
+  //   return (
+  //     <Tip placement='right' text={__(tooltipText)}>
+  //       <ExpandIcon onClick={onCollapseNavigation} collapsed={collapsed}>
+  //         <Icon icon={icon} size={22} />
+  //       </ExpandIcon>
+  //     </Tip>
+  //   );
+  // }
 
   render() {
-    const { unreadConversationsCount, collapsed } = this.props;
-    const logo = collapsed ? 'logo.png' : 'erxes.png';
-    const thLogo = getThemeItem('logo');
+    const { unreadConversationsCount } = this.props;
+    // const logo = collapsed ? 'logo.png' : 'erxes.png';
+    // const thLogo = getThemeItem('logo');
 
     const unreadIndicator = unreadConversationsCount !== 0 && (
       <Label shake={true} lblStyle="danger" ignoreTrans={true}>
@@ -195,15 +157,12 @@ class Navigation extends React.Component<IProps> {
     const lbl = <SmallLabel>Beta</SmallLabel>;
 
     return (
-      <LeftNavigation collapsed={collapsed}>
+      <LeftNavigation>
         <NavLink to="/">
-          <img
-            src={thLogo ? readFile(thLogo) : `/images/${logo}`}
-            alt="erxes"
-          />
+          <Icon icon="apps" size={22} />
         </NavLink>
-        {this.renderCollapse()}
-        <Nav id="navigation" collapsed={collapsed}>
+        {/* {this.renderCollapse()} */}
+        <Nav id="navigation">
           {this.renderNavItem(
             'showConversations',
             __('Team Inbox'),
