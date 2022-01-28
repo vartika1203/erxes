@@ -64,13 +64,12 @@ const Layout = styledTS<{ isSqueezed?: boolean }>(styled.main)`
     `};
 `;
 
-const MainWrapper = styledTS<{ collapsed: boolean }>(styled.div)`
+const MainWrapper = styledTS(styled.div)`
   flex: 1;
   display: flex;
   flex-direction: column;
   padding-top: ${dimensions.headerSpacing}px;
-  padding-left: ${props =>
-    props.collapsed ? wideNavigation : dimensions.headerSpacingWide}px;
+  padding-left: ${dimensions.headerSpacing * 2}px;
   max-width: 100%;
   transition: width .3s;
 `;
@@ -206,6 +205,7 @@ const LeftNavigation = styledTS(styled.aside)`
       max-height: ${dimensions.coreSpacing + 15}px;
       transition: all 0.3s ease;
       max-width: 80%;
+      color: ${colors.colorPrimary};
 
       &:hover {
         transform: scale(1.1);
@@ -460,8 +460,167 @@ const SmallLabel = styled.div`
   top: 3px;
 `;
 
+const NewStyle = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 6px;
+
+  position: absolute;
+  width: 32px;
+  height: 16px;
+  left: 63px;
+  top: 3px;
+  border-radius: 4px;
+
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 10px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  background-color: ${colors.colorCoreTeal};
+`;
+
+const LoadMore = styledTS(styled.div)`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  visibility: hidden;
+  padding: 20px;
+  width: 422px;
+  height: 298px;
+  overflow-y: scroll;
+  left: 100px;
+
+  background: ${colors.colorWhite};
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.04),
+    0px 0px 1px rgba(0, 0, 0, 0.04);
+
+
+    > div > a {
+      display: flex;
+      flex-direction: row;
+      color: ${colors.bgLight}
+      height: ${dimensions.headerSpacingWide}px;
+      justify-content: center;
+      position: relative;
+      transition: all 0.3s ease;
+  
+      i, label {
+        cursor: pointer;
+      }
+  
+      i {
+        padding:0px, 14px, 0px, 0px;
+        transition: all 0.3s ease;
+      }
+  
+      label {
+        font-size: 11px;
+        letter-spacing: 0.4px;
+        position: absolute;
+        bottom: 9px;
+        padding: 3px;
+        text-align: center
+        color: rgba(0, 0, 0, 0.62);
+      }
+  
+      span {
+        position: absolute;
+        left: ${dimensions.coreSpacing + dimensions.coreSpacing - 1}px;
+        bottom: 12px;
+        padding: 4px;
+        min-width: 19px;
+        min-height: 19px;
+        text-align: center
+      }
+  
+      &.active {
+        background: rgba(79, 51, 175, 0.08);
+  
+  
+        > i, label {
+          opacity: 1;
+          color: ${colors.colorPrimary};
+        }
+      }
+  
+      &:focus {
+        outline: 0;
+      }
+  
+      &:hover {
+        background: rgba(0, 0, 0, 0.06);
+  
+        > i, label {
+          opacity: 1;
+          color: ${colors.colorPrimary};
+        }
+      }
+
+  
+      @media (max-height: 760px) {
+        height: ${dimensions.headerSpacing}px;
+  
+        i {
+          line-height: ${dimensions.headerSpacing}px;
+        }
+      }
+    }
+`;
+
+const LoadItem = styled.div`
+  position: relative;
+
+  &:hover {
+    ${LoadMore} {
+      visibility: visible;
+    }
+  }
+`;
+
+const LoadMoreSearch = styled.div`
+  align-items: center;
+  padding: 4px 4px 4px 8px;
+
+  position: static;
+  width: 382px;
+  height: 26px;
+  left: 20px;
+  top: 20px;
+
+  background: #f5f5f5;
+  border-radius: 49px;
+
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 20px 0px;
+`;
+
+const LoadMoreRecentAdd = styled.div`
+  width: 382px;
+  height: 96px;
+  left: 20px;
+  top: 66px;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 20px 0px;
+`;
+
 export {
   Layout,
+  LoadMore,
+  LoadMoreSearch,
+  LoadItem,
+  LoadMoreRecentAdd,
+  NewStyle,
   MainWrapper,
   HeightedWrapper,
   Contents,

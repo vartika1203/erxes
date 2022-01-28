@@ -105,12 +105,11 @@ class MainLayout extends React.Component<IProps, { isCollapsed: boolean }> {
           {currentUser && (
             <Navigation
               currentUser={currentUser}
-              collapsed={isCollapsed}
               onCollapseNavigation={this.onCollapseNavigation}
             />
           )}
 
-          <MainWrapper collapsed={isCollapsed}>
+          <MainWrapper>
             <NotifProvider currentUser={currentUser}>
               <MainBar />
             </NotifProvider>

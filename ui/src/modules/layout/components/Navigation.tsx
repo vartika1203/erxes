@@ -1,8 +1,8 @@
 import Label from 'modules/common/components/Label';
 import WithPermission from 'modules/common/components/WithPermission';
-import { __, getEnv, setBadge } from 'modules/common/utils';
+import { __, getEnv, setBadge, readFile } from 'modules/common/utils';
 import { pluginNavigations, pluginsOfNavigations } from 'pluginUtils';
-import React from 'react';
+import React, { Children } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LeftNavigation,
@@ -11,10 +11,16 @@ import {
   SubNav,
   NavItem,
   SubNavItem,
-  SmallLabel
+  SmallLabel,
+  NewStyle,
+  LoadMore,
+  LoadMoreSearch,
+  LoadMoreRecentAdd,
+  LoadItem
 } from '../styles';
 import Tip from 'modules/common/components/Tip';
-import Icon from 'modules/common/components/Icon';
+import Button from 'modules/common/components/Button';
+import { getThemeItem } from 'utils';
 
 const { REACT_APP_DASHBOARD_URL } = getEnv();
 
@@ -28,11 +34,30 @@ export interface ISubNav {
 
 type IProps = {
   unreadConversationsCount?: number;
-  collapsed: boolean;
   onCollapseNavigation: () => void;
 };
 
-class Navigation extends React.Component<IProps> {
+type State = {
+  showMenu: boolean;
+};
+
+class Navigation extends React.Component<IProps, State> {
+  private mainMenus: any[] = [];
+  private extraMenus: any[] = [];
+
+  constructor(props) {
+    super(props);
+    this.state = { showMenu: false };
+
+    pluginNavigations().forEach((menu, index) => {
+      if (index < 5) {
+        this.mainMenus.push(menu);
+      } else {
+        this.extraMenus.push(menu);
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     const unreadCount = nextProps.unreadConversationsCount;
 
@@ -129,24 +154,31 @@ class Navigation extends React.Component<IProps> {
     );
   };
 
-  // renderCollapse() {
-  //   const { onCollapseNavigation, collapsed } = this.props;
-  //   const icon = collapsed ? 'angle-double-left' : 'angle-double-right';
-  //   const tooltipText = collapsed ? 'Collapse menu' : 'Expand menu';
+  loadMore = () => {
+    this.setState({ showMenu: true });
+  };
 
-  //   return (
-  //     <Tip placement='right' text={__(tooltipText)}>
-  //       <ExpandIcon onClick={onCollapseNavigation} collapsed={collapsed}>
-  //         <Icon icon={icon} size={22} />
-  //       </ExpandIcon>
-  //     </Tip>
-  //   );
-  // }
+  moreIrem = () => {
+    return (
+      <LoadMore>
+        <LoadMoreSearch>search</LoadMoreSearch>
+        <LoadMoreRecentAdd>
+          {this.extraMenus.map(menu => (
+            <NavLink to={this.getLink(menu.url)}>
+              <NavIcon className={menu.icon} />
+              <label>{__(menu.text)}</label>
+            </NavLink>
+          ))}
+        </LoadMoreRecentAdd>
+      </LoadMore>
+    );
+  };
 
   render() {
     const { unreadConversationsCount } = this.props;
-    // const logo = collapsed ? 'logo.png' : 'erxes.png';
-    // const thLogo = getThemeItem('logo');
+    const { showMenu } = this.state;
+    const logo = 'erxes.png';
+    const thLogo = getThemeItem('logo');
 
     const unreadIndicator = unreadConversationsCount !== 0 && (
       <Label shake={true} lblStyle="danger" ignoreTrans={true}>
@@ -155,15 +187,50 @@ class Navigation extends React.Component<IProps> {
     );
 
     const lbl = <SmallLabel>Beta</SmallLabel>;
+    const nsn = <NewStyle>New</NewStyle>;
 
     return (
       <LeftNavigation>
         <NavLink to="/">
-          <Icon icon="apps" size={22} />
+          <img
+            src={thLogo ? readFile(thLogo) : `/images/${logo}`}
+            alt="erxes"
+          />
         </NavLink>
-        {/* {this.renderCollapse()} */}
+
         <Nav id="navigation">
+          {pluginsOfNavigations(this.renderNavItem)}
+          {this.mainMenus.map((nav, index) => (
+            <NavItem key={index}>
+              <NavLink to={this.getLink(nav.url)}>
+                <NavIcon className={nav.icon} />
+                <label>{__(nav.text)}</label>
+                {/* {this.renderNavItem('', nav.text, nav.url, nav.icon)} */}
+              </NavLink>
+            </NavItem>
+          ))}
           {this.renderNavItem(
+            'showIntegrations',
+            __('Settings'),
+            '/settings',
+            'icon-settings',
+            [],
+            nsn
+          )}
+
+          <LoadItem>
+            <Button
+              size="small"
+              btnStyle="primary"
+              onClick={this.loadMore}
+              icon="angle-double-down"
+            >
+              {showMenu ? 'Load more' : 'less more'}
+            </Button>
+            {this.moreIrem()}
+          </LoadItem>
+
+          {/* {this.renderNavItem(
             'showConversations',
             __('Team Inbox'),
             '/inbox',
@@ -363,12 +430,38 @@ class Navigation extends React.Component<IProps> {
             'icon-paste',
             [],
             lbl
-          )}
+          )} */}
 
-          {pluginsOfNavigations(this.renderNavItem)}
-          {pluginNavigations().map(nav =>
-            this.renderNavItem('', nav.text, nav.url, nav.icon)
-          )}
+          {/* //   <li
+            //   key={index}
+            //   style={index > 5 && !showMenu ? { display: 'none' } : {}}
+            // >
+            //   <span>{menu}</span>
+            // </li>
+                 
+            //      )}
+            //   )
+            <span onClick={() => setShowMenu(!showMenu)}>
+              {showMenu ? 'Less more' : 'Load more'}
+            </span>
+           */}
+          {/* return (
+          // <>
+          //   <ul>
+          //     {menus.map((menu, index) => (
+          //       <li
+          //         key={index}
+          //         style={index > 5 && !showMenu ? { display: 'none' } : {}}
+          //       >
+          //         <span>{menu}</span>
+          //       </li>
+          //     ))}
+          //   </ul>
+          //   <span onClick={() => setShowMenu(!showMenu)}>
+          //     {showMenu ? 'Less more' : 'Load more'}
+          //   </span>
+          // </>
+          // ); */}
         </Nav>
       </LeftNavigation>
     );
