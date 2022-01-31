@@ -2,7 +2,7 @@ import {
   __, DataWithLoader, Pagination,
   SortHandler, Table, Wrapper, BarItems
 } from 'erxes-ui';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import { IRouterProps, IQueryParams } from 'erxes-ui/lib/types';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
@@ -21,6 +21,7 @@ interface IProps extends IRouterProps {
   queryParams: any;
 
   onSearch: (search: string) => void;
+  onFilter: (filterParams: IQueryParams) => void;
   onSelect: (values: string[] | string, key: string) => void;
   isFiltered: boolean;
   clearFilter: () => void;
@@ -54,6 +55,7 @@ class Orders extends React.Component<IProps, {}> {
       history,
       loading,
       queryParams,
+      onFilter,
       onSelect,
       onSearch,
       isFiltered,
@@ -63,6 +65,7 @@ class Orders extends React.Component<IProps, {}> {
     } = this.props;
 
     const rightMenuProps = {
+      onFilter,
       onSelect,
       onSearch,
       isFiltered,

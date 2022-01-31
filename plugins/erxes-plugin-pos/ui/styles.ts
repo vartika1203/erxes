@@ -448,5 +448,7 @@ export const TabContent = styled.div`
 `;
 
 export const MenuFooter = styled.footer`
+  display: flex;
   padding: 10px 20px;
+  max-width: 95%;
 `;

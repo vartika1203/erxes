@@ -2,6 +2,7 @@ import Datetime from '@nateradebaugh/react-datetime';
 import dayjs from 'dayjs';
 import React from 'react';
 import RTG from 'react-transition-group';
+import { IQueryParams } from 'erxes-ui/lib/types';
 import {
   __,
   Button,
@@ -22,6 +23,7 @@ import {
 
 type Props = {
   onSearch: (search: string) => void;
+  onFilter: (filterParams: IQueryParams) => void;
   onSelect: (values: string[] | string, key: string) => void;
   queryParams: any;
   isFiltered: boolean;
@@ -34,6 +36,7 @@ type StringState = {
 
 type State = {
   showMenu: boolean;
+  filterParams: IQueryParams
 } & StringState;
 
 export default class RightMenu extends React.Component<Props, State> {
@@ -44,10 +47,17 @@ export default class RightMenu extends React.Component<Props, State> {
 
     this.state = {
       currentTab: 'Filter',
-      showMenu: false
+      showMenu: false,
+
+      filterParams: this.props.queryParams
     };
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
+  }
+
+  setFilter = () => {
+    const { filterParams } = this.state;
+    this.props.onFilter(filterParams);
   }
 
   setWrapperRef(node) {
@@ -65,8 +75,18 @@ export default class RightMenu extends React.Component<Props, State> {
     }
   };
 
-  onChange = (name: string, value: string) => {
-    this.setState({ [name]: value } as Pick<StringState, keyof StringState>);
+  onSelect = (values: string[] | string, key: string) => {
+    const { filterParams } = this.state;
+    this.setState({ filterParams: { ...filterParams, [key]: String(values) } });
+  };
+
+  onChangeInput = (e) => {
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
+
+    const { filterParams } = this.state;
+    this.setState({ filterParams: { ...filterParams, [name]: value } });
   };
 
   renderLink(label: string, key: string, value: string) {
@@ -87,8 +107,9 @@ export default class RightMenu extends React.Component<Props, State> {
   }
 
   onChangeRangeFilter = (kind, date) => {
-    const cDate = dayjs(date).format('YYYY-MM-DD HH:mm')
-    this.props.onSelect(cDate, kind);
+    const { filterParams } = this.state;
+    const cDate = dayjs(date).format('YYYY-MM-DD HH:mm');
+    this.setState({ filterParams: { ...filterParams, [kind]: cDate } });
   };
 
   renderSpecials() {
@@ -102,7 +123,7 @@ export default class RightMenu extends React.Component<Props, State> {
   }
 
   renderRange(dateType: string) {
-    const { queryParams } = this.props;
+    const { filterParams } = this.state;
 
     const lblStart = `${dateType}StartDate`;
     const lblEnd = `${dateType}EndDate`;
@@ -115,34 +136,30 @@ export default class RightMenu extends React.Component<Props, State> {
           <div className="input-container">
             <Datetime
               inputProps={{ placeholder: __('Click to select a date') }}
-              dateFormat="YYYY/MM/DD"
+              dateFormat="YYYY-MM-DD"
               timeFormat="HH:mm"
-              value={queryParams[lblStart]}
+              value={filterParams[lblStart] || null}
               closeOnSelect={true}
               utc={true}
               input={true}
               onChange={this.onChangeRangeFilter.bind(this, lblStart)}
               viewMode={'days'}
               className={'filterDate'}
-              defaultValue={dayjs()
-                .startOf('day')
-                .format('YYYY-MM-DD HH:mm:ss')}
             />
           </div>
 
           <div className="input-container">
             <Datetime
               inputProps={{ placeholder: __('Click to select a date') }}
-              dateFormat="YYYY/MM/DD"
+              dateFormat="YYYY-MM-DD"
               timeFormat="HH:mm"
-              value={queryParams[lblEnd]}
+              value={filterParams[lblEnd]}
               closeOnSelect={true}
               utc={true}
               input={true}
               onChange={this.onChangeRangeFilter.bind(this, lblEnd)}
-              defaultValue={dayjs()
-                .startOf('day')
-                .format('YYYY-MM-DD HH:mm:ss')}
+              viewMode={'days'}
+              className={'filterDate'}
             />
           </div>
         </CustomRangeContainer>
@@ -151,30 +168,34 @@ export default class RightMenu extends React.Component<Props, State> {
   }
 
   renderFilter() {
-    const { queryParams, onSelect } = this.props;
+    const { filterParams } = this.state;
 
     return (
       <FilterBox>
         <FormControl
-          defaultValue={queryParams.search}
+          name={'search'}
+          defaultValue={filterParams.search}
           placeholder={__('Number ...')}
           onKeyPress={this.onSearch}
           autoFocus={true}
+          onChange={this.onChangeInput}
         />
 
         <SelectCustomers
           label="Filter by customer"
           name="customerId"
-          queryParams={queryParams}
-          onSelect={onSelect}
+          initialValue={filterParams.customerId}
+          onSelect={this.onSelect}
+          customOption={{ value: '', label: '...Clear customer filter' }}
           multi={false}
         />
 
         <SelectTeamMembers
           label="Choose users"
           name="userId"
-          initialValue={queryParams.userId}
-          onSelect={onSelect}
+          initialValue={filterParams.userId}
+          onSelect={this.onSelect}
+          customOption={{ value: '', label: '...Clear user filter' }}
           multi={false}
         />
 
@@ -188,24 +209,20 @@ export default class RightMenu extends React.Component<Props, State> {
   }
 
   renderTabContent() {
-    const { isFiltered, clearFilter } = this.props;
-
     return (
       <>
         <TabContent>{this.renderFilter()}</TabContent>
-        {isFiltered && (
-          <MenuFooter>
-            <Button
-              block={true}
-              btnStyle="warning"
-              uppercase={false}
-              onClick={clearFilter}
-              icon="times-circle"
-            >
-              {__('Clear Filter')}
-            </Button>
-          </MenuFooter>
-        )}
+        <MenuFooter>
+          <Button
+            block={true}
+            btnStyle="success"
+            uppercase={false}
+            onClick={this.setFilter}
+            icon="filter"
+          >
+            {__('Filter')}
+          </Button>
+        </MenuFooter>
       </>
     );
   }

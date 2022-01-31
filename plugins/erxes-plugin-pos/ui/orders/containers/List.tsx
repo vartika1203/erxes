@@ -10,6 +10,7 @@ import { mutations, queries } from '../graphql';
 import { withRouter } from 'react-router-dom';
 import { Bulk, withProps, router, Alert, Spinner } from 'erxes-ui';
 import { FILTER_PARAMS } from '../../constants';
+import { IQueryParams } from 'erxes-ui/lib/types';
 
 type Props = {
   queryParams: any;
@@ -56,6 +57,18 @@ class OrdersContainer extends React.Component<FinalProps, State> {
 
     return router.setParams(this.props.history, { [key]: values });
   };
+
+  onFilter = (filterParams: IQueryParams) => {
+    for (const key of Object.keys(filterParams)) {
+      if (filterParams[key]) {
+        router.setParams(this.props.history, { [key]: filterParams[key] });
+      } else {
+        router.removeParams(this.props.history, key);
+      }
+    }
+
+    return router
+  }
 
   isFiltered = (): boolean => {
     const params = generateQueryParams(this.props.history);
@@ -111,6 +124,7 @@ class OrdersContainer extends React.Component<FinalProps, State> {
       summary,
       loading: ordersQuery.loading,
 
+      onFilter: this.onFilter,
       onSelect: this.onSelect,
       onSearch: this.onSearch,
       isFiltered: this.isFiltered(),
