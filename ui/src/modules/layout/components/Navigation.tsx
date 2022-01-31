@@ -1,8 +1,8 @@
-import Label from 'modules/common/components/Label';
+// import Label from 'modules/common/components/Label';
 import WithPermission from 'modules/common/components/WithPermission';
 import { __, getEnv, setBadge, readFile } from 'modules/common/utils';
 import { pluginNavigations, pluginsOfNavigations } from 'pluginUtils';
-import React, { Children } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LeftNavigation,
@@ -13,16 +13,24 @@ import {
   SubNavItem,
   SmallLabel,
   NewStyle,
-  LoadMore,
-  LoadMoreSearch,
-  LoadMoreRecentAdd,
-  LoadItem
+  MoreMenu,
+  MoreSearch,
+  StoreItem,
+  MoreRecentAdd,
+  MoreItemRecent,
+  MoreItemRow,
+  AllAddedPlugin,
+  AllItemRow,
+  Repostion,
+  // GlobalProfile,
+  MoreTitle
 } from '../styles';
 import Tip from 'modules/common/components/Tip';
-import Button from 'modules/common/components/Button';
 import { getThemeItem } from 'utils';
+import Icon from 'modules/common/components/Icon';
+import FormControl from 'modules/common/components/form/Control';
 
-const { REACT_APP_DASHBOARD_URL } = getEnv();
+// const { REACT_APP_DASHBOARD_URL } = getEnv();
 
 export interface ISubNav {
   permission: string;
@@ -39,23 +47,37 @@ type IProps = {
 
 type State = {
   showMenu: boolean;
+  showGlobal: boolean;
+  extraMenus: any[];
+  recentlyAddedMenus: any[];
 };
 
 class Navigation extends React.Component<IProps, State> {
   private mainMenus: any[] = [];
-  private extraMenus: any[] = [];
 
   constructor(props) {
     super(props);
-    this.state = { showMenu: false };
+
+    const recentlyAddedMenus: any[] = [];
+    const extraMenus: any[] = [];
 
     pluginNavigations().forEach((menu, index) => {
       if (index < 5) {
         this.mainMenus.push(menu);
+      }
+      if (index > 4 && index < 10) {
+        recentlyAddedMenus.push(menu);
       } else {
-        this.extraMenus.push(menu);
+        extraMenus.push(menu);
       }
     });
+
+    this.state = {
+      showMenu: false,
+      showGlobal: false,
+      extraMenus,
+      recentlyAddedMenus
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -154,59 +176,94 @@ class Navigation extends React.Component<IProps, State> {
     );
   };
 
-  loadMore = () => {
-    this.setState({ showMenu: true });
-  };
-
-  moreIrem = () => {
+  moreItem = () => {
     return (
-      <LoadMore>
-        <LoadMoreSearch>search</LoadMoreSearch>
-        <LoadMoreRecentAdd>
-          {this.extraMenus.map(menu => (
-            <NavLink to={this.getLink(menu.url)}>
-              <NavIcon className={menu.icon} />
-              <label>{__(menu.text)}</label>
-            </NavLink>
-          ))}
-        </LoadMoreRecentAdd>
-      </LoadMore>
+      <MoreMenu visibility={this.state.showMenu}>
+        <MoreSearch>
+          <Icon icon="search-1" size={15} />
+          <FormControl type="text" placeholder="find your use plugin" />
+        </MoreSearch>
+        <MoreRecentAdd>
+          <MoreTitle>Resently added</MoreTitle>
+          <MoreItemRow>
+            {this.state.recentlyAddedMenus.map((menu, index) => (
+              <MoreItemRecent order={index}>
+                <NavLink to={this.getLink(menu.url)}>
+                  <NavIcon className={menu.icon} />
+                  <label>{__(menu.text)}</label>
+                </NavLink>
+                {this.renderChildren(menu.url, menu.text, menu.childrens)}
+              </MoreItemRecent>
+            ))}
+          </MoreItemRow>
+        </MoreRecentAdd>
+        <AllAddedPlugin>
+          <MoreTitle>All added plugin</MoreTitle>
+          <AllItemRow>
+            {this.state.extraMenus.map((menu, index) => (
+              <MoreItemRecent order={index}>
+                <NavLink to={this.getLink(menu.url)}>
+                  <NavIcon className={menu.icon} />
+                  <label>{__(menu.text)}</label>
+                </NavLink>
+              </MoreItemRecent>
+            ))}
+          </AllItemRow>
+        </AllAddedPlugin>
+      </MoreMenu>
     );
   };
+
+  // globalProfile = () => {
+  //   return (
+  //     <GlobalProfile visibility={this.state.showGlobal}>
+  //       <Icon icon='search-1' size={15} />
+  //       <FormControl type='text' placeholder='find your use plugin' />
+  //     </GlobalProfile>
+  //   );
+  // };
 
   render() {
-    const { unreadConversationsCount } = this.props;
-    const { showMenu } = this.state;
-    const logo = 'erxes.png';
+    // const { unreadConversationsCount } = this.props;
+    const { showMenu, showGlobal } = this.state;
+    const logo = 'erxes-dark.png';
     const thLogo = getThemeItem('logo');
 
-    const unreadIndicator = unreadConversationsCount !== 0 && (
-      <Label shake={true} lblStyle="danger" ignoreTrans={true}>
-        {unreadConversationsCount}
-      </Label>
-    );
+    // const unreadIndicator = unreadConversationsCount !== 0 && (
+    //   <Label shake={true} lblStyle='danger' ignoreTrans={true}>
+    //     {unreadConversationsCount}
+    //   </Label>
+    // );
 
     const lbl = <SmallLabel>Beta</SmallLabel>;
     const nsn = <NewStyle>New</NewStyle>;
 
     return (
       <LeftNavigation>
-        <NavLink to="/">
+        <NavLink
+          to="/nav"
+          onClick={() => this.setState({ showGlobal: !showGlobal })}
+        >
           <img
             src={thLogo ? readFile(thLogo) : `/images/${logo}`}
             alt="erxes"
           />
+          {/* <NavIcon className='icon-apps' />
+          {this.globalProfile()} */}
         </NavLink>
 
         <Nav id="navigation">
+          {/* {pluginsSettingsNavigations().map(nav =>
+            this.renderNavItem('', nav.text, nav.url, nav.icon)
+          )} */}
           {pluginsOfNavigations(this.renderNavItem)}
           {this.mainMenus.map((nav, index) => (
             <NavItem key={index}>
               <NavLink to={this.getLink(nav.url)}>
                 <NavIcon className={nav.icon} />
                 <label>{__(nav.text)}</label>
-                {/* {this.renderNavItem('', nav.text, nav.url, nav.icon)} */}
               </NavLink>
+              {this.renderChildren(nav.url, nav.text, nav.childrens)}
             </NavItem>
           ))}
           {this.renderNavItem(
@@ -218,19 +275,26 @@ class Navigation extends React.Component<IProps, State> {
             nsn
           )}
 
-          <LoadItem>
-            <Button
-              size="small"
-              btnStyle="primary"
-              onClick={this.loadMore}
-              icon="angle-double-down"
+          <Repostion>
+            <NavLink
+              to="more"
+              onClick={() => this.setState({ showMenu: !showMenu })}
             >
-              {showMenu ? 'Load more' : 'less more'}
-            </Button>
-            {this.moreIrem()}
-          </LoadItem>
+              <NavIcon className="icon-ellipsis-h" />
+              <label>{__('More')}</label>
+            </NavLink>
+            {this.moreItem()}
+          </Repostion>
 
-          {/* {this.renderNavItem(
+          <StoreItem>
+            <NavLink to="/">
+              <NavIcon className="icon-store" />
+              <label>{__('Store')}</label>
+            </NavLink>
+          </StoreItem>
+
+          {/* {this.renderNavItem('', nav.text, nav.url, nav.icon)} */
+          /* {this.renderNavItem(
             'showConversations',
             __('Team Inbox'),
             '/inbox',
@@ -431,37 +495,6 @@ class Navigation extends React.Component<IProps, State> {
             [],
             lbl
           )} */}
-
-          {/* //   <li
-            //   key={index}
-            //   style={index > 5 && !showMenu ? { display: 'none' } : {}}
-            // >
-            //   <span>{menu}</span>
-            // </li>
-                 
-            //      )}
-            //   )
-            <span onClick={() => setShowMenu(!showMenu)}>
-              {showMenu ? 'Less more' : 'Load more'}
-            </span>
-           */}
-          {/* return (
-          // <>
-          //   <ul>
-          //     {menus.map((menu, index) => (
-          //       <li
-          //         key={index}
-          //         style={index > 5 && !showMenu ? { display: 'none' } : {}}
-          //       >
-          //         <span>{menu}</span>
-          //       </li>
-          //     ))}
-          //   </ul>
-          //   <span onClick={() => setShowMenu(!showMenu)}>
-          //     {showMenu ? 'Less more' : 'Load more'}
-          //   </span>
-          // </>
-          // ); */}
         </Nav>
       </LeftNavigation>
     );
