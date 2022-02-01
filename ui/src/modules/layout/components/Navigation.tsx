@@ -50,34 +50,57 @@ type State = {
   showGlobal: boolean;
   extraMenus: any[];
   recentlyAddedMenus: any[];
+  searchText: string;
 };
 
 class Navigation extends React.Component<IProps, State> {
   private mainMenus: any[] = [];
+  private extraMenus: any[] = [];
+  private recentlyAddedMenus: any[] = [];
+  private wrapperRef: any;
 
   constructor(props) {
     super(props);
-
-    const recentlyAddedMenus: any[] = [];
-    const extraMenus: any[] = [];
 
     pluginNavigations().forEach((menu, index) => {
       if (index < 5) {
         this.mainMenus.push(menu);
       }
       if (index > 4 && index < 10) {
-        recentlyAddedMenus.push(menu);
-      } else {
-        extraMenus.push(menu);
+        this.recentlyAddedMenus.push(menu);
+      } else if (index > 10) {
+        this.extraMenus.push(menu);
       }
     });
 
     this.state = {
       showMenu: false,
       showGlobal: false,
-      extraMenus,
-      recentlyAddedMenus
+      extraMenus: this.extraMenus,
+      recentlyAddedMenus: this.recentlyAddedMenus,
+      searchText: ''
     };
+
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.setState({ showMenu: false });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -176,41 +199,58 @@ class Navigation extends React.Component<IProps, State> {
     );
   };
 
+  onSearch = (value: string) => {
+    const filter = m => m.text.toLowerCase().includes(value);
+
+    this.setState({
+      recentlyAddedMenus: this.recentlyAddedMenus.filter(filter),
+      extraMenus: this.extraMenus.filter(filter)
+    });
+  };
+
   moreItem = () => {
     return (
-      <MoreMenu visibility={this.state.showMenu}>
-        <MoreSearch>
-          <Icon icon="search-1" size={15} />
-          <FormControl type="text" placeholder="find your use plugin" />
-        </MoreSearch>
-        <MoreRecentAdd>
-          <MoreTitle>Resently added</MoreTitle>
-          <MoreItemRow>
-            {this.state.recentlyAddedMenus.map((menu, index) => (
-              <MoreItemRecent order={index}>
-                <NavLink to={this.getLink(menu.url)}>
-                  <NavIcon className={menu.icon} />
-                  <label>{__(menu.text)}</label>
-                </NavLink>
-                {this.renderChildren(menu.url, menu.text, menu.childrens)}
-              </MoreItemRecent>
-            ))}
-          </MoreItemRow>
-        </MoreRecentAdd>
-        <AllAddedPlugin>
-          <MoreTitle>All added plugin</MoreTitle>
-          <AllItemRow>
-            {this.state.extraMenus.map((menu, index) => (
-              <MoreItemRecent order={index}>
-                <NavLink to={this.getLink(menu.url)}>
-                  <NavIcon className={menu.icon} />
-                  <label>{__(menu.text)}</label>
-                </NavLink>
-              </MoreItemRecent>
-            ))}
-          </AllItemRow>
-        </AllAddedPlugin>
-      </MoreMenu>
+      <div ref={this.setWrapperRef}>
+        <MoreMenu visibility={this.state.showMenu}>
+          <MoreSearch>
+            <Icon icon="search-1" size={15} />
+            <FormControl
+              onChange={(e: any) =>
+                this.onSearch(e.target.value.trim().toLowerCase())
+              }
+              type="text"
+              placeholder="find your use plugin"
+            />
+          </MoreSearch>
+          <MoreRecentAdd>
+            <MoreTitle>Recently added</MoreTitle>
+            <MoreItemRow>
+              {this.state.recentlyAddedMenus.map((menu, index) => (
+                <MoreItemRecent order={index}>
+                  <NavLink to={this.getLink(menu.url)}>
+                    <NavIcon className={menu.icon} />
+                    <label>{__(menu.text)}</label>
+                  </NavLink>
+                  {this.renderChildren(menu.url, menu.text, menu.childrens)}
+                </MoreItemRecent>
+              ))}
+            </MoreItemRow>
+          </MoreRecentAdd>
+          <AllAddedPlugin>
+            <MoreTitle>Other added plugin</MoreTitle>
+            <AllItemRow>
+              {this.state.extraMenus.map((menu, index) => (
+                <MoreItemRecent order={index}>
+                  <NavLink to={this.getLink(menu.url)}>
+                    <NavIcon className={menu.icon} />
+                    <label>{__(menu.text)}</label>
+                  </NavLink>
+                </MoreItemRecent>
+              ))}
+            </AllItemRow>
+          </AllAddedPlugin>
+        </MoreMenu>
+      </div>
     );
   };
 
@@ -262,18 +302,17 @@ class Navigation extends React.Component<IProps, State> {
               <NavLink to={this.getLink(nav.url)}>
                 <NavIcon className={nav.icon} />
                 <label>{__(nav.text)}</label>
+                {index < 2 ? nsn : ''}
               </NavLink>
-              {this.renderChildren(nav.url, nav.text, nav.childrens)}
             </NavItem>
           ))}
-          {this.renderNavItem(
-            'showIntegrations',
-            __('Settings'),
-            '/settings',
-            'icon-settings',
-            [],
-            nsn
-          )}
+
+          <NavItem>
+            <NavLink to="/settings">
+              <NavIcon className="icon-settings" />
+              <label>{__('Settings')}</label>
+            </NavLink>
+          </NavItem>
 
           <Repostion>
             <NavLink

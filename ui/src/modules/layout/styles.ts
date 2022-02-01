@@ -230,24 +230,23 @@ const Nav = styled.nav`
     position: relative;
     transition: all 0.3s ease;
 
-    i, label {
-      cursor: pointer;
-    }
-
     i {
       padding:0px, 14px, 0px, 0px;
       transition: all 0.3s ease;
     }
 
     label {
+      cursor: pointer;
       font-size: 11px;
       letter-spacing: 0.4px;
       position: absolute;
-      bottom: 9px;
-      padding: 3px;
+      bottom: 5px;
+      padding: 5px;
       text-align: center
-      color: rgba(0, 0, 0, 0.62);
-      width: ${dimensions.headerSpacingWide * 2 - 1}px;
+      justify-content: center
+      opacity: 0.6;
+      color:${colors.colorBlack};
+      width: ${dimensions.headerSpacing * 2 - 1}px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -493,7 +492,7 @@ const AllAddedPlugin = styled.div`
   padding: 0px;
   position: static;
   width: 382px;
-  height: 252px;
+  height: auto;
   left: 20px;
   top: 182px;
   flex: none;
@@ -534,12 +533,14 @@ const MoreRecentAdd = styled.div`
 `;
 
 const MoreTitle = styled.div`
+  font-size: 14px;
+  font-weight: 500;
   width: 348px;
   height: 18px;
   left: 0px;
   top: 0px;
   letter-spacing: 0.1px;
-  color: #4f33af;
+  color: ${colors.colorPrimaryDark};
   order: 0;
   flex-grow: 0;
 `;
@@ -591,16 +592,6 @@ const MoreItemRecent = styledTS<{
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 0px;
-      position: static;
-      width: 70px;
-      height: 70px;
-      border-radius: 4px;
-      top: 13px;
-
-    i, label {
-      cursor: pointer;
-    }
 
     i {
       padding:0px, 14px, 0px, 0px;
@@ -610,10 +601,12 @@ const MoreItemRecent = styledTS<{
       font-size: 11px;
       letter-spacing: 0.4px;
       position: static;
+      cursor: pointer;
       bottom: 9px;
       padding: 5px;
       text-align: center
-      color: rgba(0, 0, 0, 0.62);
+      opacity: 0.6;
+      color: ${colors.colorBlack};
       width: ${dimensions.headerSpacingWide}px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -622,16 +615,6 @@ const MoreItemRecent = styledTS<{
       &:hover {
         overflow: visible;
       }
-    }
-
-    span {
-      position: absolute;
-      left: ${dimensions.coreSpacing + dimensions.coreSpacing - 1}px;
-      bottom: 12px;
-      padding: 4px;
-      min-width: 19px;
-      min-height: 19px;
-      text-align: center
     }
 
     &.active {
@@ -679,7 +662,6 @@ const MoreMenu = styledTS<{ visibility: boolean }>(styled.div)`
   bottom: ${dimensions.headerSpacingWide + 1}px;
   background: ${colors.colorWhite};
   border: 1px solid rgba(0, 0, 0, 0.08);
-  transition: linear width 0.8s;
   box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.04),
     0px 0px 1px rgba(0, 0, 0, 0.04);
 `;
@@ -714,8 +696,9 @@ const MoreSearch = styled.div`
 `;
 
 const StoreItem = styledTS(styled.div)`
-  bottom: 133px;
+  bottom: 70px;
   position: relative;
+  transition: all 0.3s ease;
 `;
 
 const GlobalProfile = styledTS<{ visibile: Boolean }>(styled.div)`
