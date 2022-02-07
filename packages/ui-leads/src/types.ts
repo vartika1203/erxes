@@ -1,4 +1,4 @@
-import { QueryResponse } from '@erxes/ui/src/types';
+import { QueryResponse, Counts } from '@erxes/ui/src/types';
 import { IBrand } from '@erxes/ui/src/brands/types';
 import { IAttachment, IConditionsRule } from '@erxes/ui/src/types';
 import { IUser } from '@erxes/ui/src/auth/types';
@@ -59,10 +59,6 @@ export interface ILeadData {
   successImageSize?: string;
 }
 
-export type Counts = {
-  [key: string]: number;
-};
-
 export type IntegrationsCount = {
   total: number;
   byTag: Counts;
@@ -84,7 +80,3 @@ export type LeadIntegrationsQueryResponse = {
 export type CountQueryResponse = {
   integrationsTotalCount: IntegrationsCount;
 } & QueryResponse;
-
-export type TagCountQueryResponse = {
-  [key: string]: number;
-};

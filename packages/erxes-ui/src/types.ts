@@ -168,3 +168,7 @@ export type QueryResponse = {
   refetch: () => Promise<any>;
   error?: string;
 };
+
+export type Counts = {
+  [key: string]: number;
+};

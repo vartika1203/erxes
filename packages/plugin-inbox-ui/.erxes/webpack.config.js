@@ -77,6 +77,8 @@ module.exports = {
           path.resolve(__dirname, '../../ui-forms/src'),
           path.resolve(__dirname, '../../ui-leads/src'),
           path.resolve(__dirname, '../../ui-products/src'),
+          path.resolve(__dirname, '../../ui-inbox/src'),
+          path.resolve(__dirname, '../../ui-engage/src'),
           path.resolve(__dirname, 'plugin-src')
         ],
         use: {

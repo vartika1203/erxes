@@ -3,7 +3,7 @@ import Icon from '@erxes/ui/src/components/Icon';
 import { IButtonMutateProps } from '@erxes/ui/src/types';
 import { __ } from '@erxes/ui/src/utils';
 import { CustomerCounts, RadioContainer } from '../../styles';
-import { TargetCount } from '../../types';
+import { Counts } from '@erxes/ui/src/types';
 import React from 'react';
 import Targets from '../Targets';
 import { ISegmentDoc } from '@erxes/ui-segments/src/types';
@@ -17,7 +17,7 @@ type Props<Target, OnSubmit> = {
   targets: Target[];
   onSubmit?: OnSubmit;
   renderButton?: (props: IButtonMutateProps) => JSX.Element;
-  targetCount: TargetCount;
+  targetCount: Counts;
   Form: any;
   formProps?: {
     count?: (segment: ISegmentDoc) => void;

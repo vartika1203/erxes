@@ -6,6 +6,7 @@ import Tip from '@erxes/ui/src/components/Tip';
 import Button from '@erxes/ui/src/components/Button';
 import WithPermission from '@erxes/ui/src/components/WithPermission';
 import TextInfo from '@erxes/ui/src/components/TextInfo';
+import { RowTitle } from '@erxes/ui-engage/src/styles';
 import { Link } from 'react-router-dom';
 import ActionButtons from '@erxes/ui/src/components/ActionButtons';
 import { IBookingIntegration } from '../types';
@@ -16,8 +17,6 @@ import dayjs from 'dayjs';
 import { DateWrapper } from '@erxes/ui/src/styles/main';
 import Tags from '@erxes/ui/src/components/Tags';
 import Manage from './Manage';
-import { IIntegration } from '@erxes/ui-settings/src/integrations/types';
-import { IForm } from '@erxes/ui-leads/src/types';
 
 type Props = {
   isChecked: boolean;
@@ -141,7 +140,13 @@ function Row({ isChecked, toggleBulk, integration, remove, archive }: Props) {
           onChange={onChange}
         />
       </td>
-      <td>{integration.name}</td>
+      <td>
+        <RowTitle>
+          <Link to={`/bookings/edit/${integration._id}`}>
+            {integration.name}
+          </Link>
+        </RowTitle>
+      </td>
       <td>
         <TextInfo>{integration.brand && integration.brand.name}</TextInfo>
       </td>

@@ -8,7 +8,7 @@ import { SidebarList } from "@erxes/ui/src/layout/styles";
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { statusFilters } from "../constants";
-import { Counts } from "../types";
+import { Counts } from "@erxes/ui/src/types";
 
 interface IProps extends IRouterProps {
   counts: Counts;

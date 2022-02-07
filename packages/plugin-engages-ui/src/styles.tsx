@@ -575,28 +575,6 @@ const InfoWrapper = styled.div`
   padding: 15px 20px;
 `;
 
-const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-
-  > label {
-    margin: 2px ${dimensions.unitSpacing}px 2px 0;
-    color: ${colors.colorCoreGray};
-    align-self: baseline;
-  }
-`;
-
-const Subject = styledTS<{ noBorder?: boolean }>(styled.div)`
-  padding: ${dimensions.unitSpacing}px ${dimensions.coreSpacing}px;
-  border-bottom:${(props) =>
-    !props.noBorder && `1px solid ${colors.borderPrimary}`};
-
-  input {
-    height: ${dimensions.coreSpacing}px;
-    border-bottom: 0;
-  }
-`;
-
 export {
   RowTitle,
   HelperText,
@@ -636,7 +614,5 @@ export {
   Shell,
   TestEmailWrapper,
   Disabled,
-  InfoWrapper,
-  FlexRow,
-  Subject,
+  InfoWrapper
 };

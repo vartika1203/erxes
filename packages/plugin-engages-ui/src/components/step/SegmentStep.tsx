@@ -1,7 +1,7 @@
 import Icon from '@erxes/ui/src/components/Icon';
 import { IButtonMutateProps } from '@erxes/ui/src/types';
 import { __ } from '@erxes/ui/src/utils';
-import { TargetCount } from '../../types';
+import { Counts } from '@erxes/ui/src/types';
 import React from 'react';
 import Common from './Common';
 import SegmentsForm from './forms/SegmentsForm';
@@ -9,7 +9,7 @@ import { ISegment } from '@erxes/ui-segments/src/types';
 
 type Props = {
   messageType: string;
-  targetCount: TargetCount;
+  targetCount: Counts;
   segmentIds: string[];
   segments: ISegment[];
   customersCount: (ids: string[]) => number;
