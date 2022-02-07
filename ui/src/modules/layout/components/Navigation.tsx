@@ -1,6 +1,6 @@
 // import Label from 'modules/common/components/Label';
 import WithPermission from 'modules/common/components/WithPermission';
-import { __, getEnv, setBadge, readFile } from 'modules/common/utils';
+import { __, setBadge, readFile } from 'modules/common/utils';
 import { pluginNavigations, pluginsOfNavigations } from 'pluginUtils';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
@@ -11,7 +11,6 @@ import {
   SubNav,
   NavItem,
   SubNavItem,
-  SmallLabel,
   NewStyle,
   MoreMenu,
   MoreSearch,
@@ -226,7 +225,7 @@ class Navigation extends React.Component<IProps, State> {
             <MoreTitle>Recently added</MoreTitle>
             <MoreItemRow>
               {this.state.recentlyAddedMenus.map((menu, index) => (
-                <MoreItemRecent order={index}>
+                <MoreItemRecent key={index} order={index}>
                   <NavLink to={this.getLink(menu.url)}>
                     <NavIcon className={menu.icon} />
                     <label>{__(menu.text)}</label>
@@ -240,7 +239,7 @@ class Navigation extends React.Component<IProps, State> {
             <MoreTitle>Other added plugin</MoreTitle>
             <AllItemRow>
               {this.state.extraMenus.map((menu, index) => (
-                <MoreItemRecent order={index}>
+                <MoreItemRecent key={index} order={index}>
                   <NavLink to={this.getLink(menu.url)}>
                     <NavIcon className={menu.icon} />
                     <label>{__(menu.text)}</label>
@@ -275,7 +274,7 @@ class Navigation extends React.Component<IProps, State> {
     //   </Label>
     // );
 
-    const lbl = <SmallLabel>Beta</SmallLabel>;
+    // const lbl = <SmallLabel>Beta</SmallLabel>;
     const nsn = <NewStyle>New</NewStyle>;
 
     return (

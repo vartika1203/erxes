@@ -701,20 +701,20 @@ const StoreItem = styledTS(styled.div)`
   transition: all 0.3s ease;
 `;
 
-const GlobalProfile = styledTS<{ visibile: Boolean }>(styled.div)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: ${dimensions.coreSpacing}px;
-  position: relative;
-  width: 298px;
-  height: 288px;
-  left: 100px;
-  color: #000;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  visibility: ${props => (props.visibile ? 'visible' : 'hidden')};
-  background: ${colors.colorWhite};
-`;
+// const GlobalProfile = styledTS<{ visibile: Boolean }>(styled.div)`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: flex-start;
+//   padding: ${dimensions.coreSpacing}px;
+//   position: relative;
+//   width: 298px;
+//   height: 288px;
+//   left: 100px;
+//   color: #000;
+//   border: 1px solid rgba(0, 0, 0, 0.08);
+//   visibility: ${props => (props.visibile ? 'visible' : 'hidden')};
+//   background: ${colors.colorWhite};
+// `;
 
 export {
   Layout,
@@ -765,6 +765,5 @@ export {
   DropNav,
   ExpandIcon,
   SmallLabel,
-  Repostion,
-  GlobalProfile
+  Repostion
 };
