@@ -1,6 +1,7 @@
 import React from 'react';
 import Haha from './containers/updateLog';
 const updateCount =() =>{
+  console.log("hiiiii saainuuuu")
   return (
     <Haha/>
   )

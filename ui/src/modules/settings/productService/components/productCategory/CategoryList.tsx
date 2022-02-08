@@ -16,6 +16,7 @@ import TagFilter from '../../containers/TagFilter';
 import { IProductCategory } from '../../types';
 import ProductTypeFilter from '../product/filters/ProdcutTypeFilter';
 import CategoryStatusFilter from '../product/filters/CategoryStatusFilter';
+import { pluginsOfProductCategoryActions } from 'pluginUtils';
 
 const { Section } = Wrapper.Sidebar;
 
@@ -112,6 +113,7 @@ class List extends React.Component<IProps> {
             {name}
           </Link>
           <ActionButtons>
+            {pluginsOfProductCategoryActions()}
             {this.renderEditAction(category)}
             {this.renderRemoveAction(category)}
           </ActionButtons>

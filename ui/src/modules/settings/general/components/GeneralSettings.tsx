@@ -131,7 +131,6 @@ class GeneralSettings extends React.Component<Props, State> {
     return (
       <FormGroup>
         <ControlLabel>{KEY_LABELS[kind]}</ControlLabel>
-
         <Select
           options={constant}
           value={value}

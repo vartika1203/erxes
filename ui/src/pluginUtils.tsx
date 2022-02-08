@@ -241,6 +241,17 @@ export const pluginsOfPaymentForm = (
   );
 };
 
+export const pluginsOfProductCategoryActions = () => {
+  return (
+    <PluginsWrapper
+      itemName={'productCategoryActions'}
+      callBack={(_plugin, actions) => {
+        return actions.map(({ component }) => component);
+      }}
+    />
+  );
+};
+
 export const pluginsOfWebhooks = () => {
   let webhookActions: any = [];
 

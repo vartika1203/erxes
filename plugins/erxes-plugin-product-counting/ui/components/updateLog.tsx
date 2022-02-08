@@ -9,37 +9,71 @@ import {
   ControlLabel,
   FormControl
 } from 'erxes-ui'
-// import Sidebar from 'erxes-ui/lib/layout/components/Sidebar';
-import Sidebar from 'modules/layout/components/Sidebar';
-import { Tabs, TabTitle } from 'modules/common/components/tabs'
-import ModalTrigger from 'modules/common/components/ModalTrigger';
+import Sidebar from '../../../../ui/src/modules/layout/components/Sidebar';
+import { Tabs, TabTitle } from '../../../../ui/src/modules/common/components/tabs'
+import ModalTrigger from '../../../../ui/src/modules/common/components/ModalTrigger';
 import Dropdown from 'react-bootstrap/Dropdown';
-import EmptyState from 'modules/common/components/EmptyState';
-import Icon from 'modules/common/components/Icon';
-import DropdownToggle from 'modules/common/components/DropdownToggle';
-import { ModalFooter } from 'modules/common/styles/main';
-import { FlexRow } from '../styles';
+import EmptyState from '../../../../ui/src/modules/common/components/EmptyState';
+import Icon from '../../../../ui/src/modules/common/components/Icon';
+import DropdownToggle from '../../../../ui/src/modules/common/components/DropdownToggle';
+import { ModalFooter } from '../../../../ui/src/modules/common/styles/main';
+import { FlexRow, Shoshgo } from '../styles';
 import Select from 'react-select-plus';
+import {
+  ColorPick,
+  ColorPicker,
+  ExpandWrapper,
+  MarkdownWrapper
+} from '../../../../ui/src/modules/settings/styles';
+import { IConfigsMap } from '../types'
 // import toggleCheckBoxes from 'erxes-ui/lib//utils/toggleCheckBoxes';
 
 // import Table from 
 type Props = {
-
+  configsMap: IConfigsMap;
 }
 
 type State = {
   currentTab: string
+  name: string
+  description: string
+  rows: number
+  columns: number
+  width: number
+  height: number
+  margin: number
+  qr: boolean
+  barcode: boolean
+  configsMap: IConfigsMap
 }
 class ProductCountingLog extends React.Component<Props, State>{
 
   constructor(props) {
     super(props);
     this.state = {
-      currentTab: 'Branch'
+      currentTab: 'Branch',
+      name: '',
+      description: '',
+      rows: 3,
+      columns: 3,
+      width: 400,
+      height: 150,
+      margin: 0,
+      qr: true,
+      barcode: true,
+      configsMap: [
+        { label: 'Name', value: 'sq' },
+        { label: 'Unit Price', value: 'ar' },
+        { label: 'SKU', value: 'bn' },
+        { label: 'Code', value: 'bg' },
+        { label: 'Vendor', value: 'zh_CN' },
+        { label: 'Featured Image', value: 'cs' },
+        { label: 'Description', value: 'nl' },
+      ]
     }
   }
 
-  onChange = (name: string, value: string) => {
+  onChange = (name: string, value: any) => {
     this.setState({ [name]: value } as any)
   };
 
@@ -92,7 +126,7 @@ class ProductCountingLog extends React.Component<Props, State>{
           </ControlLabel>
           <FlexRow>
             <FormGroup>
-              <ControlLabel>Remainder import (xlsx, csv)
+              <ControlLabel>Борлуулалтын мэдээлэл нэмэх
               </ControlLabel>
               <FormControl
                 name="remainder"
@@ -112,24 +146,27 @@ class ProductCountingLog extends React.Component<Props, State>{
             </FormGroup>
           </FlexRow>
           <FlexRow>
-            <FormGroup>
-              <ControlLabel>Product
-              </ControlLabel>
-              <FormControl
-                name="remainder"
-                placeholder="Category"
-              >
-              </FormControl>
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>
-              </ControlLabel>
-              <FormControl
-                name="remainder"
-                placeholder="Product"
-              >
-              </FormControl>
-            </FormGroup>
+            <ExpandWrapper>
+              <FormGroup>
+                <ControlLabel>Product
+                </ControlLabel>
+                <Select
+                  clearable={false}
+                  placeholder="Category"
+                ></Select>
+              </FormGroup>
+            </ExpandWrapper>
+            <ExpandWrapper>
+              <FormGroup>
+                <ControlLabel>
+                </ControlLabel>
+                <Select
+                  placeholder="Product"
+                  clearable={false}
+                ></Select>
+              </FormGroup>
+            </ExpandWrapper>
+
           </FlexRow>
           <FormGroup>
             <ControlLabel>Description
@@ -146,7 +183,12 @@ class ProductCountingLog extends React.Component<Props, State>{
             <ControlLabel>4
             </ControlLabel>
             <FormGroup>
-              <Select></Select>
+              <FormControl
+                defaultValue={0}
+                type={'number'}
+                onChange={this.onChange.bind(this, 'Branch')}
+                required={true}
+              />
             </FormGroup>
           </FlexRow>
           <FlexRow>
@@ -154,14 +196,28 @@ class ProductCountingLog extends React.Component<Props, State>{
             </ControlLabel>
             <ControlLabel>2
             </ControlLabel>
-            <Select></Select>
+            <FormGroup>
+              <FormControl
+                defaultValue={0}
+                type={'number'}
+                onChange={this.onChange.bind(this, 'Branch')}
+                required={true}
+              />
+            </FormGroup>
           </FlexRow>
           <FlexRow>
             <ControlLabel>Хүүхдийн 100 салбар
             </ControlLabel>
             <ControlLabel>2
             </ControlLabel>
-            <Select></Select>
+            <FormGroup>
+              <FormControl
+                defaultValue={0}
+                type={'number'}
+                onChange={this.onChange.bind(this, 'Branch')}
+                required={true}
+              />
+            </FormGroup>
           </FlexRow>
         </FormGroup>
 
@@ -288,13 +344,13 @@ class ProductCountingLog extends React.Component<Props, State>{
               className={currentTab === 'Branch' ? 'active' : ''}
               onClick={tabOnClick.bind(this, 'Branch')}
             >
-              {__('Branch')}
+              {__('Борлуулалтын мэдээлэл нэмэх')}
             </TabTitle>
             <TabTitle
               className={currentTab === 'Product' ? 'active' : ''}
               onClick={tabOnClick.bind(this, 'Product')}
             >
-              {__('Product')}
+              {__('Нөөц үлдэгдэл нэмэх')}
             </TabTitle>
           </Tabs>
           {this.renderTabs()}
@@ -351,8 +407,89 @@ class ProductCountingLog extends React.Component<Props, State>{
     )
   }
 
-  renderCreateDoc() {
+  renderShoshgo() {
+    const count = ['Name', 'Unit Price', 'SKU', 'Code', 'Vendor', 'Featured image', 'Description'];
+    const { columns } = this.state
+    const renderCount = (e, a) => {
+      let row
+      var table = ''
+      switch (e) {
+        case 1:
+          row = 7
+          break;
+        case 2:
+          row = 4
+          break;
+        case 3:
+          row = 3
+          break;
+        case 7:
+          row = 1
+          break;
+        default:
+          row = 2
+          break;
+      }
+      var i = 0
+      // console.log("sssssssssss", i);
+      console.log("s", a);
+      console.log("column", e);
+      console.log("urt", a.length);
+      while (i < a.length) {
+        table = table.concat('<tr>');
+        console.log("table", table);
+        for (var k = 0; k < row; k++) {
+          if (a[i])
+            table = table.concat(('<td>' + a[i] + '</td>'))
+          i++
+        }
+        table = table.concat('</tr>')
+      }
+      console.log('table', table)
+      var dom = <tbody dangerouslySetInnerHTML={{ __html: table }}></tbody>
 
+      return dom
+
+    }
+    return (
+      <Shoshgo height={this.state.height} width={this.state.width} margin={this.state.margin}>
+        <Table>
+          {renderCount(columns, count)}
+        </Table>
+      </Shoshgo>
+    )
+  }
+
+  onChangeConfig = (code: string, value) => {
+    const { configsMap } = this.state;
+
+    configsMap[code] = value;
+
+    this.setState({ configsMap });
+  };
+
+  onChangeMultiCombo = (code: string, values) => {
+    let value = values;
+
+    if (Array.isArray(values)) {
+      value = values.map(el => el.value);
+    }
+    if (!value || value.length === 0) {
+      value = '';
+    }
+    this.onChangeConfig(code, value);
+  };
+
+  setConfigsMap(key) {
+    const { rows } = this.state
+    if (key > 7) {
+      this.onChange('rows', 7)
+    }
+    //  if()
+  }
+
+  renderCreateDoc() {
+    const { width, height } = this.state
     const trigger = (
       <Button
         btnStyle="primary"
@@ -387,129 +524,209 @@ class ProductCountingLog extends React.Component<Props, State>{
     )
 
     const content = () => {
-      const mimeTypeOptions = [
-        { label: 'Name', value: 'sq' },
-        { label: 'Unit Price', value: 'ar' },
-        { label: 'SKU', value: 'bn' },
-        { label: 'Code', value: 'bg' },
-        { label: 'Vendor', value: 'zh_CN' },
-        { label: 'Featured Image', value: 'cs' },
-        { label: 'Description', value: 'nl' },
-      ];
 
+      const wtf = [
+        { label: 'Naasdasdme', value: 'sq' },
+        { label: 'Unasdasdit Price', value: 'ar' },
+        { label: 'SKasdasdU', value: 'bn' },
+        { label: 'Codasasdasddasde', value: 'bg' },
+        { label: 'Veasdasdndor', value: 'zh_CaN' },
+        { label: 'Featasdasdured Image', value: 'cas' },
+        { label: 'Descasdasdription', value: 'nla' },
+      ]
+      const onChangeWidth = e => {
+        let value: number = parseInt((e.target as HTMLInputElement).value)
+        if (value > 430)
+          onChangeInput('width', 430)
+        else
+          onChangeInput('width', value)
+
+      }
+
+
+      const onChangeHeight = e =>
+        onChangeInput('height', (e.target as HTMLInputElement).value)
+
+      const onChangeTable = (code: string, e) => {
+        let value: number = parseInt((e.target as HTMLInputElement).value)
+        let tmp1: string = 'columns'
+        let tmp2: string = 'rows'
+        if (code === "rows") {
+          tmp1 = 'rows'
+          tmp2 = 'columns'
+        }
+        switch (value) {
+          case 1:
+            onChangeInput(tmp1, 1);
+            onChangeInput(tmp2, 7)
+            break;
+          case 2:
+            onChangeInput(tmp1, 2);
+            onChangeInput(tmp2, 4)
+            break;
+          case 3:
+            onChangeInput(tmp1, 3);
+            onChangeInput(tmp2, 3)
+            break;
+          case 4:
+            onChangeInput(tmp1, 4);
+            onChangeInput(tmp2, 2)
+            break;
+          case 5:
+            onChangeInput(tmp1, 5);
+            onChangeInput(tmp2, 2)
+            break;
+          case 6:
+            onChangeInput(tmp1, 6);
+            onChangeInput(tmp2, 2)
+            break;
+          case 7:
+            onChangeInput(tmp1, 7);
+            onChangeInput(tmp2, 1)
+            break;
+        }
+      }
+
+      const onChangeMargin = e => {
+        let value: number = parseInt((e.target as HTMLInputElement).value)
+        if (value > 100)
+          onChangeInput('margin', 100)
+        else
+          onChangeInput('margin', value)
+      }
+
+      const onChangeInput = (name, value) => {
+        this.setState({ [name]: value } as any);
+        console.log("sdfsdfsfdgdfgdfg", this.state.margin)
+      };
+      const onChangeQr = (e) => {
+        onChangeInput('barcode', e.target.value)
+      }
 
       return (<React.Fragment>
         <FormGroup>
-          <FormGroup>
-            <ControlLabel>Name
-            </ControlLabel>
-            <FormControl
-              name="remainder"
+          <ControlLabel>Name
+          </ControlLabel>
+          <FormControl
+            name="remainder"
 
-              placeholder="Name.."
-            >
-            </FormControl>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>Description
-            </ControlLabel>
-            <FormControl
-              name="remainder"
-
-              placeholder="Description text..."
-            >
-            </FormControl>
-            <FormGroup>
-              <ControlLabel>Display Field (Product Custom Property)</ControlLabel>
-              <Select
-                value='sdsdfsdf'
-                options={mimeTypeOptions}
-                // onChange={this.onChangeMultiCombo.bind(this, 'UPLOAD_FILE_TYPES')}
-                multi={true}
-                delimiter=","
-                simpleValue={true}
-              />
-            </FormGroup>
-            <FlexRow>
-              <FormGroup>
-                <ControlLabel>Layout
-                </ControlLabel>
-                <Select
-                  placeholder="Vertical"
-                >
-                </Select>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Columns
-                </ControlLabel>
-                <FormControl
-                  name="remainder"
-
-                  placeholder=""
-                >
-                </FormControl>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Rows
-                </ControlLabel>
-                <FormControl
-                  name="remainder"
-
-                  placeholder=""
-                >
-                </FormControl>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Margin
-                </ControlLabel>
-                <FormControl
-                  name="remainder"
-
-                  placeholder=""
-                >
-                </FormControl>
-              </FormGroup>
-            </FlexRow>
-            <FlexRow>
-              <FormGroup>
-                <ControlLabel>Width
-                </ControlLabel>
-                <FormControl
-                  name="remainder"
-
-                  placeholder=""
-                >
-                </FormControl>
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Height
-                </ControlLabel>
-                <FormControl
-                  name="remainder"
-
-                  placeholder=""
-                >
-                </FormControl>
-              </FormGroup>
-            </FlexRow>
-            <FlexRow>
-              <FormGroup>
-                <ControlLabel>QR
-                </ControlLabel>
-                <FormControl
-                  componentClass="checkbox"
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Barcode
-                </ControlLabel>
-                <FormControl
-                  componentClass="checkbox"
-                />
-              </FormGroup>
-            </FlexRow>
-          </FormGroup>
+            placeholder="Name.."
+          >
+          </FormControl>
         </FormGroup>
+        <ControlLabel>Description
+        </ControlLabel>
+        <FormControl
+          name="remainder"
+
+          placeholder="Description text..."
+        >
+        </FormControl>
+        <FormGroup>
+          <ControlLabel>Display Field (Product Custom Property)</ControlLabel>
+          <Select
+            value={this.state.configsMap}
+            options={wtf}
+            onChange={this.onChangeMultiCombo.bind(this, 'sex_choices')}
+            multi={true}
+            delimiter=""
+            simpleValue={true}
+          />
+        </FormGroup>
+        <FlexRow>
+          <FormGroup>
+            <ExpandWrapper>
+              <ControlLabel>Layout
+              </ControlLabel>
+              <FormControl
+                componentClass='select'
+                name="remainder"
+                placeholder="Description text..."
+              >
+              </FormControl>
+            </ExpandWrapper>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Columns
+            </ControlLabel>
+            <FormControl
+              name="remainder"
+              type="number"
+              value={this.state.columns}
+              onChange={(e) => onChangeTable('columns', e)}
+              required={true}
+            >
+            </FormControl>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Rows
+            </ControlLabel>
+            <FormControl
+              name="remainder"
+              type="number"
+              value={this.state.rows}
+              onChange={(e) => onChangeTable('rows', e)}
+            >
+            </FormControl>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Margin
+            </ControlLabel>
+            <FormControl
+              value={this.state.margin}
+              name="remainder"
+              type="number"
+              placeholder=""
+              onChange={onChangeMargin}
+            >
+            </FormControl>
+          </FormGroup>
+        </FlexRow>
+        <FlexRow>
+          <FormGroup>
+            <ControlLabel>Width
+            </ControlLabel>
+            <FormControl
+              value={this.state.width}
+              name="remainder"
+              type="number"
+              onChange={onChangeWidth}
+            >
+            </FormControl>
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Height
+            </ControlLabel>
+            <FormControl
+              onChange={onChangeHeight}
+              name="remainder"
+              type="number"
+              placeholder=""
+              value={this.state.height}
+            >
+            </FormControl>
+          </FormGroup>
+        </FlexRow>
+        <FlexRow>
+          <FormGroup>
+            <ControlLabel>QR
+            </ControlLabel>
+            <FormControl
+              componentClass="checkbox"
+            />
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Barcode
+            </ControlLabel>
+            <FormControl
+              checked={this.state.barcode}
+              onChange={onChangeQr}
+              componentClass="checkbox"
+
+            />
+          </FormGroup>
+        </FlexRow>
+        {this.renderShoshgo()}
         <ModalFooter>{
           cancel}{save}
         </ModalFooter>
@@ -527,7 +744,9 @@ class ProductCountingLog extends React.Component<Props, State>{
     </>
     )
   }
+  renderSidebar(){
 
+  }
   render() {
 
     const actionButton = (
@@ -557,6 +776,7 @@ class ProductCountingLog extends React.Component<Props, State>{
             }
           />
         }
+        leftSidebar= {''}
       />
     )
   }

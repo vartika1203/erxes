@@ -1,0 +1,35 @@
+const commonParams = `
+$title: string,
+$name: string,
+$description: string,
+$type: string,
+$googleMapLink: string,
+$schoolType: string,
+$latitude: number,
+$longitude: number,
+$duureg: string,
+$horoo: string,
+$dulaan: string,
+$tsahilgaan: string,
+$hamgaalalt: string,
+$cable: string,
+$phoneNumber: number,
+$hospital: string,
+$busStop: string,
+$pharmacy: string,
+$zai: number,
+$walkingEnvironment: string,
+$Playground: string,
+$shop: string,
+$outdoorParking: string,
+$camera: number,
+$walkingEnv: number,
+$basketball: number,
+$playground: number,
+$greenPlant: number,
+$streetLighting: number,
+$typeAsNumber: number,`
+const saveList = `mutation saveList(${commonParams}){
+  saveList(${commonParams})
+}`
+export default{}

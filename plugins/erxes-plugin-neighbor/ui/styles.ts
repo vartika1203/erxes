@@ -3,8 +3,8 @@
 // import { colors, dimensions } from 'modules/common/styles';
 // import { rgba } from 'modules/common/styles/color';
 import styled, { css } from 'styled-components';
-import { Formgroup } from 'modules/common/components/form/styles';
-import { colors, dimensions } from 'modules/common/styles';
+import { Formgroup } from '../../../ui/src/modules/common/components/form/styles';
+import { colors, dimensions } from '../../../ui/src/modules/common/styles';
 import React from 'react';
 import styledTS from 'styled-components-ts';
 
@@ -53,11 +53,5 @@ export const FlexRow = styled(FlexContent)`
 export const ContainerFragment = styled(React.Fragment)`
 `;
 
-export const Shoshgo = styledTS<{ height?: any, width?: any, margin: number }>(styled.div)`
-  background-color: #dbdbdb;
-  padding: ${props => props.margin + 'px'};
-  height: ${props => props.height + 'px'};
-  width: ${props => props.width + 'px'}
 
 
-`
