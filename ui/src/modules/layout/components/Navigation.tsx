@@ -1,4 +1,3 @@
-// import Label from 'modules/common/components/Label';
 import WithPermission from 'modules/common/components/WithPermission';
 import { __, setBadge, readFile } from 'modules/common/utils';
 import { pluginNavigations, pluginsOfNavigations } from 'pluginUtils';
@@ -21,15 +20,12 @@ import {
   AllAddedPlugin,
   AllItemRow,
   Repostion,
-  // GlobalProfile,
   MoreTitle
 } from '../styles';
 import Tip from 'modules/common/components/Tip';
 import { getThemeItem } from 'utils';
 import Icon from 'modules/common/components/Icon';
 import FormControl from 'modules/common/components/form/Control';
-
-// const { REACT_APP_DASHBOARD_URL } = getEnv();
 
 export interface ISubNav {
   permission: string;
@@ -46,7 +42,6 @@ type IProps = {
 
 type State = {
   showMenu: boolean;
-  showGlobal: boolean;
   extraMenus: any[];
   recentlyAddedMenus: any[];
   searchText: string;
@@ -74,7 +69,6 @@ class Navigation extends React.Component<IProps, State> {
 
     this.state = {
       showMenu: false,
-      showGlobal: false,
       extraMenus: this.extraMenus,
       recentlyAddedMenus: this.recentlyAddedMenus,
       searchText: ''
@@ -230,7 +224,6 @@ class Navigation extends React.Component<IProps, State> {
                     <NavIcon className={menu.icon} />
                     <label>{__(menu.text)}</label>
                   </NavLink>
-                  {this.renderChildren(menu.url, menu.text, menu.childrens)}
                 </MoreItemRecent>
               ))}
             </MoreItemRow>
@@ -264,7 +257,7 @@ class Navigation extends React.Component<IProps, State> {
 
   render() {
     // const { unreadConversationsCount } = this.props;
-    const { showMenu, showGlobal } = this.state;
+    const { showMenu } = this.state;
     const logo = 'erxes-dark.png';
     const thLogo = getThemeItem('logo');
 
@@ -279,10 +272,7 @@ class Navigation extends React.Component<IProps, State> {
 
     return (
       <LeftNavigation>
-        <NavLink
-          to="/nav"
-          onClick={() => this.setState({ showGlobal: !showGlobal })}
-        >
+        <NavLink to="/nav">
           <img
             src={thLogo ? readFile(thLogo) : `/images/${logo}`}
             alt="erxes"
