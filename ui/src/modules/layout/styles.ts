@@ -30,9 +30,7 @@ import { colors, dimensions } from '../common/styles';
 import { rgba } from '../common/styles/color';
 
 const wideNavigation =
-  dimensions.headerSpacingWide +
-  dimensions.headerSpacingWide +
-  dimensions.coreSpacing;
+  dimensions.headerSpacingWide * 5 + dimensions.headerSpacing - 18;
 
 const thBackground = getThemeItem('background');
 const thColor = getThemeItem('text_color');
@@ -489,7 +487,7 @@ const AllAddedPlugin = styled.div`
   align-items: flex-start;
   padding: 0px;
   position: static;
-  width: 382px;
+  width: ${wideNavigation}px;
   height: auto;
   left: ${dimensions.coreSpacing}px;
   top: 182px;
@@ -502,7 +500,7 @@ const AllItemRow = styled.div`
   align-items: flex-start;
   padding: 0px;
   position: static;
-  width: 382px;
+  width: ${wideNavigation}px;
   height:  ${dimensions.headerSpacingWide}px
   left: 0px;
   top: ${dimensions.coreSpacing + 6}px;
@@ -515,7 +513,7 @@ const MoreRecentAdd = styled.div`
   flex-direction: column;
   align-items: flex-start;
   position: static;
-  width: 382px;
+  width: ${wideNavigation}px;
   height: ${dimensions.headerSpacingWide + 26}px;
   left: ${dimensions.coreSpacing}px;
   top: ${dimensions.headerSpacingWide - 4}px;
@@ -642,8 +640,8 @@ const MoreMenu = styledTS<{ visible: boolean }>(styled.div)`
   position: relative;
   visibility: ${props => (props.visible ? 'visible' : 'hidden')};
   padding:${dimensions.coreSpacing}px;
-  width: 422px;
-  height: 298px;
+  width: ${dimensions.headerSpacingWide * 6 + 2}px;
+  height: ${dimensions.headerSpacingWide * 4 + 18}px;
   overflow-y: scroll;
   left: ${dimensions.headerSpacing * 2 - 1}px;
   bottom: ${dimensions.headerSpacingWide + 1}px;
@@ -668,7 +666,6 @@ const MoreSearch = styled.div`
   order: 0;
   align-self: stretch;
   flex-grow: 0;
-  margin: 20px 0px;
   color: ${colors.colorCoreGray};
 
   i {
