@@ -323,7 +323,7 @@ const NavIcon = styled.i`
   color: ${colors.colorBlack};
 `;
 
-const SubNav = styledTS(styled.ul)`
+const SubNav = styled.ul`
   background: ${colors.colorWhite};
   position: absolute;
   left: ${dimensions.headerSpacing * 2}px;
@@ -340,7 +340,6 @@ const SubNav = styledTS(styled.ul)`
   list-style: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  }
 `;
 
 const SubNavItem = styledTS<{ additional: boolean }>(styled.li)`
@@ -450,7 +449,6 @@ const ExpandIcon = styledTS<{ collapsed: boolean }>(styled.div)`
       float: ${props => (props.collapsed ? 'left' : 'right')};
     }
   }
-}
 `;
 
 const SmallLabel = styled.div`
@@ -473,14 +471,15 @@ const NewStyle = styled.div`
   width: ${dimensions.coreSpacing + 12}px;
   height: ${dimensions.coreSpacing - 4}px;
   left: ${dimensions.headerSpacingWide - 7}px;
-  top: ${dimensions.unitSpacing - 7}px
-  border-radius: ${dimensions.unitSpacing - 6}px
+  top: ${dimensions.unitSpacing - 7}px;
+  border-radius: ${dimensions.unitSpacing - 6}px;
   color: rgba(255, 255, 255, 0.95);
-  font-size: ${dimensions.unitSpacing}px
-  line-height: ${dimensions.unitSpacing + 6}px
+  font-size: ${dimensions.unitSpacing}px;
+  line-height: ${dimensions.unitSpacing + 6}px;
   letter-spacing: 0.4px;
   background-color: ${colors.colorCoreTeal};
 `;
+
 const AllAddedPlugin = styled.div`
   display: flex;
   flex-direction: column;
@@ -501,24 +500,11 @@ const AllItemRow = styled.div`
   padding: 0px;
   position: static;
   width: ${wideNavigation}px;
-  height:  ${dimensions.headerSpacingWide}px
+  height: ${dimensions.headerSpacingWide}px;
   left: 0px;
   top: ${dimensions.coreSpacing + 6}px;
   flex-wrap: wrap;
   margin: 8px 0px;
-`;
-
-const MoreRecentAdd = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: static;
-  width: ${wideNavigation}px;
-  height: ${dimensions.headerSpacingWide + 26}px;
-  left: ${dimensions.coreSpacing}px;
-  top: ${dimensions.headerSpacingWide - 4}px;
-  align-self: stretch;
-  margin: 20px 0px;
 `;
 
 const MoreTitle = styled.div`
@@ -536,40 +522,19 @@ const MoreTitle = styled.div`
 
 const colWidth = 78;
 
-const MoreItemRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 0px;
-  position: static;
-  width: 304px;
-  height: ${dimensions.headerSpacingWide}px;
-  left: 0px;
-  top: ${dimensions.coreSpacing + 6}px;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  margin: 8px 0px;
-`;
-
-const MoreItemRecent = styledTS<{
-  order: number;
-}>(styled.div)`
+const MoreItemRecent = styledTS<{ order: number }>(styled.div)`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
   position: static;
   width: ${dimensions.headerSpacingWide}px;
   height: ${dimensions.headerSpacingWide}px;
-  left: ${props => (props.order > 0 ? `${colWidth * props.order}px` : '0')}
+  left: ${props => (props.order > 0 ? `${colWidth * props.order}px` : '0px')};
   top: 0px;
-
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
   border-radius: ${dimensions.unitSpacing - 6}px;
-
   flex: none;
   order: 1;
   flex-grow: 0;
@@ -582,58 +547,56 @@ const MoreItemRecent = styledTS<{
       justify-content: center;
       align-items: center;
 
-    i {
-      padding:0px, 14px, 0px, 0px;
-    }
-
-    label {
-      font-size: ${dimensions.unitSpacing + 1}px;
-      letter-spacing: 0.4px;
-      position: static;
-      cursor: pointer;
-      bottom: ${dimensions.unitSpacing - 1}px;
-      padding: ${dimensions.unitSpacing - 5}px;
-      text-align: center
-      opacity: 0.6;
-      color: ${colors.colorBlack};
-      width: ${dimensions.headerSpacingWide}px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; 
-    }
-
-    &.active {
-      background: rgba(79, 51, 175, 0.08);
-
-
-      > i, label {
-        opacity: 1;
-        color: ${colors.colorPrimary};
-      }
-    }
-
-    &:focus {
-      outline: 0;
-    }
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.06);
-
-      > i, label {
-        opacity: 1;
-        color: ${colors.colorPrimary};
-      }
-    }
-
-
-    @media (max-height: 760px) {
-      height: ${dimensions.headerSpacing}px;
-
       i {
-        line-height: ${dimensions.headerSpacing}px;
+        padding:0px, 14px, 0px, 0px;
+      }
+
+      label {
+        font-size: ${dimensions.unitSpacing + 1}px;
+        letter-spacing: 0.4px;
+        position: static;
+        cursor: pointer;
+        bottom: ${dimensions.unitSpacing - 1}px;
+        padding: ${dimensions.unitSpacing - 5}px;
+        text-align: center;
+        opacity: 0.6;
+        color: ${colors.colorBlack};
+        width: ${dimensions.headerSpacingWide}px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; 
+      }
+
+      &.active {
+        background: rgba(79, 51, 175, 0.08);
+
+        > i, label {
+          opacity: 1;
+          color: ${colors.colorPrimary};
+        }
+      }
+
+      &:focus {
+        outline: 0;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.06);
+
+        > i, label {
+          opacity: 1;
+          color: ${colors.colorPrimary};
+        }
+      }
+
+      @media (max-height: 760px) {
+        height: ${dimensions.headerSpacing}px;
+
+        i {
+          line-height: ${dimensions.headerSpacing}px;
+        }
       }
     }
-  }
 `;
 
 const MoreMenu = styledTS<{ visible: boolean }>(styled.div)`
@@ -706,10 +669,8 @@ export {
   MoreSearch,
   StoreItem,
   MoreTitle,
-  MoreItemRow,
   AllAddedPlugin,
   AllItemRow,
-  MoreRecentAdd,
   MoreItemRecent,
   NewStyle,
   MainWrapper,

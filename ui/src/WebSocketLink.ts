@@ -28,6 +28,7 @@ export default class WebSocketLink extends ApolloLink {
                 new Error(err.map(({ message }) => message).join(', '))
               );
             }
+
             if (err instanceof CloseEvent) {
               return sink.error(
                 new Error(
@@ -35,6 +36,7 @@ export default class WebSocketLink extends ApolloLink {
                 )
               );
             }
+
             return sink.error(err);
           }
         }

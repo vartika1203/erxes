@@ -14,9 +14,7 @@ import {
   MoreMenu,
   MoreSearch,
   StoreItem,
-  MoreRecentAdd,
   MoreItemRecent,
-  MoreItemRow,
   AllAddedPlugin,
   AllItemRow,
   Repostion,
@@ -59,9 +57,7 @@ class Navigation extends React.Component<IProps, State> {
       if (index < 5) {
         this.mainMenus.push(menu);
       }
-      if (index > 4 && index < 10) {
-        this.recentlyAddedMenus.push(menu);
-      } else if (index > 10) {
+      if (index > 4) {
         this.extraMenus.push(menu);
       }
     });
@@ -214,21 +210,8 @@ class Navigation extends React.Component<IProps, State> {
               placeholder="find your use plugin"
             />
           </MoreSearch>
-          <MoreRecentAdd>
-            <MoreTitle>Recently added</MoreTitle>
-            <MoreItemRow>
-              {this.state.recentlyAddedMenus.map((menu, index) => (
-                <MoreItemRecent key={index} order={index}>
-                  <NavLink to={this.getLink(menu.url)}>
-                    <NavIcon className={menu.icon} />
-                    <label>{__(menu.text)}</label>
-                  </NavLink>
-                </MoreItemRecent>
-              ))}
-            </MoreItemRow>
-          </MoreRecentAdd>
           <AllAddedPlugin>
-            <MoreTitle>Other added plugin</MoreTitle>
+            <MoreTitle>Other added plugins</MoreTitle>
             <AllItemRow>
               {this.state.extraMenus.map((menu, index) => (
                 <MoreItemRecent key={index} order={index}>
@@ -271,7 +254,7 @@ class Navigation extends React.Component<IProps, State> {
 
     return (
       <LeftNavigation>
-        <NavLink to="/nav">
+        <NavLink to="#">
           <img
             src={thLogo ? readFile(thLogo) : `/images/${logo}`}
             alt="erxes"
@@ -298,9 +281,10 @@ class Navigation extends React.Component<IProps, State> {
               <label>{__('Settings')}</label>
             </NavLink>
           </NavItem>
+
           <Repostion>
             <NavLink
-              to="/more"
+              to=" "
               onClick={() => this.setState({ showMenu: !showMenu })}
             >
               <NavIcon className="icon-ellipsis-h" />
@@ -308,8 +292,9 @@ class Navigation extends React.Component<IProps, State> {
             </NavLink>
             {this.moreItem()}
           </Repostion>
+
           <StoreItem>
-            <NavLink to="/">
+            <NavLink to="/" exact={true} key="root">
               <NavIcon className="icon-store" />
               <label>{__('Store')}</label>
             </NavLink>
