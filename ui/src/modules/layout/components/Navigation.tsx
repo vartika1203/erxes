@@ -37,7 +37,6 @@ export interface ISubNav {
 
 type IProps = {
   unreadConversationsCount?: number;
-  onCollapseNavigation: () => void;
 };
 
 type State = {
@@ -204,7 +203,7 @@ class Navigation extends React.Component<IProps, State> {
   moreItem = () => {
     return (
       <div ref={this.setWrapperRef}>
-        <MoreMenu visibility={this.state.showMenu}>
+        <MoreMenu visible={this.state.showMenu}>
           <MoreSearch>
             <Icon icon="search-1" size={15} />
             <FormControl
@@ -299,10 +298,9 @@ class Navigation extends React.Component<IProps, State> {
               <label>{__('Settings')}</label>
             </NavLink>
           </NavItem>
-
           <Repostion>
             <NavLink
-              to="more"
+              to="/more"
               onClick={() => this.setState({ showMenu: !showMenu })}
             >
               <NavIcon className="icon-ellipsis-h" />
@@ -310,7 +308,6 @@ class Navigation extends React.Component<IProps, State> {
             </NavLink>
             {this.moreItem()}
           </Repostion>
-
           <StoreItem>
             <NavLink to="/">
               <NavIcon className="icon-store" />
