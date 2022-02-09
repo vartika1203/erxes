@@ -1,6 +1,6 @@
 import { IPOS } from '../types';
 import { sendMessage } from '../messageBrokers';
-import { orderToErkhet } from '../utils';
+import { orderDeleteToErkhet, orderToErkhet } from '../utils';
 
 const mutations = [
   /**
@@ -121,6 +121,27 @@ const mutations = [
 
       await orderToErkhet(models, messageBroker, memoryStorage, pos, _id, putRes._id);
       return await models.PosOrders.findOne({ _id }).lean()
+    }
+  },
+  {
+    name: 'posOrderReturnBill',
+    handler: async (_root, { _id }: { _id: string }, { models, messageBroker, memoryStorage }) => {
+      const order = await models.PosOrders.findOne({ _id }).lean();
+      if (!order) {
+        throw new Error('not found order');
+      }
+
+      const pos = await models.Pos.findOne({ token: order.posToken }).lean();
+
+      if (!pos) {
+        throw new Error('not found pos');
+      }
+
+      await models.PutResponses.returnBill(models, { contentType: 'pos', contentId: _id }, pos.ebarimtConfig);
+      if (order.syncedErkhet) {
+        await orderDeleteToErkhet(models, messageBroker, memoryStorage, pos, _id)
+      }
+      return await models.PosOrders.deleteOne({ _id });
     }
   }
 ];

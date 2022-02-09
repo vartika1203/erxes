@@ -8,6 +8,15 @@ const posOrderSyncErkhet = `
   }
 `;
 
+const posOrderReturnBill = `
+  mutation posOrderReturnBill($_id: String!) {
+    posOrderReturnBill(_id: $_id){
+      ${responseFields}
+    }
+  }
+`;
+
 export default {
-  posOrderSyncErkhet
+  posOrderSyncErkhet,
+  posOrderReturnBill
 };

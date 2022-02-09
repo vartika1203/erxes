@@ -68,3 +68,7 @@ export type ProductCategoriesQueryResponse = {
 export type PosOrderSyncErkhetMutationResponse = {
   posOrderSyncErkhet: (mutation: { variables: { _id: string } }) => Promise<any>;
 };
+
+export type PosOrderReturnBillMutationResponse = {
+  posOrderReturnBill: (mutation: { variables: { _id: string } }) => Promise<any>;
+};

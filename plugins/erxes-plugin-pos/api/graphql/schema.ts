@@ -167,4 +167,5 @@ export const mutations = `
   productGroupsAdd(${groupCommonFields}): ProductGroups
   productGroupsBulkInsert(posId: String, groups:[GroupInput]): [ProductGroups]
   posOrderSyncErkhet(_id: String!): PosOrder
+  posOrderReturnBill(_id: String!): PosOrder
 `;

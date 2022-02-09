@@ -5,7 +5,7 @@ import queryString from 'query-string';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { IRouterProps } from 'erxes-ui/lib/types';
-import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse, PosOrderSyncErkhetMutationResponse } from '../types';
+import { ListQueryVariables, OrdersQueryResponse, OrdersSummaryQueryResponse, PosOrderSyncErkhetMutationResponse, PosOrderReturnBillMutationResponse } from '../types';
 import { mutations, queries } from '../graphql';
 import { withRouter } from 'react-router-dom';
 import { Bulk, withProps, router, Alert, Spinner } from 'erxes-ui';
@@ -21,7 +21,9 @@ type FinalProps = {
   ordersQuery: OrdersQueryResponse;
   ordersSummaryQuery: OrdersSummaryQueryResponse
 } & Props &
-  IRouterProps & PosOrderSyncErkhetMutationResponse;
+  IRouterProps &
+  PosOrderSyncErkhetMutationResponse &
+  PosOrderReturnBillMutationResponse;
 
 type State = {
   loading: boolean;
@@ -102,7 +104,23 @@ class OrdersContainer extends React.Component<FinalProps, State> {
       .catch(e => {
         Alert.error(e.message);
       });
+  }
 
+  onReturnBill = (posId) => {
+    const { posOrderReturnBill, ordersQuery } = this.props;
+
+    posOrderReturnBill({
+      variables: { _id: posId }
+    })
+      .then(() => {
+        // refresh queries
+        ordersQuery.refetch();
+
+        Alert.success('You successfully synced erkhet.');
+      })
+      .catch(e => {
+        Alert.error(e.message);
+      });
   }
 
   render() {
@@ -129,7 +147,8 @@ class OrdersContainer extends React.Component<FinalProps, State> {
       onSearch: this.onSearch,
       isFiltered: this.isFiltered(),
       clearFilter: this.clearFilter,
-      onSyncErkhet: this.onSyncErkhet
+      onSyncErkhet: this.onSyncErkhet,
+      onReturnBill: this.onReturnBill
     };
 
     const ordersList = props => {
@@ -183,6 +202,12 @@ export default withProps<Props>(
       gql(mutations.posOrderSyncErkhet),
       {
         name: 'posOrderSyncErkhet',
+      }
+    ),
+    graphql<Props, PosOrderReturnBillMutationResponse, { _id: string }>(
+      gql(mutations.posOrderReturnBill),
+      {
+        name: 'posOrderReturnBill',
       }
     ),
   )(withRouter<IRouterProps>(OrdersContainer))

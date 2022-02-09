@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { Bulk, withProps, router, } from 'erxes-ui';
+import { Bulk, withProps, router, Spinner } from 'erxes-ui';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
@@ -9,7 +9,8 @@ import PutResponse from '../components/PutResponses';
 import { queries } from '../graphql';
 import {
   ListQueryVariables,
-  PutResponsesQueryResponse
+  PutResponsesQueryResponse,
+  PutResponsesCountQueryResponse
 } from '../types';
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 
 type FinalProps = {
   putResponsesQuery: PutResponsesQueryResponse;
+  putResponsesCountQuery: PutResponsesCountQueryResponse;
 } & Props &
   IRouterProps;
 
@@ -38,20 +40,26 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
   render() {
     const {
       putResponsesQuery,
-      history
+      putResponsesCountQuery
     } = this.props;
 
+    if (putResponsesQuery.loading || putResponsesCountQuery.loading) {
+      return <Spinner />
+    }
+
     const searchValue = this.props.queryParams.searchValue || '';
-    const list = putResponsesQuery.putResponses || [];
+    const putResponses = putResponsesQuery.putResponses || [];
+    const putResponsesCount = putResponsesCountQuery.putResponsesCount || 0;
 
     const updatedProps = {
       ...this.props,
       searchValue,
-      putResponses: list,
+      putResponses,
+      totalCount: putResponsesCount,
       loading: putResponsesQuery.loading,
     };
 
-    const carsList = props => {
+    const putResponsesList = props => {
       return <PutResponse {...updatedProps} {...props} />;
     };
 
@@ -59,7 +67,7 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
       this.props.putResponsesQuery.refetch();
     };
 
-    return <Bulk content={carsList} refetch={refetch} />;
+    return <Bulk content={putResponsesList} refetch={refetch} />;
   }
 }
 
@@ -80,6 +88,14 @@ export default withProps<Props>(
       gql(queries.putResponses),
       {
         name: 'putResponsesQuery',
+        options: generateParams
+      }
+    ),
+
+    graphql<{ queryParams: any }, PutResponsesCountQueryResponse, ListQueryVariables>(
+      gql(queries.putResponsesCount),
+      {
+        name: 'putResponsesCountQuery',
         options: generateParams
       }
     ),

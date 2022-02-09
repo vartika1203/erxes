@@ -28,6 +28,7 @@ interface IProps extends IRouterProps {
   summary: any;
 
   onSyncErkhet: (orderId: string) => void;
+  onReturnBill: (orderId: string) => void;
 }
 
 export const menuPos = [
@@ -61,7 +62,8 @@ class Orders extends React.Component<IProps, {}> {
       isFiltered,
       clearFilter,
       summary,
-      onSyncErkhet
+      onSyncErkhet,
+      onReturnBill
     } = this.props;
 
     const rightMenuProps = {
@@ -132,6 +134,7 @@ class Orders extends React.Component<IProps, {}> {
                 key={order._id}
                 history={history}
                 onSyncErkhet={onSyncErkhet}
+                onReturnBill={onReturnBill}
               />
             ))}
           </tbody>

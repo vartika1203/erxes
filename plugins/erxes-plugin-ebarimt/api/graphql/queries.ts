@@ -49,6 +49,12 @@ const queries = [
     }
   },
   {
+    name: 'putResponsesCount',
+    handler: async (_root, params, { commonQuerySelector, models }) => {
+      return models.PutResponses.find(await generateFilter(models, params, commonQuerySelector)).countDocuments();
+    }
+  },
+  {
     name: 'getDealLink',
     handler: async (_root, param, { models }) => {
       const deal = await models.Deals.getDeal(param._id);

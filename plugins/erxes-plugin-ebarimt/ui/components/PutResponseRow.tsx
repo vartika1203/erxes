@@ -22,20 +22,16 @@ function displayValue(putResponse, name) {
 
 function PutResponseRow({ putResponse, history }: Props) {
 
-  const onClick = e => {
-    e.stopPropagation();
-    if (putResponse.contentType === 'deal') {
-      client.query({
-        query: gql(queries.getDealLink),
-        variables: { _id: putResponse.contentId }
-      }).then(data => {
-        history.push(`${data.data.getDealLink}`)
-      });
-    }
+  const onClick = () => {
+    client.query({
+      query: gql(queries.getDealLink),
+      variables: { _id: putResponse.contentId }
+    }).then(data => {
+      history.push(`${data.data.getDealLink}`)
+    });
   };
 
-  const onPrint = e => {
-    e.stopPropagation();
+  const onPrint = () => {
     const printContent = Response(putResponse)
     const myWindow =
       window.open(`__`, '_blank', 'width=800, height=800') || ({} as any);
@@ -55,12 +51,15 @@ function PutResponseRow({ putResponse, history }: Props) {
       <td key={'message'}>{displayValue(putResponse, 'message')}</td>
       <td key={'ReturnBillId'}>{putResponse.sendInfo.returnBillId} </td>
       <td key={'actions'}>
-        <Button
-          btnStyle="link"
-          size="small"
-          icon="external-link-alt"
-          onClick={onClick}
-        ></Button>
+        {
+          putResponse.contentType === 'deal' && <Button
+            btnStyle="link"
+            size="small"
+            icon="external-link-alt"
+            onClick={onClick}
+          >Show Deal</Button>
+        }
+
         <Button
           btnStyle="link"
           size="small"

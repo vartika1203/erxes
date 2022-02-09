@@ -64,6 +64,12 @@ const putResponses = `
   }
 `;
 
+const putResponsesCount = `
+  query putResponsesCount(${listParamsDef}) {
+    putResponsesCount(${listParamsValue})
+  }
+`;
+
 const getDealLink = `
   query getDealLink($_id: String) {
     getDealLink(_id: $_id)
@@ -72,5 +78,6 @@ const getDealLink = `
 export default {
   configs,
   putResponses,
+  putResponsesCount,
   getDealLink
 };

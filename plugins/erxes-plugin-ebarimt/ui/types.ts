@@ -52,6 +52,12 @@ export type PutResponsesQueryResponse = {
   refetch: () => void;
 }
 
+export type PutResponsesCountQueryResponse = {
+  putResponsesCount: number;
+  loading: boolean;
+  refetch: () => void;
+}
+
 export type ListQueryVariables = {
   page?: number;
   perPage?: number;

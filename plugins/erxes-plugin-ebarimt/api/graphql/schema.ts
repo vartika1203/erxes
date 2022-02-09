@@ -50,5 +50,6 @@ const queryParams = `
 
 export const queries = `
   putResponses(${queryParams}): [PutResponse]
+  putResponsesCount(${queryParams}): Int
   getDealLink(_id: String): String
 `;

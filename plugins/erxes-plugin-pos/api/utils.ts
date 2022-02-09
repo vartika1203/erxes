@@ -97,8 +97,7 @@ export const orderToErkhet = async (models, messageBroker, memoryStorage, pos, o
     },
   ];
 
-  let userEmail = pos.erkhetConfig.userEmail
-
+  let userEmail = pos.erkhetConfig.userEmail;
 
   const postData = {
     userEmail,
@@ -115,7 +114,55 @@ export const orderToErkhet = async (models, messageBroker, memoryStorage, pos, o
     payload: JSON.stringify(postData),
   });
 
-  if (apiResponse && apiResponse.success) {
-    await models.PosOrders.updateOne({ _id: orderId }, { syncedErkhet: true });
+  if (apiResponse) {
+    if (apiResponse.success) {
+      await models.PosOrders.updateOne({ _id: orderId }, { syncedErkhet: true });
+    }
+    if (apiResponse.message) {
+      throw new Error(apiResponse.message)
+    }
+
+  }
+}
+
+export const orderDeleteToErkhet = async (models, messageBroker, memoryStorage, pos, orderId) => {
+  let erkhetConfig = await getConfig(models, memoryStorage, 'ERKHET', {});
+
+  if (!erkhetConfig || !erkhetConfig.apiKey! || !erkhetConfig.apiSecret || !pos.erkhetConfig.isSyncErkhet) {
+    return;
+  }
+
+  const order = await models.PosOrders.findOne({ _id: orderId }).lean();
+
+  const orderInfos = [{
+    date: order.paidDate,
+    orderId: order._id,
+    returnKind: 'hard'
+  }];
+
+  let userEmail = pos.erkhetConfig.userEmail
+
+  const postData = {
+    userEmail,
+    token: erkhetConfig.apiToken,
+    apiKey: erkhetConfig.apiKey,
+    apiSecret: erkhetConfig.apiSecret,
+    orderInfos: JSON.stringify(orderInfos),
+  }
+
+  const apiResponse = await messageBroker().sendRPCMessage('rpc_queue:erxes-automation-erkhet', {
+    action: 'get-response-return-order',
+    isJson: true,
+    isEbarimt: false,
+    payload: JSON.stringify(postData),
+  });
+
+  if (apiResponse) {
+    if (apiResponse.success) {
+      return apiResponse.success
+    } else {
+      throw new Error(apiResponse)
+    }
+
   }
 }
