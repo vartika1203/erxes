@@ -207,6 +207,25 @@ export const pluginsOfCompanySidebar = (company: ICompany) => {
   );
 };
 
+export const pluginsOfUserSidebar = (user: IUser) => {
+  return (
+    <PluginsWrapper
+      itemName={'userRightSidebarSection'}
+      callBack={(_plugin, section) => {
+        const Component = section.section;
+        return (
+          <Component
+            key={Math.random()}
+            userId={user._id}
+            mainType={'user'}
+            mainTypeId={user._id}
+          />
+        );
+      }}
+    />
+  );
+};
+
 export const pluginsOfItemSidebar = (item: IItem, type: string) => {
   return (
     <PluginsWrapper

@@ -89,6 +89,16 @@ const customerSection = (param) => {
     <LoyaltySectionContainer ownerId={param.customerId} ownerType='customer'/>
   )
 }
+const companySection = (param) => {
+  return (
+    <LoyaltySectionContainer ownerId={param.companyId} ownerType='company'/>
+  )
+}
+const userSection = (param) => {
+  return (
+    <LoyaltySectionContainer ownerId={param.userId} ownerType='user'/>
+  )
+}
 
 export default () => ({
   routes: [
@@ -137,6 +147,12 @@ export default () => ({
   },
   customerRightSidebarSection: {
     section: customerSection,
+  },
+  companyRightSidebarSection: {
+    section: companySection,
+  },
+  userRightSidebarSection: {
+    section: userSection,
   },
   settings: [
     {

@@ -27,7 +27,7 @@ export class Lottery {
   }
 
   public static async getLotteries(models, { ownerType, ownerId, statuses }: { ownerType: string, ownerId: string, statuses: string[] }) {
-    return await models.Lotteries.find({ ownerType, ownerId, status: { $in: statuses || [] } }).lean()
+    return models.Lotteries.find({ ownerType, ownerId, status: { $in: statuses || [] } }).lean();
   }
 
   public static async createLottery(models, { compaignId, ownerType, ownerId, voucherCompaignId = '', userId = '' }) {

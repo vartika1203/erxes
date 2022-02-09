@@ -3,6 +3,7 @@ import Sidebar from 'modules/layout/components/Sidebar';
 import PortableTasks from 'modules/tasks/components/PortableTasks';
 import PortableTickets from 'modules/tickets/components/PortableTickets';
 import React from 'react';
+import { pluginsOfUserSidebar } from 'pluginUtils';
 import { IUser } from 'modules/auth/types';
 
 type Props = {
@@ -18,6 +19,7 @@ export default class RightSidebar extends React.Component<Props> {
         <PortableTasks mainType="user" mainTypeId={user._id} />
         <PortableDeals mainType="user" mainTypeId={user._id} />
         <PortableTickets mainType="user" mainTypeId={user._id} />
+        {pluginsOfUserSidebar(user)}
       </Sidebar>
     );
   }
