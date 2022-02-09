@@ -90,6 +90,7 @@ class PutResponseRow extends React.Component<Props> {
         trigger={trigger}
         autoOpenKey="showProductModal"
         content={this.modalContent}
+        size={'lg'}
       />
 
     );

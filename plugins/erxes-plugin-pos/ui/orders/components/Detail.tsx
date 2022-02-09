@@ -8,12 +8,11 @@ import {
   SidebarList,
   Table
 } from 'erxes-ui';
-import { FinanceAmount, FlexRow } from '../../styles';
-import { IOrder } from '../types';
+import { DetailRow, FinanceAmount, FlexRow } from '../../styles';
+import { IOrderDet } from '../types';
 
 type Props = {
-  order: IOrder;
-  productById: any;
+  order: IOrderDet;
 };
 
 class PutResponseDetail extends React.Component<Props> {
@@ -36,11 +35,23 @@ class PutResponseDetail extends React.Component<Props> {
   }
 
   render() {
-    const { order, productById } = this.props;
+    const { order } = this.props;
     return (
       <SidebarList>
         {this.renderRow('Bill Number', order.number)}
         {this.renderRow('Date', dayjs(order.paidDate || order.createdAt).format('lll'))}
+
+        <>
+          {(order.putResponses || []).map(p => {
+            return (
+              <DetailRow>
+                {this.renderRow('Bill ID', p.billId)}
+                {this.renderRow('Ebarimt Date', dayjs(p.date).format('lll'))}
+              </DetailRow>
+            );
+          }
+          )}
+        </>
 
         <Table whiteSpace="nowrap" bordered={true} hover={true}>
           <thead>
@@ -62,7 +73,7 @@ class PutResponseDetail extends React.Component<Props> {
           <tbody id="orderItems">
             {(order.items || []).map(item => (
               <tr key={item._id}>
-                <td>{productById[item.productId].name}</td>
+                <td>{item.productName}</td>
                 <td>{item.count}</td>
                 <td>{item.unitPrice}</td>
                 <td>{item.count * item.unitPrice}</td>

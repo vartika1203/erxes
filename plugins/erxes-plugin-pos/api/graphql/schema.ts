@@ -38,6 +38,38 @@ const catProd = `
   productId: String
 `;
 
+const posOrderFields = `
+  _id: String,
+  createdAt: Date,
+  status: String,
+  paidDate: Date,
+  number: String,
+  customerId: String,
+  cardAmount: Float,
+  cashAmount: Float,
+  mobileAmount: Float,
+  totalAmount: Float,
+  finalAmount: Float,
+  shouldPrintEbarimt: Boolean,
+  printedEbarimt: Boolean,
+  billType: String,
+  billId: String,
+  registerNumber: String,
+  oldBillId: String,
+  type: String,
+  userId: String,
+
+  items: JSON,
+  posToken: String,
+  syncId: String,
+
+  posName: String,
+  user: User,
+  customer: Customer,
+
+  syncedErkhet: Boolean
+`;
+
 export const types = `
   type CatProd {
     ${catProd}
@@ -78,35 +110,12 @@ export const types = `
   }
 
   type PosOrder {
-    _id: String,
-    createdAt: Date,
-    status: String,
-    paidDate: Date,
-    number: String,
-    customerId: String,
-    cardAmount: Float,
-    cashAmount: Float,
-    mobileAmount: Float,
-    totalAmount: Float,
-    finalAmount: Float,
-    shouldPrintEbarimt: Boolean,
-    printedEbarimt: Boolean,
-    billType: String,
-    billId: String,
-    registerNumber: String,
-    oldBillId: String,
-    type: String,
-    userId: String,
+    ${posOrderFields}
+  }
 
-    items: JSON,
-    posToken: String,
-    syncId: String,
-
-    posName: String,
-    user: User,
-    customer: Customer,
-
-    syncedErkhet: Boolean
+  type PosOrderDetail {
+    ${posOrderFields}
+    putResponses: JSON
   }
 
   type PosProduct {
@@ -156,6 +165,7 @@ export const queries = `
   productGroups(posId: String!): [ProductGroups]
 
   posOrders(${queryParams}): [PosOrder]
+  posOrderDetail(_id: String): PosOrderDetail
   posProducts(${queryParams} categoryId: String, searchValue: String): PosProducts
   posOrdersSummary(${queryParams}): JSON
 `;

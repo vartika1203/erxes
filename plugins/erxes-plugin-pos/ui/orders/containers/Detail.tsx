@@ -4,8 +4,8 @@ import Detail from '../components/Detail';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { IOrder } from '../types';
-import { ProductsQueryResponse } from 'erxes-ui/lib/products/types';
-import { queries } from 'erxes-ui/lib/products/graphql';
+import { OrderDetailQueryResponse } from '../types';
+import { queries } from '../graphql';
 import { Spinner, withProps } from 'erxes-ui';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 };
 
 type FinalProps = {
-  productsQuery: ProductsQueryResponse;
+  orderDetailQuery: OrderDetailQueryResponse;
 } & Props;
 
 class OrdersDetailContainer extends React.Component<FinalProps> {
@@ -27,22 +27,18 @@ class OrdersDetailContainer extends React.Component<FinalProps> {
 
   render() {
     const {
-      productsQuery
+      orderDetailQuery
     } = this.props;
 
-    if (productsQuery.loading) {
+    if (orderDetailQuery.loading) {
       return <Spinner />
     }
 
-    const products = productsQuery.products;
-    const productById = {};
-    for (const product of products) {
-      productById[product._id] = product;
-    }
+    const order = orderDetailQuery.posOrderDetail;
 
     const updatedProps = {
       ...this.props,
-      productById
+      order
     };
 
     return <Detail {...updatedProps} />;
@@ -51,15 +47,14 @@ class OrdersDetailContainer extends React.Component<FinalProps> {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, ProductsQueryResponse, { ids: string[] }>(
-      gql(queries.products),
+    graphql<Props, OrderDetailQueryResponse, { _id: string }>(
+      gql(queries.posOrderDetail),
       {
-        name: 'productsQuery',
+        name: 'orderDetailQuery',
         options: ({ order }) => ({
           variables: {
-            ids: order.items.map(i => i.productId)
-          },
-          fetchPolicy: 'network-only'
+            _id: order._id
+          }
         })
       }
     ),

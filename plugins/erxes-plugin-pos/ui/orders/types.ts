@@ -34,8 +34,18 @@ export type IOrder = {
   syncedErkhet: boolean,
 }
 
+export type IOrderDet = {
+  putResponses: any[];
+} & IOrder;
+
 export type OrdersQueryResponse = {
   posOrders: IOrder[];
+  loading: boolean;
+  refetch: () => void;
+}
+
+export type OrderDetailQueryResponse = {
+  posOrderDetail: IOrderDet;
   loading: boolean;
   refetch: () => void;
 }

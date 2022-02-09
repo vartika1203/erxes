@@ -1,9 +1,9 @@
-import { responseFields } from "./queries";
+import { orderFields } from "./queries";
 
 const posOrderSyncErkhet = `
   mutation posOrderSyncErkhet($_id: String!) {
     posOrderSyncErkhet(_id: $_id){
-      ${responseFields}
+      ${orderFields}
     }
   }
 `;
@@ -11,7 +11,7 @@ const posOrderSyncErkhet = `
 const posOrderReturnBill = `
   mutation posOrderReturnBill($_id: String!) {
     posOrderReturnBill(_id: $_id){
-      ${responseFields}
+      ${orderFields}
     }
   }
 `;

@@ -182,6 +182,27 @@ const queries = [
     }
   },
   {
+    name: 'posOrderDetail',
+    handler: async (_root, { _id }, { models }) => {
+      const order = await models.PosOrders.findOne({ _id }).lean();
+      const productIds = order.items.map(i => i.productId);
+      const products = await models.Products.find({ _id: { $in: productIds } }, { name: 1 }).lean();
+
+      const productById = {}
+      for (const product of products) {
+        productById[product._id] = product;
+      }
+
+      for (const item of order.items) {
+        item.productName = (productById[item.productId] || {}).name || 'unknown';
+      }
+
+      order.putResponses = await models.PutResponses.find({ contentType: 'pos', contentId: order._id }).lean();
+
+      return order;
+    }
+  },
+  {
     name: 'posOrdersSummary',
     handler: async (_root, params, { models, commonQuerySelector, user }) => {
       const query = await generateFilterPosQuery(models, params, commonQuerySelector, user._id)
@@ -284,7 +305,7 @@ const queries = [
         product.count = (items.find(i => i._id === product._id) || {}).count || 0;
       }
 
-      return {totalCount, products};
+      return { totalCount, products };
     }
   },
 ];

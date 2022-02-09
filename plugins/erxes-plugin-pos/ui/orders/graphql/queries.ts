@@ -30,7 +30,7 @@ const listParamsValue = `
   customerId: $customerId
 `;
 
-export const responseFields = `
+export const orderFields = `
   _id
   createdAt
   status
@@ -74,7 +74,7 @@ export const responseFields = `
 const posOrders = `
   query posOrders(${listParamsDef}) {
     posOrders(${listParamsValue}) {
-      ${responseFields}
+      ${orderFields}
     }
   }
 `;
@@ -85,9 +85,12 @@ const posOrdersSummary = `
   }
 `;
 
-const orderDetail = `
-  query orderDetail($_id: String) {
-    orderDetail(_id: $_id)
+const posOrderDetail = `
+  query posOrderDetail($_id: String) {
+    posOrderDetail(_id: $_id) {
+      ${orderFields}
+      putResponses
+    }
   }
 `
 
@@ -127,7 +130,7 @@ const productCategories = productQueries.productCategories;
 export default {
   posOrders,
   posOrdersSummary,
-  orderDetail,
+  posOrderDetail,
   posProducts,
   productCategories,
 };

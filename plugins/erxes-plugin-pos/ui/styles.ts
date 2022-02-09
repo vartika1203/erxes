@@ -323,6 +323,10 @@ export const FlexRow = styled.div`
   }
 `;
 
+export const DetailRow = styled(FlexRow)`
+  justify-content: space-around;
+`;
+
 export const LogoWrapper = styled.div`
   width: ${dimensions.coreSpacing - 5}%;
 `;
