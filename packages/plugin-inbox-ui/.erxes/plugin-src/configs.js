@@ -33,6 +33,8 @@ module.exports = {
       text: 'Skills',
       icon: 'icon-file-info-alt',
       location: 'settings',
+      image: '/images/icons/erxes-29.png',
+      to: '/settings/skills',
       scope: 'inbox',
       component: './settings'
     },
@@ -40,6 +42,8 @@ module.exports = {
       text: 'Channels',
       icon: 'icon-layer-group',
       location: 'settings',
+      image: '/images/icons/erxes-05.svg',
+      to: '/settings/channels',
       scope: 'inbox',
       component: './settings'
     },
@@ -47,13 +51,17 @@ module.exports = {
       text: 'Integrations',
       icon: 'icon-puzzle-piece',
       location: 'settings',
+      image: '/images/icons/erxes-04.svg',
+      to: '/settings/integrations',
       scope: 'inbox',
       component: './settings'
     },
     {
-      text: 'Responses',
+      text: 'Response Template',
       icon: 'icon-files-landscapes',
       location: 'settings',
+      image: '/images/icons/erxes-10.svg',
+      to: '/settings/response-templates',
       scope: 'inbox',
       component: './settings'
     }

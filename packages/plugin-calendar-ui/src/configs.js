@@ -18,9 +18,12 @@ module.exports = {
       location: 'mainNavigation'
     },
     {
-      text: 'Calendar settings',
+      text: 'Calendars',
       icon: 'icon-calendar-alt',
       location: 'settings',
+      to: '/settings/calendars',
+      image: '/images/icons/erxes-21.svg',
+      actions: calendarActions,
       scope: 'calendar',
       component: './settings'
     }

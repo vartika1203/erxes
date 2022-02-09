@@ -190,7 +190,7 @@ class Setting extends React.Component<any, any> {
     return (
       <div onClick={this.load}>
         {this.renderComponent()}
-
+        {this.props.to}
         {this.props.text}
       </div>
     );
@@ -209,6 +209,8 @@ export const pluginsSettingsNavigations = () => {
             scope={menu.scope}
             component={menu.component}
             text={menu.text}
+            to={menu.to}
+            image={menu.image}
           />
         );
       }
