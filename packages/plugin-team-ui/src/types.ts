@@ -31,10 +31,6 @@ export type AllUsersQueryResponse = {
   allUsers: IUser[];
 } & QueryResponse;
 
-export type UserDetailQueryResponse = {
-  userDetail: IUser;
-} & QueryResponse;
-
 export type CountQueryResponse = {
   usersTotalCount: {
     bySegment: { [key: string]: number };

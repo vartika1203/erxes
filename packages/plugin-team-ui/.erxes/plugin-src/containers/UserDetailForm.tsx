@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { IUser } from '@erxes/ui/src/auth/types';
+import { IUser, UserDetailQueryResponse } from '@erxes/ui/src/auth/types';
 import ButtonMutate from '@erxes/ui/src/components/ButtonMutate';
 import Spinner from '@erxes/ui/src/components/Spinner';
 import { IButtonMutateProps } from '@erxes/ui/src/types';
@@ -18,10 +18,7 @@ import skillQueries from '@erxes/ui-settings/src/skills/graphql/queries';
 import UserDetailForm from '../components/detail/UserDetailForm';
 import UserSkillForm from '../components/detail/UserSkillForm';
 import { mutations, queries } from '../graphql';
-import {
-  UserConverationsQueryResponse,
-  UserDetailQueryResponse
-} from '../types';
+import { UserConverationsQueryResponse } from '../types';
 import UserForm from './UserForm';
 
 type Props = {

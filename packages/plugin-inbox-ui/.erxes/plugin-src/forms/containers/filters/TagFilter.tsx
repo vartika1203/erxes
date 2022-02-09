@@ -7,11 +7,11 @@ import React from "react";
 import { graphql } from "react-apollo";
 import { withProps } from "@erxes/ui/src/utils";
 import { TagsQueryResponse } from "@erxes/ui/src/tags/types";
-import { Counts, TagCountQueryResponse } from "../../types";
+import { Counts } from "@erxes/ui/src/types";
 
 type Props = {
   counts: Counts;
-};
+}
 
 type FinalProps = {
   tagsQuery?: TagsQueryResponse;
@@ -36,7 +36,7 @@ export default withProps<Props>(
   compose(
     graphql<
       { loadingMainQuery: boolean },
-      TagCountQueryResponse,
+      Counts,
       { type: string }
     >(gql(tagQueries.tags), {
       name: "tagsQuery",

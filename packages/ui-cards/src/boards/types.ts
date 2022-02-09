@@ -431,10 +431,6 @@ export type Item = {
   color: string;
 };
 
-export type Assignee = {
-  [key: string]: number;
-};
-
 // ticket comment mutation
 export type TicketCommentAddMutationVariables = {
   ticketId: string;

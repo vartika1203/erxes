@@ -5,7 +5,7 @@ import {
   ICompanyDoc as ICompanyDocC,
   ICompanyLinks as ICompanyLinksC
 } from '@erxes/ui/src/companies/types';
-import { QueryResponse } from '@erxes/ui/src/types';
+import { QueryResponse, Counts } from '@erxes/ui/src/types';
 import { IActivityLog, IActivityLogForMonth } from '@erxes/ui/src/activityLogs/types';
 
 export type ICompanyLinks = ICompanyLinksC;
@@ -93,15 +93,11 @@ export type ActivityLogQueryResponse = {
   loading: boolean;
 };
 
-type Count = {
-  [key: string]: number;
-};
-
 type CompanyCounts = {
-  bySegment: Count;
-  byTag: Count;
-  byBrand: Count;
-  byLeadStatus: Count;
+  bySegment: Counts;
+  byTag: Counts;
+  byBrand: Counts;
+  byLeadStatus: Counts;
 };
 
 export type CountQueryResponse = {

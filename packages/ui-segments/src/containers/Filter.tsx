@@ -7,7 +7,8 @@ import { graphql } from 'react-apollo';
 import { withRouter } from 'react-router-dom';
 import Filter from '../components/SidebarFilter';
 import { queries } from '../graphql';
-import { Counts, SegmentsQueryResponse } from '../types';
+import { SegmentsQueryResponse } from '../types';
+import { Counts } from '@erxes/ui/src/types';
 
 type Props = {
   contentType: string;

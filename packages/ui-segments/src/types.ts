@@ -1,9 +1,5 @@
 import { QueryResponse } from '@erxes/ui/src/types';
 
-export type Counts = {
-  [key: string]: number;
-};
-
 export interface IEvent {
   name: string;
   attributeNames: string[];
@@ -151,8 +147,4 @@ export type ITrigger = {
   config?: any;
 
   count?: number;
-};
-
-export type Counts = {
-  [key: string]: number;
 };
