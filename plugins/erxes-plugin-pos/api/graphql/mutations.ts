@@ -1,3 +1,4 @@
+import { getConfig } from 'erxes-api-utils'
 import { IPOS } from '../types';
 import { sendMessage } from '../messageBrokers';
 import { orderDeleteToErkhet, orderToErkhet } from '../utils';
@@ -137,7 +138,9 @@ const mutations = [
         throw new Error('not found pos');
       }
 
-      await models.PutResponses.returnBill(models, { contentType: 'pos', contentId: _id }, pos.ebarimtConfig);
+      const ebarimtMainConfig = await getConfig(models, memoryStorage, 'EBARIMT', {});
+
+      await models.PutResponses.returnBill(models, { contentType: 'pos', contentId: _id }, { ...pos.ebarimtConfig, ...ebarimtMainConfig });
       if (order.syncedErkhet) {
         await orderDeleteToErkhet(models, messageBroker, memoryStorage, pos, _id)
       }
