@@ -14,112 +14,6 @@ import {
 } from '../styles';
 
 const breadcrumb = [{ title: __('Settings'), link: '/settings' }];
-
-// const integrationSettingsActions = [
-//   'showIntegrations',
-//   'integrationsCreateMessengerIntegration',
-//   'integrationsEditMessengerIntegration',
-//   'integrationsSaveMessengerAppearanceData',
-//   'integrationsSaveMessengerConfigs',
-//   'integrationsCreateLeadIntegration',
-//   'integrationsEditLeadIntegration',
-//   'integrationsRemove',
-//   'integrationsArchive',
-//   'integrationsEdit'
-// ];
-// const taskPermissions = [
-//   'taskBoardsAdd',
-//   'taskBoardsEdit',
-//   'taskBoardsRemove',
-//   'taskPipelinesAdd',
-//   'taskPipelinesEdit',
-//   'taskPipelinesUpdateOrder',
-//   'taskPipelinesRemove',
-//   'taskPipelinesArchive',
-//   'taskPipelinesCopied',
-//   'taskStagesAdd',
-//   'taskStagesEdit',
-//   'taskStagesUpdateOrder',
-//   'taskStagesRemove',
-//   'tasksAll'
-// ];
-// const ticketPermissions = [
-//   'ticketBoardsAdd',
-//   'ticketBoardsEdit',
-//   'ticketBoardsRemove',
-//   'ticketPipelinesAdd',
-//   'ticketPipelinesEdit',
-//   'ticketPipelinesUpdateOrder',
-//   'ticketPipelinesRemove',
-//   'ticketPipelinesArchive',
-//   'ticketPipelinesCopied',
-//   'ticketStagesAdd',
-//   'ticketStagesEdit',
-//   'ticketStagesUpdateOrder',
-//   'ticketStagesRemove'
-// ];
-// const dealPermissions = [
-//   'dealBoardsAdd',
-//   'dealBoardsEdit',
-//   'dealBoardsRemove',
-//   'dealPipelinesAdd',
-//   'dealPipelinesEdit',
-//   'dealPipelinesUpdateOrder',
-//   'dealPipelinesRemove',
-//   'dealPipelinesArchive',
-//   'dealPipelinesArchive',
-//   'dealStagesAdd',
-//   'dealStagesEdit',
-//   'dealStagesUpdateOrder',
-//   'dealStagesRemove'
-// ];
-// const productPermissions = ['showProducts', 'manageProducts'];
-// const growthHackPermissions = [
-//   'growthHackBoardsAdd',
-//   'growthHackBoardsEdit',
-//   'growthHackBoardsRemove',
-//   'growthHackPipelinesAdd',
-//   'growthHackPipelinesEdit',
-//   'growthHackPipelinesUpdateOrder',
-//   'growthHackPipelinesRemove',
-//   'growthHackPipelinesArchive',
-//   'growthHackPipelinesCopied',
-//   'growthHackStagesAdd',
-//   'growthHackStagesEdit',
-//   'growthHackStagesUpdateOrder',
-//   'growthHackStagesRemove'
-// ];
-// const growthHackTemplatePermissions = [
-//   'growthHackTemplatesAdd',
-//   'growthHackTemplatesEdit',
-//   'growthHackTemplatesRemove',
-//   'growthHackTemplatesDuplicate',
-//   'showGrowthHackTemplates'
-// ];
-// const teamPermissions = [
-//   'showUsers',
-//   'usersEdit',
-//   'usersInvite',
-//   'usersSetActiveStatus',
-//   'exportUsers'
-// ];
-// const permissionActions = [
-//   'managePermissions',
-//   'showPermissions',
-//   'showPermissionModules',
-//   'showPermissionActions',
-//   'exportPermissions'
-// ];
-// const calendarActions = [
-//   'calendarsAdd',
-//   'calendarsEdit',
-//   'calendarsRemove',
-//   'showCalendars',
-//   'showCalendarGroups',
-//   'calendarGroupsAdd',
-//   'calendarGroupsEdit',
-//   'calendarGroupsRemove'
-// ];
 class Settings extends React.PureComponent {
   renderBox(
     name: string,
@@ -192,14 +86,10 @@ class Settings extends React.PureComponent {
         <Row>
           <RowTitle>
             {__('Plugin Settings')}
-            <span>
-              {__("Keep track of your organization's status and activity")}
-            </span>
+            <span>{__('Plugins settings')}</span>
           </RowTitle>
-          <div id={'SettingsMonitorSettings'}>
+          <div id={'PluginSettings'}>
             {pluginsOfSettings(this.renderBox)}
-            {console.log('renderBox', pluginsOfSettings(this.renderBox))}
-            {console.log('settings', pluginsSettingsNavigations())}
             {pluginsSettingsNavigations().map((menu, index) => (
               <Box key={index}>
                 <Link to={menu.props.to}>

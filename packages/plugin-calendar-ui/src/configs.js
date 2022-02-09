@@ -23,7 +23,6 @@ module.exports = {
       location: 'settings',
       to: '/settings/calendars',
       image: '/images/icons/erxes-21.svg',
-      actions: calendarActions,
       scope: 'calendar',
       component: './settings'
     }

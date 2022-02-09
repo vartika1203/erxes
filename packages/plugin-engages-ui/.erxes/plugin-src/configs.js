@@ -18,9 +18,10 @@ module.exports = {
       location: 'mainNavigation'
     },
     {
-      text: 'Campaigns settings',
-      icon: 'icon-megaphone',
+      text: 'Campaigns',
       location: 'settings',
+      to: '/settings/campaigns',
+      image: '/images/icons/erxes-31.png',
       scope: 'engages',
       component: './settings'
     }
