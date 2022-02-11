@@ -1,26 +1,29 @@
-// import { pluginRouters } from './pluginUtils';
-import React, { useContext } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AppContext } from './appContext';
+import { AppConsumer, AppProvider } from './appContext';
 
 import InboxRoutes from 'app2/routes'
 
 const InApp = () => {
-  const context = useContext(AppContext);
-
-  return <div>{JSON.stringify(context)}</div>
+  return (
+    <AppConsumer>
+      {({ currentUser }) => {
+        return <div>{JSON.stringify(currentUser || {})}</div>
+      }}
+    </AppConsumer>
+  )
 }
 
 const Container = () => {
   const cu = { username: 'username' };
 
   return (
-    <AppContext.Provider value={{ currentUser: cu }}>
-      <InApp />
-	    {/* {pluginRouters()} */}
+    <AppProvider currentUser={cu}>
+        <InApp />
+        {/* {pluginRouters()} */}
 
-      <InboxRoutes />
-    </AppContext.Provider>
+        <InboxRoutes />
+    </AppProvider>
   )
 }
 
