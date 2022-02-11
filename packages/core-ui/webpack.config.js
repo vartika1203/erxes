@@ -6,6 +6,7 @@ const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
     publicPath: "http://localhost:3000/",
+    chunkFilename: "[id].[contenthash].js",
   },
 
   resolve: {
@@ -56,7 +57,7 @@ module.exports = {
         "app2": "app2@http://localhost:3009/remoteEntry.js"
       },
       exposes: {
-        "./appContext": "./src/appContext.tsx"
+        "./appContext": "./src/appContext"
       },
       shared: {
         ...deps,
@@ -71,7 +72,8 @@ module.exports = {
         "react-router-dom": {
           singleton: true,
           requiredVersion: deps["react-router-dom"],
-        }
+        },
+        "./src/appContext": {}
       },
     }),
     new InterpolateHtmlPlugin({
