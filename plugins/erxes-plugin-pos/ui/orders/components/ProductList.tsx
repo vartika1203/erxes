@@ -15,7 +15,7 @@ import {
 } from 'erxes-ui';
 import { IPosProduct } from '../types';
 import { IProductCategory } from 'erxes-ui/lib/products/types';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import { IRouterProps, IQueryParams } from 'erxes-ui/lib/types';
 import { menuPos } from './List';
 
 interface IProps extends IRouterProps {
@@ -31,6 +31,7 @@ interface IProps extends IRouterProps {
   onSelect: (values: string[] | string, key: string) => void;
   isFiltered: boolean;
   clearFilter: () => void;
+  onFilter: (filterParams: IQueryParams) => void;
 }
 
 type State = {
@@ -92,6 +93,7 @@ class List extends React.Component<IProps, State> {
       onSearch,
       isFiltered,
       clearFilter,
+      onFilter,
       totalCount
     } = this.props;
 
@@ -101,6 +103,7 @@ class List extends React.Component<IProps, State> {
       isFiltered,
       clearFilter,
       queryParams,
+      onFilter
     };
 
     let actionBarRight = (

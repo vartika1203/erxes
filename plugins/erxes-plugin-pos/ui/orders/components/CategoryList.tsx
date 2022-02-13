@@ -1,11 +1,19 @@
+import queryString from 'query-string';
 import React from 'react';
+import {
+  __,
+  Button,
+  DataWithLoader,
+  Icon,
+  router,
+  Sidebar,
+  SidebarList,
+  Tip,
+  Wrapper
+} from 'erxes-ui';
 import { IProductCategory } from 'erxes-ui/lib/products/types';
 import { Link } from 'react-router-dom';
 import { SidebarListItem } from '../../styles';
-import {
-  Button, DataWithLoader, Icon,
-  SidebarList, Tip, __, router, Sidebar, Wrapper
-} from 'erxes-ui'
 
 const { Section } = Wrapper.Sidebar;
 
@@ -29,7 +37,11 @@ class List extends React.Component<IProps> {
   };
 
   renderContent() {
-    const { productCategories } = this.props;
+    const { productCategories, queryParams } = this.props;
+
+    const otherParams = { ...queryParams };
+    delete otherParams.categoryId;
+    const qryString = queryString.stringify(otherParams)
 
     const result: React.ReactNode[] = [];
 
@@ -57,7 +69,7 @@ class List extends React.Component<IProps> {
           key={category._id}
           isActive={this.isActive(category._id)}
         >
-          <Link to={`?categoryId=${category._id}`}>
+          <Link to={`?${qryString}&categoryId=${category._id}`}>
             {space}
             {name}
           </Link>

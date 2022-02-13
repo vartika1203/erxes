@@ -4,7 +4,7 @@ import List from '../components/ProductList';
 import React from 'react';
 import { Bulk, withProps, router, Spinner } from 'erxes-ui';
 import { graphql } from 'react-apollo';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import { IRouterProps, IQueryParams } from 'erxes-ui/lib/types';
 import { PosProductsQueryResponse } from '../types';
 import { queries } from '../graphql';
 import { FILTER_PARAMS } from '../../constants';
@@ -53,6 +53,18 @@ class ProductListContainer extends React.Component<FinalProps> {
     return router.setParams(this.props.history, { [key]: values });
   };
 
+  onFilter = (filterParams: IQueryParams) => {
+    for (const key of Object.keys(filterParams)) {
+      if (filterParams[key]) {
+        router.setParams(this.props.history, { [key]: filterParams[key] });
+      } else {
+        router.removeParams(this.props.history, key);
+      }
+    }
+
+    return router
+  }
+
   isFiltered = (): boolean => {
     const params = generateQueryParams(this.props.history);
 
@@ -93,6 +105,7 @@ class ProductListContainer extends React.Component<FinalProps> {
       loading: posProductsQuery.loading,
       searchValue,
 
+      onFilter: this.onFilter,
       onSelect: this.onSelect,
       onSearch: this.onSearch,
       isFiltered: this.isFiltered(),
