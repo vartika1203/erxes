@@ -15,6 +15,18 @@ const listParamsDef = `
   $perPage: Int
   $sortField: String
   $sortDirection: Int
+  $search: String
+  $contentType: String
+  $success: String
+  $billType: String
+  $billIdRule: String
+  $orderNumber: String
+  $dealName: String
+  $pipelineId: String
+  $stageId: String
+  $createdStartDate: Date
+  $createdEndDate: Date
+  $paidDate: String
 `;
 
 const listParamsValue = `
@@ -22,6 +34,18 @@ const listParamsValue = `
   perPage: $perPage
   sortField: $sortField
   sortDirection: $sortDirection
+  search: $search
+  contentType: $contentType
+  success: $success
+  billType: $billType
+  billIdRule: $billIdRule
+  orderNumber: $orderNumber
+  dealName: $dealName
+  pipelineId: $pipelineId
+  stageId: $stageId
+  createdStartDate: $createdStartDate
+  createdEndDate: $createdEndDate
+  paidDate: $paidDate
 `;
 
 const responseFields = `

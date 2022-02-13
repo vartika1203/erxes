@@ -11,7 +11,6 @@ export default (response, error?) => {
       <script src="/plugins/ebarimt/jquery.js"></script>
       <script src="/plugins/ebarimt/qrcodegen.js"></script>
       <script src="/plugins/ebarimt/jsbarcode.js"></script>
-      <script src="/plugins/ebarimt/code128.js"></script>
     </head>
 
     <body>

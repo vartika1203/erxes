@@ -93,14 +93,6 @@ const generateFilterPosQuery = async (
     query.userId = lastUserId
   }
 
-  if (paidDate === 'today') {
-    const now = new Date()
-
-    const startDate = getFullDate(now)
-    const endDate = getTomorrow(now)
-    query.paidDate = { $gte: startDate, $lte: endDate }
-  }
-
   const paidQry: any = {}
   if (paidStartDate) {
     paidQry.$gte = new Date(paidStartDate)
@@ -110,6 +102,14 @@ const generateFilterPosQuery = async (
   }
   if (Object.keys(paidQry).length) {
     query.paidDate = paidQry
+  }
+
+  if (paidDate === 'today') {
+    const now = new Date()
+
+    const startDate = getFullDate(now)
+    const endDate = getTomorrow(now)
+    query.paidDate = { $gte: startDate, $lte: endDate }
   }
 
   const createdQry: any = {}

@@ -46,6 +46,18 @@ const queryParams = `
   perPage: Int
   sortField: String
   sortDirection: Int
+  search: String
+  contentType: String
+  success: String
+  billType: String
+  billIdRule: String
+  orderNumber: String
+  dealName: String
+  pipelineId: String
+  stageId: String
+  createdStartDate: Date
+  createdEndDate: Date
+  paidDate: String
 `;
 
 export const queries = `

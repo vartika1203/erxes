@@ -1,17 +1,20 @@
-import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { Bulk, withProps, router, Spinner } from 'erxes-ui';
-import React from 'react';
-import { graphql } from 'react-apollo';
-import { withRouter } from 'react-router-dom';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import gql from 'graphql-tag';
 import PutResponse from '../components/PutResponses';
-import { queries } from '../graphql';
+import queryString from 'query-string';
+import React from 'react';
 import {
-  ListQueryVariables,
-  PutResponsesQueryResponse,
-  PutResponsesCountQueryResponse
-} from '../types';
+  Bulk,
+  router,
+  Spinner,
+  withProps
+} from 'erxes-ui';
+import { graphql } from 'react-apollo';
+import { IRouterProps, IQueryParams } from 'erxes-ui/lib/types';
+import { ListQueryVariables, PutResponsesCountQueryResponse, PutResponsesQueryResponse } from '../types';
+import { queries } from '../graphql';
+import { withRouter } from 'react-router-dom';
+import { FILTER_PARAMS } from '../constants';
 
 type Props = {
   queryParams: any;
@@ -28,6 +31,10 @@ type State = {
   loading: boolean;
 };
 
+const generateQueryParams = ({ location }) => {
+  return queryString.parse(location.search);
+};
+
 class PutResponsesContainer extends React.Component<FinalProps, State> {
   constructor(props) {
     super(props);
@@ -36,6 +43,53 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
       loading: false
     };
   }
+
+  onSearch = (search: string, key?: string) => {
+    if (!search) {
+      return router.removeParams(this.props.history, key || 'search');
+    }
+
+    router.setParams(this.props.history, { [key || 'search']: search });
+  };
+
+  onSelect = (values: string[] | string, key: string) => {
+    const params = generateQueryParams(this.props.history);
+
+    if (params[key] === values) {
+      return router.removeParams(this.props.history, key);
+    }
+
+    return router.setParams(this.props.history, { [key]: values });
+  };
+
+  onFilter = (filterParams: IQueryParams) => {
+    for (const key of Object.keys(filterParams)) {
+      if (filterParams[key]) {
+        router.setParams(this.props.history, { [key]: filterParams[key] });
+      } else {
+        router.removeParams(this.props.history, key);
+      }
+    }
+
+    return router
+  }
+
+  isFiltered = (): boolean => {
+    const params = generateQueryParams(this.props.history);
+
+    for (const param in params) {
+      if (FILTER_PARAMS.includes(param)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  clearFilter = () => {
+    const params = generateQueryParams(this.props.history);
+    router.removeParams(this.props.history, ...Object.keys(params));
+  };
 
   render() {
     const {
@@ -57,6 +111,13 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
       putResponses,
       totalCount: putResponsesCount,
       loading: putResponsesQuery.loading,
+
+      onFilter: this.onFilter,
+      onSelect: this.onSelect,
+      onSearch: this.onSearch,
+      isFiltered: this.isFiltered(),
+      clearFilter: this.clearFilter,
+
     };
 
     const putResponsesList = props => {
@@ -77,7 +138,19 @@ const generateParams = ({ queryParams }) => ({
     sortField: queryParams.sortField,
     sortDirection: queryParams.sortDirection
       ? parseInt(queryParams.sortDirection, 10)
-      : undefined
+      : undefined,
+    search: queryParams.search,
+    contentType: queryParams.contentType,
+    success: queryParams.success,
+    billType: queryParams.billType,
+    billIdRule: queryParams.billIdRule,
+    orderNumber: queryParams.orderNumber,
+    dealName: queryParams.dealName,
+    pipelineId: queryParams.pipelineId,
+    stageId: queryParams.stageId,
+    createdStartDate: queryParams.createdStartDate,
+    createdEndDate: queryParams.createdEndDate,
+    paidDate: queryParams.paidDate,
   },
   fetchPolicy: 'network-only'
 });

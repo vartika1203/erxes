@@ -1,14 +1,15 @@
 import {
-  __, Button, DataWithLoader, FormControl, Pagination, router,
+  __, DataWithLoader, Pagination, router,
   SortHandler, Table, Wrapper, BarItems
 } from 'erxes-ui';
-import { IRouterProps } from 'erxes-ui/lib/types';
+import { IRouterProps, IQueryParams } from 'erxes-ui/lib/types';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
 import { TableWrapper } from '../styles';
 import { IPutResponse } from '../types';
 import PutResponseRow from './PutResponseRow';
+import RightMenu from './RightMenu';
 
 interface IProps extends IRouterProps {
   putResponses: IPutResponse[];
@@ -19,6 +20,13 @@ interface IProps extends IRouterProps {
   isAllSelected: boolean;
   history: any;
   queryParams: any;
+
+  onSearch: (search: string, key?: string) => void;
+  onFilter: (filterParams: IQueryParams) => void;
+  onSelect: (values: string[] | string, key: string) => void;
+  isFiltered: boolean;
+  clearFilter: () => void;
+
 }
 
 type State = {
@@ -63,7 +71,14 @@ class PutResponses extends React.Component<IProps, State> {
       history,
       loading,
       totalCount,
-      queryParams
+      queryParams,
+
+      onSearch,
+      onFilter,
+      onSelect,
+      isFiltered,
+      clearFilter,
+
     } = this.props;
     const mainContent = (
       <TableWrapper>
@@ -112,24 +127,23 @@ class PutResponses extends React.Component<IProps, State> {
       </TableWrapper>
     );
 
-    let actionBarLeft: React.ReactNode;
+    const rightMenuProps = {
+      onFilter,
+      onSelect,
+      onSearch,
+      isFiltered,
+      clearFilter,
+      queryParams,
+    };
 
     const actionBarRight = (
       <BarItems>
-        <FormControl
-          type="text"
-          placeholder={__('Type to search')}
-          onChange={this.search}
-          value={this.state.searchValue}
-          autoFocus={true}
-          onFocus={this.moveCursorAtTheEnd}
-        />
-
+        <RightMenu {...rightMenuProps} />
       </BarItems>
     );
 
     const actionBar = (
-      <Wrapper.ActionBar right={actionBarRight} left={actionBarLeft} />
+      <Wrapper.ActionBar right={actionBarRight} left={`Total: ${totalCount}`} />
     );
 
     const menuPos = [
@@ -153,7 +167,7 @@ class PutResponses extends React.Component<IProps, State> {
           <DataWithLoader
             data={mainContent}
             loading={loading}
-            count={(putResponses || []).length}
+            count={totalCount}
             emptyText="Add in your first putResponse!"
             emptyImage="/images/actions/1.svg"
           />
