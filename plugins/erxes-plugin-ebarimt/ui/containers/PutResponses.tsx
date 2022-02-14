@@ -133,26 +133,23 @@ class PutResponsesContainer extends React.Component<FinalProps, State> {
 }
 
 const generateParams = ({ queryParams }) => ({
-  variables: {
-    ...router.generatePaginationParams(queryParams || {}),
-    sortField: queryParams.sortField,
-    sortDirection: queryParams.sortDirection
-      ? parseInt(queryParams.sortDirection, 10)
-      : undefined,
-    search: queryParams.search,
-    contentType: queryParams.contentType,
-    success: queryParams.success,
-    billType: queryParams.billType,
-    billIdRule: queryParams.billIdRule,
-    orderNumber: queryParams.orderNumber,
-    dealName: queryParams.dealName,
-    pipelineId: queryParams.pipelineId,
-    stageId: queryParams.stageId,
-    createdStartDate: queryParams.createdStartDate,
-    createdEndDate: queryParams.createdEndDate,
-    paidDate: queryParams.paidDate,
-  },
-  fetchPolicy: 'network-only'
+  ...router.generatePaginationParams(queryParams || {}),
+  sortField: queryParams.sortField,
+  sortDirection: queryParams.sortDirection
+    ? parseInt(queryParams.sortDirection, 10)
+    : undefined,
+  search: queryParams.search,
+  contentType: queryParams.contentType,
+  success: queryParams.success,
+  billType: queryParams.billType,
+  billIdRule: queryParams.billIdRule,
+  orderNumber: queryParams.orderNumber,
+  dealName: queryParams.dealName,
+  pipelineId: queryParams.pipelineId,
+  stageId: queryParams.stageId,
+  createdStartDate: queryParams.createdStartDate,
+  createdEndDate: queryParams.createdEndDate,
+  paidDate: queryParams.paidDate,
 });
 
 export default withProps<Props>(
@@ -161,7 +158,10 @@ export default withProps<Props>(
       gql(queries.putResponses),
       {
         name: 'putResponsesQuery',
-        options: generateParams
+        options: ({ queryParams }) => ({
+          variables: generateParams({ queryParams }),
+          fetchPolicy: 'network-only'
+        })
       }
     ),
 
@@ -169,7 +169,10 @@ export default withProps<Props>(
       gql(queries.putResponsesCount),
       {
         name: 'putResponsesCountQuery',
-        options: generateParams
+        options: ({ queryParams }) => ({
+          variables: generateParams({ queryParams }),
+          fetchPolicy: 'network-only'
+        })
       }
     ),
   )(withRouter<IRouterProps>(PutResponsesContainer))

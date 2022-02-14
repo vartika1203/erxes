@@ -164,22 +164,19 @@ class OrdersContainer extends React.Component<FinalProps, State> {
 }
 
 const generateParams = ({ queryParams }) => ({
-  variables: {
-    ...router.generatePaginationParams(queryParams || {}),
-    sortField: queryParams.sortField,
-    sortDirection: queryParams.sortDirection
-      ? parseInt(queryParams.sortDirection, 10)
-      : undefined,
-    search: queryParams.search,
-    paidStartDate: queryParams.paidStartDate,
-    paidEndDate: queryParams.paidEndDate,
-    createdStartDate: queryParams.createdStartDate,
-    createdEndDate: queryParams.createdEndDate,
-    paidDate: queryParams.paidDate,
-    userId: queryParams.userId,
-    customerId: queryParams.customerId,
-  },
-  fetchPolicy: 'network-only'
+  ...router.generatePaginationParams(queryParams || {}),
+  sortField: queryParams.sortField,
+  sortDirection: queryParams.sortDirection
+    ? parseInt(queryParams.sortDirection, 10)
+    : undefined,
+  search: queryParams.search,
+  paidStartDate: queryParams.paidStartDate,
+  paidEndDate: queryParams.paidEndDate,
+  createdStartDate: queryParams.createdStartDate,
+  createdEndDate: queryParams.createdEndDate,
+  paidDate: queryParams.paidDate,
+  userId: queryParams.userId,
+  customerId: queryParams.customerId,
 });
 
 export default withProps<Props>(
@@ -188,14 +185,20 @@ export default withProps<Props>(
       gql(queries.posOrders),
       {
         name: 'ordersQuery',
-        options: generateParams
+        options: ({ queryParams }) => ({
+          variables: generateParams({ queryParams }),
+          fetchPolicy: 'network-only'
+        })
       }
     ),
     graphql<{ queryParams: any }, OrdersSummaryQueryResponse, ListQueryVariables>(
       gql(queries.posOrdersSummary),
       {
         name: 'ordersSummaryQuery',
-        options: generateParams
+        options: ({ queryParams }) => ({
+          variables: generateParams({ queryParams }),
+          fetchPolicy: 'network-only'
+        })
       }
     ),
     graphql<Props, PosOrderSyncErkhetMutationResponse, { _id: string }>(
