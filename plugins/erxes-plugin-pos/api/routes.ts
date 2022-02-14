@@ -198,14 +198,15 @@ export default {
         const token = req.headers['pos-token'];
         const { syncId, type } = req.body;
 
-        const pos = await models.Pos.findOne({ token });
+        const pos = await models.Pos.findOne({ token }).lean();
 
         if (!pos) {
           return { error: 'not found pos' }
         }
+
         pos.syncInfos[syncId] = new Date();
 
-        await pos.save();
+        await models.Pos.updateOne({ _id: pos._id }, { $set: { ...pos } })
 
         switch (type) {
           case 'config':

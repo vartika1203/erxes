@@ -45,6 +45,7 @@ export type IPos = {
   branchId?: string;
   allowBranchIds?: string[];
   beginNumber?: string;
+  maxSkipNumber?: number;
   waitingScreen?: IScreenConfig;
   kioskMachine?: IScreenConfig;
   kitchenScreen?: IScreenConfig;

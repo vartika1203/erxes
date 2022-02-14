@@ -54,6 +54,7 @@ const posCommonFields = `
   branchId
   allowBranchIds
   beginNumber
+  maxSkipNumber
   waitingScreen
   kitchenScreen
   kioskMachine

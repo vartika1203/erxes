@@ -19,6 +19,7 @@ const commonFields = `
   $branchId: String
   $allowBranchIds: [String]
   $beginNumber: String
+  $maxSkipNumber: Int
   $kitchenScreen: JSON
   $waitingScreen: JSON
   $kioskMachine: JSON
@@ -43,6 +44,7 @@ const commonVariables = `
   branchId: $branchId
   allowBranchIds: $allowBranchIds
   beginNumber: $beginNumber
+  maxSkipNumber: $maxSkipNumber
   kitchenScreen: $kitchenScreen
   waitingScreen: $waitingScreen
   kioskMachine: $kioskMachine

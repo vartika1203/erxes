@@ -19,6 +19,7 @@ const posCommonFields = `
   branchId: String
   allowBranchIds: [String]
   beginNumber: String
+  maxSkipNumber: Int
   waitingScreen: JSON
   kitchenScreen: JSON
   kioskMachine: JSON

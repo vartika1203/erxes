@@ -150,8 +150,9 @@ export default withProps<FinalProps>(
         options: ({ posId }) => ({
           fetchPolicy: 'cache-and-network',
           variables: {
-            _id: posId
-          },
+            _id: posId,
+            posId
+          }
         })
       }
     ),

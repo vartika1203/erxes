@@ -500,6 +500,17 @@ class GeneralStep extends React.Component<Props, {}> {
                     multi={true}
                   />
                 </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Max Skip number</ControlLabel>
+                  <FormControl
+                    id="maxSkipNumber"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={pos.maxSkipNumber || 0}
+                    onChange={this.onChangeInput}
+                  />
+                </FormGroup>
               </BlockRow>
             </Block>
 

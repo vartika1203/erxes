@@ -17,6 +17,7 @@ export const posSChema = {
   branchId: { type: String, optional: true, label: 'Branch' },
   allowBranchIds: { type: [String], optional: true, label: 'Allow branches' },
   beginNumber: { type: String, optional: true, label: 'Begin number' },
+  maxSkipNumber: {type: Number, optional: true, label: 'Skip number'},
   waitingScreen: { type: Object, label: 'Waiting screen config' },
   kioskMachine: { type: Object, label: 'Kiosk config' },
   kitchenScreen: { type: Object, label: 'Kitchen screen config' },
