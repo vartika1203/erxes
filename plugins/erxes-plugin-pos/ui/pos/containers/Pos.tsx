@@ -21,6 +21,8 @@ import {
 import { IPos, ProductCategoriesQueryResponse, BranchesQueryResponse } from '../../types';
 import { mutations, queries } from '../graphql';
 import { PLUGIN_URL } from '../../constants';
+import { FieldsCombinedByTypeQueryResponse } from 'erxes-ui/lib/properties/types'
+import { combinedFields } from 'erxes-ui/lib/segments/graphql'
 
 type Props = {
   posId?: string;
@@ -38,6 +40,7 @@ type FinalProps = {
   integrationsQuery: IntegrationsQueryResponse;
   productCategoriesQuery: ProductCategoriesQueryResponse;
   branchesQuery: BranchesQueryResponse;
+  fieldsCombinedByTypeQuery: FieldsCombinedByTypeQueryResponse;
 } & Props &
   EditPosMutationResponse &
   AddPosMutationResponse &
@@ -61,7 +64,8 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       history,
       integrationsQuery,
       productCategoriesQuery,
-      branchesQuery
+      branchesQuery,
+      fieldsCombinedByTypeQuery
     } = this.props;
 
     if (
@@ -69,7 +73,8 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       groupsQuery.loading ||
       integrationsQuery.loading ||
       productCategoriesQuery.loading ||
-      branchesQuery.loading
+      branchesQuery.loading ||
+      fieldsCombinedByTypeQuery.loading
     ) {
       return <Spinner objective={true} />;
     }
@@ -79,6 +84,7 @@ class EditPosContainer extends React.Component<FinalProps, State> {
     const integration = pos.integration;
     const formIntegrations = integrationsQuery.integrations || [];
     const branches = branchesQuery.branches || [];
+    const fieldsCombined = fieldsCombinedByTypeQuery.fieldsCombinedByContentType || []
 
     const save = doc => {
       const { posId } = this.props;
@@ -131,6 +137,7 @@ class EditPosContainer extends React.Component<FinalProps, State> {
       pos,
       save,
       branches,
+      fieldsCombined,
       isActionLoading: this.state.isLoading,
       currentMode: 'update',
       productCategories: productCategoriesQuery.productCategories
@@ -208,6 +215,17 @@ export default withProps<FinalProps>(
       options: () => ({
         fetchPolicy: 'network-only',
       })
-    })
+    }),
+    graphql<Props, FieldsCombinedByTypeQueryResponse, { contentType: string }>(
+      gql(combinedFields),
+      {
+        name: 'fieldsCombinedByTypeQuery',
+        options: {
+          variables: {
+            contentType: 'deal'
+          }
+        }
+      }
+    )
   )(EditPosContainer)
 );

@@ -31,6 +31,7 @@ const commonFields = `
   $catProdMappings: [CatProdInput]
   $initialCategoryIds: [String]
   $kioskExcludeProductIds: [String]
+  $deliveryConfig: JSON
 `;
 
 const commonVariables = `
@@ -56,6 +57,7 @@ const commonVariables = `
   catProdMappings: $catProdMappings
   initialCategoryIds: $initialCategoryIds
   kioskExcludeProductIds: $kioskExcludeProductIds
+  deliveryConfig: $deliveryConfig
 `;
 
 const commonPosFields = `

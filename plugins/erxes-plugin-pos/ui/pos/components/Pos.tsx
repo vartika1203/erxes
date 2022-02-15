@@ -2,6 +2,7 @@ import Appearance, { IUIOptions } from './step/Appearance';
 import ConfigStep from './step/ConfigStep';
 import EbarimtConfig from './step/EbarimtConfig';
 import ErkhetConfig from './step/ErkhetConfig';
+import DeliveryConfig from './step/DeliveryConfig';
 import GeneralStep from './step/GeneralStep';
 import React from 'react';
 import {
@@ -19,6 +20,7 @@ import { IIntegration, IPos, IProductGroup } from '../../types';
 import { IProductCategory } from 'erxes-ui/lib/products/types';
 import { Link } from 'react-router-dom';
 import { PLUGIN_URL } from '../../constants';
+import { FieldsCombinedByType } from 'erxes-ui/lib/properties/types'
 
 type Props = {
   integration?: IIntegration;
@@ -30,6 +32,7 @@ type Props = {
   save: (params: any) => void;
   productCategories: IProductCategory[];
   branches: any[];
+  fieldsCombined: FieldsCombinedByType[];
 };
 
 type State = {
@@ -47,6 +50,7 @@ type State = {
   isSkip: boolean;
   ebarimtConfig: any;
   erkhetConfig: any;
+  deliveryConfig: any;
 };
 
 class Pos extends React.Component<Props, State> {
@@ -77,13 +81,14 @@ class Pos extends React.Component<Props, State> {
       isSkip: false,
       ebarimtConfig: pos.ebarimtConfig,
       erkhetConfig: pos.erkhetConfig,
+      deliveryConfig: pos.deliveryConfig,
     };
   }
 
   handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { brand, pos, groups, uiOptions, ebarimtConfig, erkhetConfig } = this.state;
+    const { brand, pos, groups, uiOptions, ebarimtConfig, erkhetConfig, deliveryConfig } = this.state;
 
     if (!pos.name) {
       return Alert.error('Enter POS name');
@@ -129,6 +134,7 @@ class Pos extends React.Component<Props, State> {
       maxSkipNumber: Number(pos.maxSkipNumber) || 0,
       initialCategoryIds: pos.initialCategoryIds || [],
       kioskExcludeProductIds: pos.kioskExcludeProductIds || [],
+      deliveryConfig,
     };
 
     if (pos.isOnline) {
@@ -226,7 +232,7 @@ class Pos extends React.Component<Props, State> {
 
   render() {
     const { pos, groups, currentMode, uiOptions } = this.state;
-    const { integration, formIntegrations, productCategories, branches } = this.props;
+    const { integration, formIntegrations, productCategories, branches, fieldsCombined } = this.props;
     const brand = integration && integration.brand;
     const breadcrumb = [
       { title: 'POS List', link: `${PLUGIN_URL}/pos` },
@@ -301,6 +307,18 @@ class Pos extends React.Component<Props, State> {
                 <ErkhetConfig
                   onChange={this.onChange}
                   pos={pos}
+                />
+              </Step>
+              <Step
+                img="/images/icons/erxes-09.svg"
+                title={'Delivery Config'}
+                onClick={this.onStepClick}
+                noButton={true}
+              >
+                <DeliveryConfig
+                  onChange={this.onChange}
+                  pos={pos}
+                  fieldsCombined={fieldsCombined}
                 />
               </Step>
             </Steps>

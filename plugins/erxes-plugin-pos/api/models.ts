@@ -17,7 +17,7 @@ export const posSChema = {
   branchId: { type: String, optional: true, label: 'Branch' },
   allowBranchIds: { type: [String], optional: true, label: 'Allow branches' },
   beginNumber: { type: String, optional: true, label: 'Begin number' },
-  maxSkipNumber: {type: Number, optional: true, label: 'Skip number'},
+  maxSkipNumber: { type: Number, optional: true, label: 'Skip number' },
   waitingScreen: { type: Object, label: 'Waiting screen config' },
   kioskMachine: { type: Object, label: 'Kiosk config' },
   kitchenScreen: { type: Object, label: 'Kitchen screen config' },
@@ -29,8 +29,9 @@ export const posSChema = {
   erkhetConfig: { type: Object, label: 'Erkhet Config' },
   syncInfos: { type: Object, label: 'sync info' },
   catProdMappings: { type: [Object], label: 'Category product mappings', optional: true },
-  initialCategoryIds: {type: [String], label: 'Pos initial categories'},
-  kioskExcludeProductIds: {type: [String], label: 'Kiosk exclude products'},
+  initialCategoryIds: { type: [String], label: 'Pos initial categories' },
+  kioskExcludeProductIds: { type: [String], label: 'Kiosk exclude products' },
+  deliveryConfig: { type: Object, label: 'Delivery Config' },
 };
 
 class Pos {
@@ -202,7 +203,8 @@ const posOrdersSchema = {
   posToken: { type: String, optional: true },
   syncId: { type: String, optional: true },
 
-  syncedErkhet: { type: Boolean, default: false }
+  syncedErkhet: { type: Boolean, default: false },
+  deliveryInfo: { type: Object, optional: true, label: 'Delivery Info, address, map, etc' }
 };
 
 

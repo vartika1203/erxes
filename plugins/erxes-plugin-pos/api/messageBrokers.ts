@@ -4,18 +4,94 @@ export default [
   {
     method: 'queue',
     channel: 'vrpc_queue:erxes-pos-to-api',
-    handler: async (msg, { models, messageBroker, memoryStorage }) => {
-      const { posToken, syncId, response, order, items } = msg;
-
+    handler: async (msg, { models, messageBroker, memoryStorage, graphqlPubsub }) => {
+      const { action, posToken, syncId, response, order, items } = msg;
       const pos = await models.Pos.findOne({ token: posToken }).lean();
-      const syncInfos = { ...pos.syncInfos, ...{ [syncId]: new Date() } }
+      const syncInfos = { ...pos.syncInfos, ...{ [syncId]: new Date() } };
 
       await models.Pos.updateOne({ _id: pos._id }, { $set: { syncInfos } });
 
-      await models.PutResponses.updateOne({ _id: response._id }, { $set: { ...response, posToken, syncId } }, { upsert: true });
-      await models.PosOrders.updateOne({ _id: order._id }, { $set: { ...order, posToken, syncId, items, branchId: pos.branchId } }, { upsert: true });
+      // ====== if (action === 'statusToDone')
+      if (action === 'statusToDone') {
+        // must have
+        const doneOrder = await models.PosOrders.findOne({ _id: order._id }).lean();
 
+        const { deliveryConfig = {} } = pos;
+        const { deliveryInfo = {} } = doneOrder;
+
+        const deal = await models.Deals.createDeal({
+          name: `Delivery: ${doneOrder.number}`,
+          startDate: doneOrder.createdAt,
+          description: deliveryInfo.description,
+          // {
+          //   "locationValue": {
+          //     "type": "Point",
+          //     "coordinates": [
+          //       106.936283111572,
+          //       47.920138551642
+          //     ]
+          //   },
+          //   "field": "dznoBhE3XCkCaHuBX",
+          //   "value": {
+          //     "lat": 47.920138551642,
+          //     "lng": 106.936283111572
+          //   },
+          //   "stringValue": "106.93628311157227,47.920138551642026"
+          // }
+          customFieldsData: [{
+            ...deliveryInfo.mapValue,
+            field: deliveryConfig.mapCustomField
+          }],
+          stageId: deliveryConfig.stageId,
+          assignedUserIds: deliveryConfig.assignedUserIds,
+          watchedUserIds: deliveryConfig.watchedUserIds,
+          productsData: doneOrder.items.map(i => ({
+            productId: i.productId,
+            uom: 'PC',
+            currency: 'MNT',
+            quantity: i.count,
+            unitPrice: i.unitPrice,
+            amount: i.count * i.unitPrice,
+            tickUsed: true
+          }))
+        });
+
+        console.log(deal)
+
+        graphqlPubsub.publish('pipelinesChanged', {
+          pipelinesChanged: {
+            _id: deliveryConfig.pipelineId,
+            proccessId: Math.random(),
+            action: 'itemAdd',
+            data: {
+              item: deal,
+              destinationStageId: deliveryConfig.stageId
+            }
+          }
+        });
+        return;
+      }
+
+      // ====== if (action === 'makePayment')
+      await models.PutResponses.updateOne({ _id: response._id }, { $set: { ...response, posToken, syncId } }, { upsert: true });
+      await models.PosOrders.updateOne({ _id: order._id }, {
+        $set: {
+          ...order, posToken, syncId, items,
+          branchId: order.branchId || pos.branchId
+        }
+      }, { upsert: true });
+
+      const newOrder = await models.PosOrders.findOne({ _id: order._id }).lean();
+
+      // return info saved
       messageBroker().sendMessage(`vrpc_queue:erxes-pos-from-api_${syncId}`, { status: 'ok', posToken, syncId, responseId: response._id, orderId: order._id })
+
+      if (newOrder.type === 'delivery' && newOrder.branchId) {
+        const toPos = await models.Pos.findOne({ branchId: newOrder.branchId });
+
+        // paid order info to offline pos
+        await sendMessage(models, messageBroker, 'vrpc_queue:erxes-pos-to-pos', { order: { ...newOrder, posToken } }, toPos);
+      }
 
       await orderToErkhet(models, messageBroker, memoryStorage, pos, order._id, response._id);
     }

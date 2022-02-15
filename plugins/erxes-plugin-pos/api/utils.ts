@@ -25,7 +25,7 @@ export const getTomorrow = (date: Date) => {
 export const orderToErkhet = async (models, messageBroker, memoryStorage, pos, orderId, putResId) => {
   let erkhetConfig = await getConfig(models, memoryStorage, 'ERKHET', {});
 
-  if (!erkhetConfig || !erkhetConfig.apiKey! || !erkhetConfig.apiSecret || !pos.erkhetConfig.isSyncErkhet) {
+  if (!erkhetConfig || !erkhetConfig.apiKey! || !erkhetConfig.apiSecret || !pos.erkhetConfig || !pos.erkhetConfig.isSyncErkhet) {
     return;
   }
 

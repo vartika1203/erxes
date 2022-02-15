@@ -31,6 +31,7 @@ const posCommonFields = `
   erkhetConfig: JSON
   initialCategoryIds: [String]
   kioskExcludeProductIds: [String]
+  deliveryConfig: JSON
 `;
 
 const catProd = `

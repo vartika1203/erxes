@@ -57,6 +57,7 @@ export type IPos = {
   catProdMappings?: CatProd[];
   initialCategoryIds?: string[];
   kioskExcludeProductIds?: string[];
+  deliveryConfig?: any;
 };
 
 // query types

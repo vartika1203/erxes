@@ -71,6 +71,7 @@ const posCommonFields = `
   }
   initialCategoryIds
   kioskExcludeProductIds
+  deliveryConfig
 `;
 
 const commonParamDefs = `
@@ -213,6 +214,13 @@ const integrations = `
   }
 `;
 
+const fieldsCombinedByContentType = `
+  query fieldsCombinedByContentType($contentType: String!, $pipelineId: String) {
+    fieldsCombinedByContentType(contentType: $contentType, pipelineId: $pipelineId)
+  }
+`;
+
+
 export default {
   posList,
   configs,
@@ -223,5 +231,6 @@ export default {
   getDbSchemaLabels,
   tags,
   integrations,
-  branches
+  branches,
+  fieldsCombinedByContentType
 };

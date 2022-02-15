@@ -142,14 +142,14 @@ class EbarimtConfig extends React.Component<Props, { config: any }> {
                 {this.renderInput('cityTaxPercent', 'UB city tax Percent', '', 'number')}
               </BlockRow>
             </Block>
-            <Block/>
+            <Block />
             <Block>
               <h4>{__("Footer")}</h4>
               <BlockRow>
                 {this.renderInput('footerText', 'Footer text', '')}
               </BlockRow>
             </Block>
-            <Block/>
+            <Block />
           </LeftItem>
         </FlexColumn>
       </FlexItem>
