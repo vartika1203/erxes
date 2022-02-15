@@ -303,10 +303,10 @@ const Nav = styled.nav`
     }
 
     @media (max-height: 760px) {
-      height: ${dimensions.headerSpacing}px;
+      height: ${dimensions.headerSpacing + dimensions.coreSpacing}px;
 
       i {
-        line-height: ${dimensions.headerSpacing}px;
+        line-height: ${dimensions.headerSpacing - dimensions.coreSpacing}px;
       }
     }
   }
@@ -590,10 +590,10 @@ const MoreItemRecent = styledTS<{ order: number }>(styled.div)`
       }
 
       @media (max-height: 760px) {
-        height: ${dimensions.headerSpacing}px;
+        height: ${dimensions.headerSpacing + 20}px;
 
         i {
-          line-height: ${dimensions.headerSpacing}px;
+          line-height: ${dimensions.coreSpacing}px;
         }
       }
     }
