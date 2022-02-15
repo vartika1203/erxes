@@ -17,7 +17,7 @@ export default [
         const doneOrder = await models.PosOrders.findOne({ _id: order._id }).lean();
 
         const { deliveryConfig = {} } = pos;
-        const { deliveryInfo = {} } = doneOrder;
+        const  deliveryInfo = doneOrder.deliveryInfo || {};
 
         const deal = await models.Deals.createDeal({
           name: `Delivery: ${doneOrder.number}`,
@@ -56,7 +56,14 @@ export default [
           }))
         });
 
-        console.log(deal)
+        if (doneOrder.customerId && deal._id) {
+          await models.Conformities.addConformity({
+            mainType: 'deal',
+            mainTypeId: deal._id,
+            relType: 'customer',
+            relTypeId: doneOrder.customerId
+          })
+        }
 
         graphqlPubsub.publish('pipelinesChanged', {
           pipelinesChanged: {
@@ -69,6 +76,7 @@ export default [
             }
           }
         });
+
         return;
       }
 
