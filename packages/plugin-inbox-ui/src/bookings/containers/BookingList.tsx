@@ -10,8 +10,8 @@ import { generatePaginationParams } from '@erxes/ui/src/utils/router';
 import {
   BookingIntegrationsQueryResponse,
   RemoveMutationResponse,
-  RemoveMutationVariables
 } from '../types';
+import { MutationVariables } from '@erxes/ui/src/types';
 import { INTEGRATION_KINDS } from '@erxes/ui/src/constants/integrations';
 import { ArchiveIntegrationResponse } from '@erxes/ui-settings/src/integrations/types';
 import { CountQueryResponse } from '@erxes/ui-leads/src/types';
@@ -157,7 +157,7 @@ export default compose(
       }
     })
   }),
-  graphql<Props, RemoveMutationResponse, RemoveMutationVariables>(
+  graphql<Props, RemoveMutationResponse, MutationVariables>(
     gql(mutations.integrationRemove),
     {
       name: 'removeMutation'

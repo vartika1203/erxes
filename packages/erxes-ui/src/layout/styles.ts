@@ -79,8 +79,7 @@ const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
   display: flex;
   flex-direction: column;
   min-width: 480px;
-  box-shadow: ${props =>
-    !props.transparent && `0px 0 0px 0px ${colors.shadowPrimary}`};
+  border-left: 1px solid ${colors.borderDarker};
   height: ${props => props.center && '100%'};
   margin: ${props => !props.center && '10px 10px 10px 0'};
 `;
@@ -141,8 +140,6 @@ const SideContent = styledTS<{
   margin: ${dimensions.unitSpacing}px ${dimensions.unitSpacing}px ${
   dimensions.unitSpacing
 }px 0;
-  box-shadow: ${props =>
-    props.full ? `1px 1px 0px 0px ${colors.shadowPrimary}` : 'none'};
 
   ${TabContainer} {
     position: sticky;

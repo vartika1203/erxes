@@ -5,7 +5,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getPropertiesGroups } from '../constants';
 import { SidebarList } from '@erxes/ui-settings/src/styles';
-import SidebarHeader from '@erxes/ui-settings/src/common/components/SidebarHeader';
 
 type Props = {
   currentType: string;
@@ -39,7 +38,7 @@ class Sidebar extends React.Component<Props> {
 
   render() {
     return (
-      <LeftSidebar header={<SidebarHeader />} full={true}>
+      <LeftSidebar full={true}>
         {this.renderSideBar()}
       </LeftSidebar>
     );
