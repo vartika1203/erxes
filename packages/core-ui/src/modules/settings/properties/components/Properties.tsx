@@ -17,6 +17,7 @@ import { IField } from '@erxes/ui/src/types';
 import PropertyRow from './PropertyRow';
 import Sidebar from './Sidebar';
 import SortableList from 'modules/common/components/SortableList';
+import BreadCrumb from '@erxes/ui/src/components/breadcrumb/BreadCrumb';
 
 type Props = {
   queryParams: any;
@@ -229,10 +230,8 @@ class Properties extends React.Component<
             right={this.renderActionBar()}
           />
         }
-        header={
-          <Wrapper.Header title={__(currentType)} breadcrumb={breadcrumb} />
-        }
-        mainHead={headerDescription}
+        header={headerDescription}
+        mainHead={<BreadCrumb breadcrumbs={breadcrumb}/>}
         leftSidebar={<Sidebar currentType={__(currentType)} />}
         content={this.renderProperties()}
       />

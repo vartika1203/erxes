@@ -56,17 +56,20 @@ const VerticalContent = styled.div`
   flex: 1;
   flex-direction: column;
   max-height: 100%;
+  background: #fff;
 `;
 
 const HeightedWrapper = styled.div`
   flex: 1;
+  margin: 0px ${dimensions.coreSpacing}px 0px 20px;
   position: relative;
+  border-radius: 25px;
+  border: 1px solid ${colors.borderDarker};
 `;
 
 const MainHead = styled.div`
-  padding: 0 ${dimensions.coreSpacing}px;
+  padding: 20px ${dimensions.coreSpacing}px;
   background: ${colors.colorWhite};
-  box-shadow: 0 0 6px 1px ${colors.shadowPrimary};
 `;
 
 const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
@@ -77,7 +80,7 @@ const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
   flex-direction: column;
   min-width: 480px;
   box-shadow: ${props =>
-    !props.transparent && `0 0 6px 1px ${colors.shadowPrimary}`};
+    !props.transparent && `0px 0 0px 0px ${colors.shadowPrimary}`};
   height: ${props => props.center && '100%'};
   margin: ${props => !props.center && '10px 10px 10px 0'};
 `;
@@ -139,7 +142,7 @@ const SideContent = styledTS<{
   dimensions.unitSpacing
 }px 0;
   box-shadow: ${props =>
-    props.full ? `0 0 6px 1px ${colors.shadowPrimary}` : 'none'};
+    props.full ? `1px 1px 0px 0px ${colors.shadowPrimary}` : 'none'};
 
   ${TabContainer} {
     position: sticky;
