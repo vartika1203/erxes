@@ -1,14 +1,22 @@
-import {
-  __, Button, ControlLabel, FormControl, FormGroup, HeaderDescription, Info,
-  MainStyleTitle as Title, Wrapper, CollapseContent, BarItems, DataWithLoader, Table, ModalTrigger, router, confirm
-} from 'erxes-ui';
+import Form from '../containers/Form';
 import React from 'react';
-import Sidebar from '../../general/components/Sidebar';
-import { ILotteryCompaign } from '../types';
 import Row from './Row';
-import { Link } from 'react-router-dom';
-import Form from '../containers/Form'
+import Sidebar from '../../general/components/Sidebar';
+import {
+  __,
+  BarItems,
+  Button,
+  confirm,
+  DataWithLoader,
+  FormControl,
+  MainStyleTitle as Title,
+  ModalTrigger,
+  router,
+  Table,
+  Wrapper
+} from 'erxes-ui';
 import { Alert } from 'erxes-ui';
+import { ILotteryCompaign } from '../types';
 
 type Props = {
   lotteryCompaigns: ILotteryCompaign[];
