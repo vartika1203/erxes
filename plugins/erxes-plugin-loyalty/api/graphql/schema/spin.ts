@@ -17,8 +17,8 @@ const SpinDoc = `
   status: String
 `
 export const queries = `
-  spinsMain(${commonFilters}): SpinMain
-  spins(${commonFilters}): [Spin]
+  spinsMain(${commonFilters} voucherCompaignId: String): SpinMain
+  spins(${commonFilters} voucherCompaignId: String): [Spin]
   spinDetail(_id: String!): Spin
 `;
 

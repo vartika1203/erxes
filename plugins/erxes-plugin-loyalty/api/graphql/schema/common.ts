@@ -39,6 +39,7 @@ export const commonTypes = `
   compaignId: String,
   createdAt: Date,
   usedAt: Date,
+  voucherCompaignId: String,
 
   ownerType: String,
   ownerId: String,

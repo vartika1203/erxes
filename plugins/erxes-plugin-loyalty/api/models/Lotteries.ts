@@ -44,7 +44,27 @@ export class Lottery {
     }
 
     const number = getRandomNumber(lotteryCompaign.numberFormat);
-    return await models.Lotteries.create({ compaignId, ownerType, ownerId, createdAt: new Date(), number, status: LOTTERY_STATUS.NEW, voucherCompaignId, userId })
+    return await models.Lotteries.create({ compaignId, ownerType, ownerId, createdAt: now, number, status: LOTTERY_STATUS.NEW, voucherCompaignId, userId })
+  }
+
+
+  public static async updateLottery(models, _id, { ownerType, ownerId, status, userId = '' }) {
+    if (!ownerId || !ownerType) {
+      throw new Error('Not create spin, owner is undefined');
+    }
+
+    const spin = await models.Lotteries.findOne({ _id }).lean();
+    const compaignId = spin.compaignId;
+
+    await models.LotteryCompaigns.getLotteryCompaign(models, compaignId);
+
+    const now = new Date();
+
+    return await models.Lotteries.updateOne({ _id, }, {
+      $set: {
+        compaignId, ownerType, ownerId, modifiedAt: now, status, userId
+      }
+    })
   }
 
   public static async buyLottery(models, { compaignId, ownerType, ownerId, count = 1 }) {

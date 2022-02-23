@@ -2,7 +2,8 @@ import { IUser } from 'erxes-ui/lib/auth/types';
 import { ICommonDoc } from '../common/types';
 
 export interface IVoucherDoc extends ICommonDoc {
-  status: string
+  status: string,
+  compaignType: string,
 }
 
 export interface IVoucher extends IVoucherDoc {

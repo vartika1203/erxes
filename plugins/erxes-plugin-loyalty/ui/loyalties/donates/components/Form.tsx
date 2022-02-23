@@ -14,11 +14,11 @@ import {
 } from 'erxes-ui';
 import { IButtonMutateProps, IFormProps } from 'erxes-ui/lib/types';
 import { IDonate, IDonateDoc } from '../types';
-import { IDonateCompaign } from '../../../configs/donateCompaign/types';
+import SelectCompaigns from '../../containers/SelectCompaigns';
+import { queries } from '../../../configs/donateCompaign/graphql';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
-  compaigns: IDonateCompaign[];
   donate: IDonate;
   closeModal: () => void;
   queryParams: any;
@@ -32,10 +32,10 @@ class DonateForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
-    const { donate = {} as IDonate, queryParams, compaigns } = this.props;
+    const { donate = {} as IDonate, queryParams } = this.props;
 
-    if (!donate.compaignId) {
-      donate.compaignId = queryParams.compaignId || compaigns.length && compaigns[0]._id;
+    if (!donate.compaignId && queryParams.compaignId) {
+      donate.compaignId = queryParams.compaignId;
     }
 
     if (!donate.ownerType) {
@@ -134,28 +134,23 @@ class DonateForm extends React.Component<Props, State> {
 
   renderContent = (formProps: IFormProps) => {
     const { donate } = this.state;
-    const { closeModal, renderButton, compaigns } = this.props;
+    const { closeModal, renderButton } = this.props;
     const { values, isSubmitted } = formProps;
 
     return (
       <>
         <ScrollWrapper>
           <FormGroup>
-            <ControlLabel>Ангилал</ControlLabel>
-            <FormControl
-              {...formProps}
-              name="compaignId"
-              componentClass="select"
-              defaultValue={donate.compaignId}
-              required={true}
-              onChange={this.onChangeSelect}
-            >
-              {compaigns.map(c => (
-                <option key={c._id} value={c._id}>
-                  {c.title}
-                </option>
-              ))}
-            </FormControl>
+            <ControlLabel>Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='donateCompaigns'
+              customQuery={queries.donateCompaigns}
+              label='Choose donate compaign'
+              name='compaignId'
+              onSelect={this.onChangeSelect}
+              initialValue={donate.compaignId}
+              filterParams={donate._id ? { equalTypeCompaignId: donate.compaignId } : {}}
+            />
           </FormGroup>
 
           <FormGroup>

@@ -11,14 +11,15 @@ import {
   SelectCompanies,
   SelectCustomers,
   SelectTeamMembers
-  } from 'erxes-ui';
+} from 'erxes-ui';
 import { IButtonMutateProps, IFormProps } from 'erxes-ui/lib/types';
 import { ILottery, ILotteryDoc } from '../types';
-import { ILotteryCompaign } from '../../../configs/lotteryCompaign/types';
+import SelectCompaigns from '../../containers/SelectCompaigns';
+import { queries } from '../../../configs/lotteryCompaign/graphql';
+import { queries as voucherCompaignQueries } from '../../../configs/voucherCompaign/graphql';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
-  compaigns: ILotteryCompaign[];
   lottery: ILottery;
   closeModal: () => void;
   queryParams: any;
@@ -32,10 +33,10 @@ class LotteryForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
-    const { lottery = {} as ILottery, queryParams , compaigns} = this.props;
+    const { lottery = {} as ILottery, queryParams } = this.props;
 
-    if (!lottery.compaignId) {
-      lottery.compaignId = queryParams.compaignId || compaigns.length && compaigns[0]._id;
+    if (!lottery.compaignId && queryParams.compaignId) {
+      lottery.compaignId = queryParams.compaignId;
     }
 
     if (!lottery.ownerType) {
@@ -134,29 +135,35 @@ class LotteryForm extends React.Component<Props, State> {
 
   renderContent = (formProps: IFormProps) => {
     const { lottery } = this.state;
-    const { closeModal, renderButton, compaigns } = this.props;
+    const { closeModal, renderButton } = this.props;
     const { values, isSubmitted } = formProps;
 
     return (
       <>
         <ScrollWrapper>
           <FormGroup>
-            <ControlLabel>Ангилал</ControlLabel>
+            <ControlLabel>Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='lotteryCompaigns'
+              customQuery={queries.lotteryCompaigns}
+              label='Choose lottery compaign'
+              name='compaignId'
+              onSelect={this.onChangeSelect}
+              initialValue={lottery.compaignId}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel>Number</ControlLabel>
             <FormControl
               {...formProps}
-              name="compaignId"
-              componentClass="select"
-              defaultValue={lottery.compaignId}
+              name="number"
+              defaultValue={lottery.number}
               required={true}
               onChange={this.onChangeSelect}
-            >
-              {compaigns.map(c => (
-                <option key={c._id} value={c._id}>
-                  {c.title}
-                </option>
-              ))}
-            </FormControl>
+            />
           </FormGroup>
+
 
           <FormGroup>
             <ControlLabel>Owner type</ControlLabel>
@@ -177,6 +184,35 @@ class LotteryForm extends React.Component<Props, State> {
           <FormGroup>
             <ControlLabel required={true}>Owner</ControlLabel>
             {this.renderOwner()}
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel required={true}>Status</ControlLabel>
+            <FormControl
+              {...formProps}
+              name="status"
+              componentClass="select"
+              defaultValue={lottery.status}
+              required={true}
+              onChange={this.onChangeSelect}
+            >
+              <option key={'new'} value={'new'}> {'new'} </option>
+              <option key={'loss'} value={'loss'}> {'loss'} </option>
+              <option key={'won'} value={'won'}> {'won'} </option>
+            </FormControl>
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel>Voucher Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='voucherCompaigns'
+              customQuery={voucherCompaignQueries.voucherCompaigns}
+              label='Choose voucher compaign'
+              name='voucherCompaignId'
+              onSelect={() => { }}
+              initialValue={lottery.voucherCompaignId}
+              filterParams={{ voucherType: 'lottery' }}
+            />
           </FormGroup>
         </ScrollWrapper>
 

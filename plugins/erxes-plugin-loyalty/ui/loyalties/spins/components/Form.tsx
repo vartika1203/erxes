@@ -1,4 +1,5 @@
 import React from 'react';
+import SelectCompaigns from '../../containers/SelectCompaigns';
 import {
   __,
   Button,
@@ -14,12 +15,12 @@ import {
 } from 'erxes-ui';
 import { IButtonMutateProps, IFormProps } from 'erxes-ui/lib/types';
 import { ISpin, ISpinDoc } from '../types';
-import { ISpinCompaign } from '../../../configs/spinCompaign/types';
+import { queries } from '../../../configs/spinCompaign/graphql';
+import { queries as voucherCompaignQueries } from '../../../configs/voucherCompaign/graphql';
 
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
-  compaigns: ISpinCompaign[];
   spin: ISpin;
   closeModal: () => void;
   queryParams: any;
@@ -33,10 +34,10 @@ class SpinForm extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
-    const { spin = {} as ISpin, queryParams, compaigns } = this.props;
+    const { spin = {} as ISpin, queryParams } = this.props;
 
-    if (!spin.compaignId) {
-      spin.compaignId = queryParams.compaignId || compaigns.length && compaigns[0]._id;
+    if (!spin.compaignId && queryParams.compaignId) {
+      spin.compaignId = queryParams.compaignId;
     }
 
     if (!spin.ownerType) {
@@ -135,28 +136,22 @@ class SpinForm extends React.Component<Props, State> {
 
   renderContent = (formProps: IFormProps) => {
     const { spin } = this.state;
-    const { closeModal, renderButton, compaigns } = this.props;
+    const { closeModal, renderButton } = this.props;
     const { values, isSubmitted } = formProps;
 
     return (
       <>
         <ScrollWrapper>
           <FormGroup>
-            <ControlLabel>Ангилал</ControlLabel>
-            <FormControl
-              {...formProps}
-              name="compaignId"
-              componentClass="select"
-              defaultValue={spin.compaignId}
-              required={true}
-              onChange={this.onChangeSelect}
-            >
-              {compaigns.map(c => (
-                <option key={c._id} value={c._id}>
-                  {c.title}
-                </option>
-              ))}
-            </FormControl>
+            <ControlLabel>Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='spinCompaigns'
+              customQuery={queries.spinCompaigns}
+              label='Choose spin compaign'
+              name='compaignId'
+              onSelect={this.onChangeSelect}
+              initialValue={spin.compaignId}
+            />
           </FormGroup>
 
           <FormGroup>
@@ -178,6 +173,35 @@ class SpinForm extends React.Component<Props, State> {
           <FormGroup>
             <ControlLabel required={true}>Owner</ControlLabel>
             {this.renderOwner()}
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel required={true}>Status</ControlLabel>
+            <FormControl
+              {...formProps}
+              name="status"
+              componentClass="select"
+              defaultValue={spin.status}
+              required={true}
+              onChange={this.onChangeSelect}
+            >
+              <option key={'new'} value={'new'}> {'new'} </option>
+              <option key={'loss'} value={'loss'}> {'loss'} </option>
+              <option key={'won'} value={'won'}> {'won'} </option>
+            </FormControl>
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel>Voucher Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='voucherCompaigns'
+              customQuery={voucherCompaignQueries.voucherCompaigns}
+              label='Choose voucher compaign'
+              name='voucherCompaignId'
+              onSelect={() => { }}
+              initialValue={spin.voucherCompaignId}
+              filterParams={{ voucherType: 'spin' }}
+            />
           </FormGroup>
         </ScrollWrapper>
 

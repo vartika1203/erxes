@@ -5,7 +5,6 @@ export const assignmentCompaignSchema = {
   ...commonCompaignSchema,
 
   automationId: { type: String },
-  // voucherCompaignId: { type: String }
 };
 
 export class AssignmentCompaign {
@@ -36,14 +35,6 @@ export class AssignmentCompaign {
       modifiedAt: new Date(),
     }
 
-    // await dataSources.AutomationAPI.createAutomation({
-    //   name: doc.title,
-    //   status: 'scheduled',
-    //   triggers: [],
-    //   actions: [],
-    //   createdBy: 'loyaltySystem', updatedBy: 'loyaltySystem'
-    // })
-
     return models.AssignmentCompaigns.create(doc);
   }
 
@@ -58,15 +49,6 @@ export class AssignmentCompaign {
       ...doc,
       modifiedAt: new Date(),
     }
-
-    // await dataSources.AutomationsAPI.updateAutomation({
-    //   _id,
-    //   name: doc.title,
-    //   status: 'scheduled',
-    //   triggers: [],
-    //   actions: [],
-    //   updatedBy: 'loyaltySystem'
-    // });
 
     return models.AssignmentCompaigns.updateOne({ _id }, { $set: doc });
   }
@@ -84,11 +66,6 @@ export class AssignmentCompaign {
       { _id: { $in: usedCompaignIds } },
       { $set: { status: COMPAIGN_STATUS.TRASH, modifiedAt: now } }
     );
-
-    // await dataSources.AutomationsAPI.removeAutomations(
-    //   automationIds
-    // );
-
     return models.AssignmentCompaigns.deleteMany({ _id: { $in: deleteCompaignIds } });
   }
 }

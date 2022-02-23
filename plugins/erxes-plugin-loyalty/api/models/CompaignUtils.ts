@@ -32,6 +32,7 @@ export const commonSchema = {
   _id: { pkey: true },
   compaignId: { type: String },
   createdAt: { type: Date, label: 'Created at' },
+  modifiedAt: { type: Date, label: 'Modified at' },
   usedAt: { type: Date, label: 'Used date', optional: true },
   userId: { type: String, label: 'Modified User', optional: true },
 

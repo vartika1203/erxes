@@ -5,6 +5,7 @@ export const commonFields = `
   usedAt
   ownerType
   ownerId
+  voucherCompaignId
 
   owner
 `;
@@ -12,6 +13,8 @@ export const commonFields = `
 export const commonParamsDef = `
   $page: Int
   $perPage: Int
+  $sortField: String
+  $sortDirection: Int
   $compaignId: String
   $status: String
   $ownerId: String
@@ -21,6 +24,8 @@ export const commonParamsDef = `
 export const commonParamsValue = `
   page: $page
   perPage: $perPage
+  sortField: $sortField
+  sortDirection: $sortDirection
   compaignId: $compaignId
   status: $status
   ownerId: $ownerId

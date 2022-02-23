@@ -51,8 +51,24 @@ export class Voucher {
       case 'bonus':
       case 'coupon':
       default:
-        return models.Vouchers.create({ compaignId, ownerType, ownerId, createdAt: new Date(), status: VOUCHER_STATUS.NEW, userId });
+        return models.Vouchers.create({ compaignId, ownerType, ownerId, createdAt: now, status: VOUCHER_STATUS.NEW, userId });
     }
+  }
+
+  public static async updateVoucher(models, _id, { ownerType, ownerId, status, userId = '' }) {
+    if (!ownerId || !ownerType) {
+      throw new Error('Not create voucher, owner is undefined');
+    }
+
+    const voucher = await models.Vouchers.findOne({ _id }).lean();
+    const compaignId = voucher.compaignId;
+
+    await models.VoucherCompaigns.getVoucherCompaign(models, compaignId);
+
+    const now = new Date();
+
+    return models.Vouchers.updateOne({ _id }, { $set: { compaignId, ownerType, ownerId, modifiedAt: now, status, userId } });
+
   }
 
   public static async buyVoucher(models, { compaignId, ownerType, ownerId, count = 1 }) {

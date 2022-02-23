@@ -1,10 +1,18 @@
 import React from 'react';
+import SelectCompaigns from '../../containers/SelectCompaigns';
 import {
-  SelectCustomers, Sidebar,
-  Wrapper, __, router, Tip, Icon, SelectTeamMembers
+  __,
+  Icon,
+  router,
+  SelectCustomers,
+  SelectTeamMembers,
+  Sidebar,
+  Tip,
+  Wrapper
 } from 'erxes-ui';
+import { ControlLabel, FormControl, FormGroup } from 'erxes-ui';
+import { queries as voucherCompaignQueries } from '../../../configs/voucherCompaign/graphql';
 import { SidebarFilters } from '../../common/styles';
-import { FormControl, FormGroup, ControlLabel } from 'erxes-ui';
 
 const { Section } = Wrapper.Sidebar;
 
@@ -15,7 +23,7 @@ interface IProps {
 
 class FilterCompaign extends React.Component<IProps> {
   clearCategoryFilter = () => {
-    router.setParams(this.props.history, { ownerId: null, ownerType: null, status: null });
+    router.setParams(this.props.history, { ownerId: null, ownerType: null, status: null, voucherCompaignId: null });
   };
 
   setFilter = (name, value) => {
@@ -37,7 +45,8 @@ class FilterCompaign extends React.Component<IProps> {
               {(
                 router.getParam(this.props.history, 'status') ||
                 router.getParam(this.props.history, 'ownerType') ||
-                router.getParam(this.props.history, 'ownerID')
+                router.getParam(this.props.history, 'ownerID') ||
+                router.getParam(this.props.history, 'voucherCompaignId')
               ) && (
                   <a href="#cancel" tabIndex={0} onClick={this.clearCategoryFilter}>
                     <Tip text={__('Clear filter')} placement="bottom">
@@ -48,6 +57,18 @@ class FilterCompaign extends React.Component<IProps> {
             </Section.QuickButtons>
           </Section.Title>
           <SidebarFilters>
+            <FormGroup>
+              <ControlLabel>Voucher Compaign</ControlLabel>
+              <SelectCompaigns
+                queryName='voucherCompaigns'
+                customQuery={voucherCompaignQueries.voucherCompaigns}
+                label='Choose voucher compaign'
+                name='compaignId'
+                onSelect={(voucherCompaignId) => (this.setFilter('voucherCompaignId', voucherCompaignId))}
+                initialValue={queryParams.voucherCompaignId}
+                filterParams={{ voucherType: 'lottery' }}
+              />
+            </FormGroup>
             <FormGroup>
               <ControlLabel>Status</ControlLabel>
               <FormControl

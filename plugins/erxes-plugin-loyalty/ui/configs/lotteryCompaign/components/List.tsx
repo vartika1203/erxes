@@ -23,11 +23,9 @@ type Props = {
   remove: (doc: { lotteryCompaignIds: string[] }, emptyBulk: () => void) => void;
   searchValue: string;
   filterStatus: string;
-  // configsMap: IConfigsMap;
 };
 
 type State = {
-  // configsMap: IConfigsMap;
   searchValue: string,
   filterStatus: string
 };
@@ -202,7 +200,6 @@ class LotteryCompaigns extends React.Component<Props, State> {
           <DataWithLoader
             data={content}
             loading={loading}
-            // count={productsCount}
             emptyText="There is no data"
             emptyImage="/images/actions/5.svg"
           />

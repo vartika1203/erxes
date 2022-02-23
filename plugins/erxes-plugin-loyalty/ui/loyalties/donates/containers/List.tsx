@@ -91,20 +91,15 @@ class DonateListContainer extends React.Component<FinalProps, State> {
 }
 
 const generateParams = ({ queryParams }) => ({
-  variables: {
-    ...router.generatePaginationParams(queryParams || {}),
-    ids: queryParams.ids,
-    compaignId: queryParams.compaignId,
-    status: queryParams.status,
-    ownerId: queryParams.ownerId,
-    ownerType: queryParams.ownerType,
-    searchValue: queryParams.searchValue,
-    sortField: queryParams.sortField,
-    sortDirection: queryParams.sortDirection
-      ? parseInt(queryParams.sortDirection, 1)
-      : undefined
-  },
-  fetchPolicy: 'network-only'
+  ...router.generatePaginationParams(queryParams || {}),
+  ids: queryParams.ids,
+  compaignId: queryParams.compaignId,
+  status: queryParams.status,
+  ownerId: queryParams.ownerId,
+  ownerType: queryParams.ownerType,
+  searchValue: queryParams.searchValue,
+  sortField: queryParams.sortField,
+  sortDirection: parseInt(queryParams.sortDirection) || undefined
 });
 
 const generateOptions = () => ({
@@ -117,7 +112,10 @@ export default withProps<Props>(
       gql(queries.donatesMain),
       {
         name: 'donatesMainQuery',
-        options: generateParams
+        options: ({ queryParams }) => ({
+          variables: generateParams({ queryParams }),
+          fetchPolicy: 'network-only'
+        })
       }
     ),
     graphql<Props, DonateCompaignDetailQueryResponse>(

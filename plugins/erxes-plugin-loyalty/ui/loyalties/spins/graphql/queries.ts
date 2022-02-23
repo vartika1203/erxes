@@ -7,10 +7,12 @@ export const spinFields = `
 
 const listParamsDef = `
   ${commonParamsDef}
+  $voucherCompaignId: String
 `;
 
 const listParamsValue = `
   ${commonParamsValue}
+  voucherCompaignId: $voucherCompaignId
 `;
 
 export const spins = `
@@ -27,17 +29,17 @@ export const spinsMain = `
       list {
         ${spinFields}
       }
-
       totalCount
     }
   }
 `;
 
-
 const spinDetail = `
   query spinDetail($_id: String!) {
     spinDetail(_id: $_id) {
       ${spinFields}
+      awardId
+      voucherId
     }
   }
 `;

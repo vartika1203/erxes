@@ -1,14 +1,22 @@
-import {
-  __, Button, ControlLabel, FormControl, FormGroup, HeaderDescription, Info,
-  MainStyleTitle as Title, Wrapper, CollapseContent, BarItems, DataWithLoader, Table, ModalTrigger, router, confirm
-} from 'erxes-ui';
+import Form from '../containers/Form';
 import React from 'react';
-import Sidebar from '../../general/components/Sidebar';
-import { IDonateCompaign } from '../types';
 import Row from './Row';
-import { Link } from 'react-router-dom';
-import Form from '../containers/Form'
+import Sidebar from '../../general/components/Sidebar';
+import {
+  __,
+  BarItems,
+  Button,
+  confirm,
+  DataWithLoader,
+  FormControl,
+  MainStyleTitle as Title,
+  ModalTrigger,
+  router,
+  Table,
+  Wrapper
+} from 'erxes-ui';
 import { Alert } from 'erxes-ui';
+import { IDonateCompaign } from '../types';
 
 type Props = {
   donateCompaigns: IDonateCompaign[];
@@ -23,11 +31,9 @@ type Props = {
   remove: (doc: { donateCompaignIds: string[] }, emptyBulk: () => void) => void;
   searchValue: string;
   filterStatus: string;
-  // configsMap: IConfigsMap;
 };
 
 type State = {
-  // configsMap: IConfigsMap;
   searchValue: string,
   filterStatus: string
 };
@@ -202,7 +208,6 @@ class DonateCompaigns extends React.Component<Props, State> {
           <DataWithLoader
             data={content}
             loading={loading}
-            // count={productsCount}
             emptyText="There is no data"
             emptyImage="/images/actions/5.svg"
           />

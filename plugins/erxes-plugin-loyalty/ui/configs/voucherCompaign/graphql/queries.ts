@@ -23,8 +23,8 @@ export const voucherCompaignFields = `
 `;
 
 const voucherCompaigns = `
-  query voucherCompaigns(${commonFilterDefs} ${paginateDefs} $equalTypeCompaignId: String) {
-    voucherCompaigns(${commonFilterValues} ${paginateValues} equalTypeCompaignId: $equalTypeCompaignId) {
+  query voucherCompaigns(${commonFilterDefs} ${paginateDefs} $equalTypeCompaignId: String $voucherType: String) {
+    voucherCompaigns(${commonFilterValues} ${paginateValues} equalTypeCompaignId: $equalTypeCompaignId voucherType: $voucherType) {
       ${voucherCompaignFields}
     }
   }

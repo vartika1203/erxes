@@ -18,8 +18,8 @@ const LotteryDoc = `
   status: String
 `
 export const queries = `
-  lotteriesMain(${commonFilters}): LotteryMain
-  lotteries(${commonFilters}): [Lottery]
+  lotteriesMain(${commonFilters} voucherCompaignId: String): LotteryMain
+  lotteries(${commonFilters} voucherCompaignId: String): [Lottery]
   lotteryDetail(_id: String!): Lottery
 `;
 

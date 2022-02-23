@@ -44,6 +44,25 @@ export class Spin {
     return await models.Spins.create({ compaignId, ownerType, ownerId, createdAt: new Date(), status: SPIN_STATUS.NEW, voucherCompaignId, userId })
   }
 
+  public static async updateSpin(models, _id, { ownerType, ownerId, status, userId = '' }) {
+    if (!ownerId || !ownerType) {
+      throw new Error('Not create spin, owner is undefined');
+    }
+
+    const spin = await models.Spins.findOne({ _id }).lean();
+    const compaignId = spin.compaignId;
+
+    await models.SpinCompaigns.getSpinCompaign(models, compaignId);
+
+    const now = new Date();
+
+    return await models.Spins.updateOne({ _id, }, {
+      $set: {
+        compaignId, ownerType, ownerId, modifiedAt: now, status, userId
+      }
+    })
+  }
+
   public static async buySpin(models, { compaignId, ownerType, ownerId, count = 1 }) {
     if (!ownerId || !ownerType) {
       throw new Error('can not buy spin, owner is undefined');

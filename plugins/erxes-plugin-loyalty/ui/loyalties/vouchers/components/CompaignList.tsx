@@ -49,12 +49,26 @@ class List extends React.Component<IProps> {
 
       const name = `${compaign.title} (${compaign.vouchersCount})`
 
+      let link
+      switch (compaign.voucherType) {
+        case 'lottery':
+          link = `/erxes-plugin-loyalty/lotteries?${qryString}&voucherCompaignId=${compaign._id}`;
+          break;
+
+        case 'spin':
+          link =`/erxes-plugin-loyalty/spins?${qryString}&voucherCompaignId=${compaign._id}`;
+          break;
+
+        default:
+          link = `?${qryString}&compaignId=${compaign._id}`;
+      }
+
       result.push(
         <SidebarListItem
           key={compaign._id}
           isActive={this.isActive(compaign._id)}
         >
-          <Link to={`?${qryString}&compaignId=${compaign._id}`}>
+          <Link to={link}>
             {name}
           </Link>
         </SidebarListItem>

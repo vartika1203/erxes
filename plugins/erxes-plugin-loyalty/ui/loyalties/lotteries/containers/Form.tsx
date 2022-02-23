@@ -1,15 +1,11 @@
 import * as compose from 'lodash.flowright';
 import Form from '../components/Form';
-import gql from 'graphql-tag';
 import React from 'react';
 import { ButtonMutate, withProps } from 'erxes-ui';
-import { graphql } from 'react-apollo';
 import { IButtonMutateProps, IQueryParams } from 'erxes-ui/lib/types';
 import { ILottery } from '../types';
 import { IUser } from 'erxes-ui/lib/auth/types';
-import { LotteryCompaignQueryResponse } from '../../../configs/lotteryCompaign/types';
 import { mutations } from '../graphql';
-import { queries as compaignQueries } from '../../../configs/lotteryCompaign/graphql';
 import { UsersQueryResponse } from 'erxes-ui/lib/auth/types';
 
 type Props = {
@@ -21,18 +17,11 @@ type Props = {
 type FinalProps = {
   usersQuery: UsersQueryResponse;
   currentUser: IUser;
-  lotteryCompaignsQuery: LotteryCompaignQueryResponse;
   queryParams: IQueryParams;
 } & Props;
 
 class LotteryFromContainer extends React.Component<FinalProps> {
   render() {
-    const { lotteryCompaignsQuery } = this.props;
-
-    if (lotteryCompaignsQuery.loading) {
-      return null;
-    }
-
     const renderButton = ({
       name,
       values,
@@ -63,12 +52,9 @@ class LotteryFromContainer extends React.Component<FinalProps> {
       );
     };
 
-    const compaigns = lotteryCompaignsQuery.lotteryCompaigns || [];
-
     const updatedProps = {
       ...this.props,
-      renderButton,
-      compaigns,
+      renderButton
     };
     return <Form {...updatedProps} />;
   }
@@ -88,11 +74,5 @@ const getRefetchQueries = () => {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, LotteryCompaignQueryResponse>(gql(compaignQueries.lotteryCompaigns), {
-      name: 'lotteryCompaignsQuery',
-      options: {
-        fetchPolicy: 'network-only'
-      },
-    })
   )(LotteryFromContainer)
 );

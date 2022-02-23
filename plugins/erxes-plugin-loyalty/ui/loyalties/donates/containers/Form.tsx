@@ -1,16 +1,12 @@
-import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
-import { withProps, ButtonMutate } from 'erxes-ui';
-import { IButtonMutateProps, IQueryParams } from 'erxes-ui/lib/types';
-import React from 'react';
-import { graphql } from 'react-apollo';
 import Form from '../components/Form';
-import { mutations, queries } from '../graphql';
-import { queries as compaignQueries } from '../../../configs/donateCompaign/graphql';
+import React from 'react';
+import { ButtonMutate, withProps } from 'erxes-ui';
+import { IButtonMutateProps, IQueryParams } from 'erxes-ui/lib/types';
 import { IDonate } from '../types';
-import { UsersQueryResponse } from 'erxes-ui/lib/auth/types';
 import { IUser } from 'erxes-ui/lib/auth/types';
-import { DonateCompaignQueryResponse } from '../../../configs/donateCompaign/types';
+import { mutations } from '../graphql';
+import { UsersQueryResponse } from 'erxes-ui/lib/auth/types';
 
 type Props = {
   donate: IDonate;
@@ -21,18 +17,11 @@ type Props = {
 type FinalProps = {
   usersQuery: UsersQueryResponse;
   currentUser: IUser;
-  donateCompaignsQuery: DonateCompaignQueryResponse;
   queryParams: IQueryParams;
 } & Props;
 
 class DonateFromContainer extends React.Component<FinalProps> {
   render() {
-    const { donateCompaignsQuery } = this.props;
-
-    if (donateCompaignsQuery.loading) {
-      return null;
-    }
-
     const renderButton = ({
       name,
       values,
@@ -63,12 +52,9 @@ class DonateFromContainer extends React.Component<FinalProps> {
       );
     };
 
-    const compaigns = donateCompaignsQuery.donateCompaigns || [];
-
     const updatedProps = {
       ...this.props,
       renderButton,
-      compaigns
     };
     return <Form {...updatedProps} />;
   }
@@ -88,11 +74,5 @@ const getRefetchQueries = () => {
 
 export default withProps<Props>(
   compose(
-    graphql<Props, DonateCompaignQueryResponse>(gql(compaignQueries.donateCompaigns), {
-      name: 'donateCompaignsQuery',
-      options: {
-        fetchPolicy: 'network-only'
-      },
-    })
   )(DonateFromContainer)
 );

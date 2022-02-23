@@ -1,4 +1,5 @@
 import React from 'react';
+import SelectCompaigns from '../../containers/SelectCompaigns';
 import {
   __,
   Button,
@@ -11,14 +12,13 @@ import {
   SelectCompanies,
   SelectCustomers,
   SelectTeamMembers
-} from 'erxes-ui';
+  } from 'erxes-ui';
 import { IButtonMutateProps, IFormProps } from 'erxes-ui/lib/types';
 import { IVoucher, IVoucherDoc } from '../types';
-import { IVoucherCompaign } from '../../../configs/voucherCompaign/types';
+import { queries as compaignQueries } from '../../../configs/voucherCompaign/graphql';
 
 type Props = {
   renderButton: (props: IButtonMutateProps) => JSX.Element;
-  compaigns: IVoucherCompaign[];
   voucher: IVoucher;
   closeModal: () => void;
   queryParams: any;
@@ -134,28 +134,23 @@ class VoucherForm extends React.Component<Props, State> {
 
   renderContent = (formProps: IFormProps) => {
     const { voucher } = this.state;
-    const { closeModal, renderButton, compaigns } = this.props;
+    const { closeModal, renderButton } = this.props;
     const { values, isSubmitted } = formProps;
 
     return (
       <>
         <ScrollWrapper>
           <FormGroup>
-            <ControlLabel>Ангилал</ControlLabel>
-            <FormControl
-              {...formProps}
-              name="compaignId"
-              componentClass="select"
-              defaultValue={voucher.compaignId}
-              required={true}
-              onChange={this.onChangeSelect}
-            >
-              {compaigns.map(c => (
-                <option key={c._id} value={c._id}>
-                  {c.title}
-                </option>
-              ))}
-            </FormControl>
+            <ControlLabel>Compaign</ControlLabel>
+            <SelectCompaigns
+              queryName='voucherCompaigns'
+              customQuery={compaignQueries.voucherCompaigns}
+              label='Choose voucher compaign'
+              name='compaignId'
+              onSelect={this.onChangeSelect}
+              initialValue={voucher.compaignId}
+              filterParams={voucher._id ? { equalTypeCompaignId: voucher.compaignId } : {}}
+            />
           </FormGroup>
 
           <FormGroup>
@@ -177,6 +172,21 @@ class VoucherForm extends React.Component<Props, State> {
           <FormGroup>
             <ControlLabel required={true}>Owner</ControlLabel>
             {this.renderOwner()}
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel required={true}>Status</ControlLabel>
+            <FormControl
+              {...formProps}
+              name="status"
+              componentClass="select"
+              defaultValue={voucher.status}
+              required={true}
+              onChange={this.onChangeSelect}
+            >
+              <option key={'new'} value={'new'}> {'new'} </option>
+              <option key={'used'} value={'used'}> {'used'} </option>
+            </FormControl>
           </FormGroup>
         </ScrollWrapper>
 

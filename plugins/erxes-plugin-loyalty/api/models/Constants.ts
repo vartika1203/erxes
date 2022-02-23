@@ -21,7 +21,8 @@ export const VOUCHER_STATUS = {
 export const LOTTERY_STATUS = {
   NEW: 'new',
   WON: 'won',
-  ALL: ['new', 'won']
+  LOSS: 'loss',
+  ALL: ['new', 'won', 'loss']
 }
 
 export const SPIN_STATUS = {

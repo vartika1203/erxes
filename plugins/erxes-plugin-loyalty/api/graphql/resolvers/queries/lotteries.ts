@@ -28,6 +28,10 @@ export default [
         filter.ownerId = params.ownerId
       }
 
+      if (params.voucherCompaignId) {
+        filter.voucherCompaignId = params.voucherCompaignId
+      }
+
       const list = paginate(models.Lotteries.find(filter), params);
 
       const totalCount = await models.Lotteries.find(filter).countDocuments();

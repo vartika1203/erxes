@@ -8,10 +8,12 @@ export const lotteryFields = `
 
 const listParamsDef = `
   ${commonParamsDef}
+  $voucherCompaignId: String
 `;
 
 const listParamsValue = `
   ${commonParamsValue}
+  voucherCompaignId: $voucherCompaignId
 `;
 
 export const lotteries = `

@@ -2,7 +2,6 @@ export default [
   {
     name: 'vouchersAdd',
     handler: async (_root, doc, { models, user }) => {
-      // return models.Vouchers.createVoucher(models, { ...doc, userId: user._id });
       return models.Vouchers.createVoucher(models, { ...doc, userId: user._id });
     }
   },
