@@ -225,7 +225,7 @@ class Properties extends React.Component<
       <Wrapper
         actionBar={
           <Wrapper.ActionBar
-            background="colorWhite"
+            background="bgActive"
             left={title}
             right={this.renderActionBar()}
           />

@@ -79,7 +79,7 @@ const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
   display: flex;
   flex-direction: column;
   min-width: 480px;
-  border-left: 1px solid ${colors.borderDarker};
+  padding: 0 5px 0 10px;
   height: ${props => props.center && '100%'};
   margin: ${props => !props.center && '10px 10px 10px 0'};
 `;
@@ -100,6 +100,7 @@ const ContentHeader = styledTS<{ background: string; zIndex?: number }>(
     props.background === 'transparent' ? 0 : `0 ${dimensions.coreSpacing}px`};
   border-bottom: 1px solid ${colors.borderPrimary};
   z-index: ${props => props.zIndex || 2};
+  border-radius: 10px;
 `;
 
 const HeaderContent = styled.div`
@@ -134,6 +135,7 @@ const SideContent = styledTS<{
   position: relative;
   flex-direction: column;
   flex-shrink: 0;
+  border-right: 1px solid ${colors.borderDarker};
   width: ${props => (props.wide ? '340px' : '290px')};
   flex: ${props => (props.half ? '1' : 'none')};
   background: ${props => (props.full ? colors.colorWhite : 'none')};
@@ -334,14 +336,12 @@ const SidebarList = styledTS<{ capitalize?: boolean }>(styled.ul)`
     &:hover,
     &.active {
       cursor: pointer;
-      background: ${colors.bgActive};
+      background: ${colors.bgUnread};
       text-decoration: none;
       outline: 0;
-      color: ${lighten(colors.textPrimary, 40)};
-    }
-
-    &.active {
-      border-left: 2px solid ${colors.colorSecondary};
+      color: ${colors.colorPrimaryDark};
+      font-weight: 800;
+      font-size: 15px;
     }
 
     &.multiple-choice {

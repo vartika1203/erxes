@@ -18,6 +18,7 @@ import {
   RowField,
   PropertyTableRow
 } from '@erxes/ui-settings/src/properties/styles';
+import { HeaderItems } from '@erxes/ui/src/layout/styles';
 import { IFieldGroup } from '@erxes/ui-settings/src/properties/types';
 import { IField } from '@erxes/ui/src/types';
 import SortableList from 'modules/common/components/SortableList';
@@ -254,8 +255,12 @@ class PropertyRow extends React.Component<Props, State> {
         <CollapseRow>
           <div style={{ flex: 1 }} onClick={this.handleCollapse}>
             <DropIcon isOpen={this.state.collapse} />
-            {group.name} <span>{group.description}</span>
+            {group.name}
           </div>
+          <HeaderItems rightAligned={true}>
+            <Button icon="pen-1">Edit</Button>
+            <Button icon="trash-alt">Delete</Button>
+          </HeaderItems>
           {this.renderActionButtons(
             group,
             removePropertyGroup,
