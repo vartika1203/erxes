@@ -25,7 +25,8 @@ import {
 import { IConfigsMap } from '@erxes/ui-settings/src/general/types';
 import ActivateInstallation from './ActivateInstallation';
 import Header from '@erxes/ui-settings/src/general/components/Header';
-import Sidebar from '@erxes/ui-settings/src/general/containers/Sidebar';
+// import Sidebar from '@erxes/ui-settings/src/general/containers/Sidebar';
+import BreadCrumb from '@erxes/ui/src/components/breadcrumb/BreadCrumb';
 
 type Props = {
   currentLanguage: string;
@@ -454,12 +455,10 @@ class GeneralSettings extends React.Component<Props, State> {
     return (
       <Wrapper
         header={
-          <Wrapper.Header
-            title={__('General system config')}
-            breadcrumb={breadcrumb}
-          />
-        }
-        mainHead={
+          // <Wrapper.Header
+          //   title={__('General system config')}
+          //   breadcrumb={breadcrumb}
+          // />
           <Header
             title="System config"
             description={
@@ -469,17 +468,28 @@ class GeneralSettings extends React.Component<Props, State> {
             }
           />
         }
-        actionBar={
-          <Wrapper.ActionBar
-            left={<Title>{__('General system config')}</Title>}
-            right={actionButtons}
-          />
-        }
-        leftSidebar={
-          <Sidebar
-            item={{ url: '/settings/general', text: 'General system config' }}
-          />
-        }
+        // mainHead={
+        //   <Header
+        //     title="System config"
+        //     description={
+        //       __(
+        //         'Set up your initial account settings so that things run smoothly in unison'
+        //       ) + '.'
+        //     }
+        //   />
+        // }
+        mainHead={<BreadCrumb breadcrumbs={breadcrumb}/>}
+        // actionBar={
+        //   <Wrapper.ActionBar
+        //     left={<Title>{__('General system config')}</Title>}
+        //     right={actionButtons}
+        //   />
+        // }
+        // leftSidebar={
+        //   <Sidebar
+        //     item={{ url: '/settings/general', text: 'General system config' }}
+        //   />
+        // }
         content={content}
       />
     );
