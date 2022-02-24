@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { TabContainer } from '@erxes/ui/src/components/tabs/styles';
 import { colors, dimensions, typography } from '../styles';
-import { lighten } from '../styles/ecolor';
 import { rgba } from '../styles/ecolor';
 import { twinkling } from '../utils/animations';
 
@@ -37,7 +36,6 @@ const PageHeader = styled.div`
 const Contents = styled.div`
   display: flex;
   flex: 1;
-  margin-left: ${dimensions.unitSpacing}px;
   max-height: 100%;
   position: absolute;
   left: 0;
@@ -79,7 +77,7 @@ const MainContent = styledTS<{ transparent?: boolean; center?: boolean }>(
   display: flex;
   flex-direction: column;
   min-width: 480px;
-  border-left: 1px solid ${colors.borderDarker};
+  padding: 0 5px 0 10px;
   height: ${props => props.center && '100%'};
   margin: ${props => !props.center && '10px 10px 10px 0'};
 `;
@@ -100,6 +98,7 @@ const ContentHeader = styledTS<{ background: string; zIndex?: number }>(
     props.background === 'transparent' ? 0 : `0 ${dimensions.coreSpacing}px`};
   border-bottom: 1px solid ${colors.borderPrimary};
   z-index: ${props => props.zIndex || 2};
+  border-radius: 10px;
 `;
 
 const HeaderContent = styled.div`
@@ -134,6 +133,7 @@ const SideContent = styledTS<{
   position: relative;
   flex-direction: column;
   flex-shrink: 0;
+  border-right: 1px solid ${colors.borderDarker};
   width: ${props => (props.wide ? '340px' : '290px')};
   flex: ${props => (props.half ? '1' : 'none')};
   background: ${props => (props.full ? colors.colorWhite : 'none')};
@@ -150,19 +150,19 @@ const SideContent = styledTS<{
 
 const SidebarHeader = styledTS<{
   spaceBottom?: boolean;
-  uppercase?: boolean;
+  uppercase?: string;
   bold?: boolean;
 }>(styled.div)`
   background-color: ${colors.bgLight};
   height: ${dimensions.headerSpacing}px;
   margin-bottom: ${props => props.spaceBottom && '10px'};
   align-items: center;
-  padding: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
+  margin: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
   border-bottom: 1px solid ${colors.borderPrimary};
-  text-transform: ${props => props.uppercase && 'uppercase'};
+  text-transform: ${props => props.uppercase && props.uppercase};
   font-weight: ${props => (props.bold ? 'bold' : '500')};
   display: flex;
-  font-size: ${typography.fontSizeHeading8}px;
+  font-size: 15px;
   flex-direction: row;
   justify-content: space-between;
 `;
@@ -334,14 +334,12 @@ const SidebarList = styledTS<{ capitalize?: boolean }>(styled.ul)`
     &:hover,
     &.active {
       cursor: pointer;
-      background: ${colors.bgActive};
+      background: ${colors.bgUnread};
       text-decoration: none;
       outline: 0;
-      color: ${lighten(colors.textPrimary, 40)};
-    }
-
-    &.active {
-      border-left: 2px solid ${colors.colorSecondary};
+      color: ${colors.colorPrimaryDark};
+      font-weight: 500;
+      font-size: 14px;
     }
 
     &.multiple-choice {
@@ -387,7 +385,6 @@ const CenterContent = styled.div`
 
 const SectionContainer = styled.div`
   position: relative;
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.08);
   margin-bottom: 10px;
 
   > div {

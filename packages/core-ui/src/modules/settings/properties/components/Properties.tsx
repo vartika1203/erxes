@@ -171,7 +171,7 @@ class Properties extends React.Component<
     return (
       <Dropdown alignRight={true}>
         <Dropdown.Toggle as={DropdownToggle} id="dropdown-properties">
-          <Button btnStyle="success" icon="plus-circle">
+          <Button size="large" btnStyle="success" icon="plus">
             {__('Add Group & Field ')}
             <Icon icon="angle-down" />
           </Button>
@@ -225,7 +225,7 @@ class Properties extends React.Component<
       <Wrapper
         actionBar={
           <Wrapper.ActionBar
-            background="colorWhite"
+            background="bgActive"
             left={title}
             right={this.renderActionBar()}
           />

@@ -5,6 +5,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getPropertiesGroups } from '../constants';
 import { SidebarList } from '@erxes/ui-settings/src/styles';
+import Box from '@erxes/ui/src/components/Box';
+import Icon from '@erxes/ui/src/components/Icon';
+import { HeaderItems } from '@erxes/ui/src/layout/styles';
 
 type Props = {
   currentType: string;
@@ -18,6 +21,7 @@ class Sidebar extends React.Component<Props> {
       <li key={`${group}_${type}`}>
         <Link to={`?type=${type}`} className={className}>
           {__(text)}
+          <HeaderItems rightAligned={true}>{this.props.currentType === type ? <Icon icon="angle-right"/> : null}</HeaderItems>
         </Link>
       </li>
     );
@@ -26,12 +30,18 @@ class Sidebar extends React.Component<Props> {
   renderSideBar() {
     return getPropertiesGroups().map(group => (
       <SidebarList key={group.value}>
-        <LeftSidebar.Header uppercase={true}>{group.value}</LeftSidebar.Header>
+        <Box
+          title={group.value}
+          name="properties collapsible"
+          isOpen={true}
+          boldText={true}
+        >
         <List key={`list_${group.value}`}>
           {group.types.map(type => {
             return this.renderListItem(group.value, type.value, type.label);
           })}
         </List>
+        </Box>
       </SidebarList>
     ));
   }

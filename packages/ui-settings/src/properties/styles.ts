@@ -57,9 +57,15 @@ const CollapseRow = styled.div`
   }
 `;
 
-const DropIcon = styledTS<{ isOpen: boolean }>(styled.i)`
+const DropIcon = styledTS<{ isOpen: boolean }>(styled.div)`
   font-style: normal;
   line-height: 1;
+  border: 1px solid ${colors.darkShadow};
+  padding: 7px 5px 5px 10px;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
 
   &:after {
     content: '\\e9a6';
@@ -113,10 +119,16 @@ const PropertyTableHeader = styled.div`
     position: sticky;
     z-index: 1;
     top: 0;
-    width: 33%;
+    width: 25%;
+
+    &:first-child {
+      width: 45%;
+      padding: 8px 0px 8px 20px;
+      text-align: left;
+    }
 
     &:last-child {
-      width: 10%;
+      width: 5%;
       padding: 8px 20px 8px 0;
       text-align: right;
     }
@@ -124,15 +136,21 @@ const PropertyTableHeader = styled.div`
 `;
 
 const RowField = styled.div`
-  width: 33%;
+  width: 25%;
   border-top: 1px solid ${colors.borderPrimary};
   padding: 8px ${dimensions.coreSpacing}px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
+  &:first-child {
+    width: 45%;
+    padding: 8px 0px 8px 20px;
+    text-align: left;
+  }
+
   &:last-child {
-    width: 10%;
+    width: 5%;
     padding: 8px 20px 8px 0;
     text-align: right;
   }
