@@ -1,7 +1,6 @@
 import Icon from '@erxes/ui/src/components/Icon';
 import React from 'react';
 import {
-  BoxContent,
   HelperButtons,
   SidebarBox,
   SidebarFooter,
@@ -11,6 +10,7 @@ import {
   SidebarToggle,
   SideContent
 } from '../styles';
+import { Column } from '@erxes/ui/src/styles/main';
 
 function Title({
   children,
@@ -102,7 +102,7 @@ class Section extends React.Component<Props, State> {
         noBackground={noBackground}
         full={full}
       >
-        <BoxContent>{children}</BoxContent>
+        <Column>{children}</Column>
         {collapsible ? this.renderCollapseButton() : null}
       </SidebarBox>
     );

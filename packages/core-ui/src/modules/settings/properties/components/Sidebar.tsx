@@ -27,15 +27,15 @@ class Sidebar extends React.Component<Props> {
     );
   }
 
-  renderSideBar() {
+  renderSideBar(groop) {
     return getPropertiesGroups().map(group => (
       <SidebarList key={group.value}>
         <Box
           title={group.value}
           name="properties collapsible"
           isOpen={true}
-          boldText={true}
-        >
+          boldText={group.value === groop}
+          >
         <List key={`list_${group.value}`}>
           {group.types.map(type => {
             return this.renderListItem(group.value, type.value, type.label);
@@ -45,11 +45,32 @@ class Sidebar extends React.Component<Props> {
       </SidebarList>
     ));
   }
-
+  
   render() {
+    let groop;
+    console.log(this.props.currentType, "current")
+    if(this.props.currentType === "customer" || "company" || "conversation" || "device"){
+      groop="contact";
+    };
+    if(this.props.currentType === "deal"){
+      groop="deal";
+    };
+    if(this.props.currentType === "product"){
+      groop="deal";
+    };
+    if(this.props.currentType === "ticket"){
+      groop="ticket";
+    };
+    if(this.props.currentType === "task"){
+      groop="task";
+    };
+    if(this.props.currentType === "user"){
+      groop="user";
+    };
+    console.log("groop,", groop)
     return (
       <LeftSidebar full={true}>
-        {this.renderSideBar()}
+        {this.renderSideBar(groop)}
       </LeftSidebar>
     );
   }

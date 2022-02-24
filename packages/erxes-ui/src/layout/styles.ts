@@ -95,7 +95,7 @@ const ContentHeader = styledTS<{ background: string; zIndex?: number }>(
   background: ${props =>
     props.background === 'transparent' ? 'none' : colors[props.background]};
   padding: ${props =>
-    props.background === 'transparent' ? 0 : `0 ${dimensions.coreSpacing}px`};
+    props.background === 'transparent' ? 0 : `10px ${dimensions.coreSpacing}px`};
   border-bottom: 1px solid ${colors.borderPrimary};
   z-index: ${props => props.zIndex || 2};
   border-radius: 10px;
@@ -160,7 +160,7 @@ const SidebarHeader = styledTS<{
   margin: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
   border-bottom: 1px solid ${colors.borderPrimary};
   text-transform: ${props => props.uppercase && props.uppercase};
-  font-weight: ${props => (props.bold ? 'bold' : '500')};
+  font-weight: ${props => (props.bold ? 'bold' : 'none')};
   display: flex;
   font-size: 15px;
   flex-direction: row;
@@ -208,14 +208,6 @@ const SidebarBox = styledTS<{
 
   &:last-child {
     margin-bottom: 0;
-  }
-`;
-
-const BoxContent = styled.div`
-  flex: 1;
-
-  ul:first-child {
-    padding: 10px 0;
   }
 `;
 
@@ -607,7 +599,6 @@ export {
   SidebarMainContent,
   SidebarFooter,
   SidebarBox,
-  BoxContent,
   SidebarToggle,
   SidebarCounter,
   HelperButtons,

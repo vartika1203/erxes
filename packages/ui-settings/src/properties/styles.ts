@@ -2,6 +2,7 @@ import { colors, dimensions } from '@erxes/ui/src/styles';
 import styled from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { SortItem } from '@erxes/ui/src/styles/sort';
+import { lighten } from '@erxes/ui/src/styles/ecolor';
 
 const coreSpace = `${dimensions.coreSpacing}px`;
 
@@ -49,6 +50,7 @@ const CollapseRow = styled.div`
   background: ${colors.bgLight};
   border-bottom: 1px solid ${colors.borderPrimary};
   border-top: 1px solid ${colors.borderPrimary};
+  align-items: center;
 
   span {
     font-size: 12px;
@@ -65,13 +67,14 @@ const DropIcon = styledTS<{ isOpen: boolean }>(styled.div)`
   border-radius: 8px;
   width: 40px;
   height: 40px;
+  background: ${lighten(colors.colorPrimary, 40)};  
   margin-right: 10px;
 
   &:after {
     content: '\\e9a6';
     font-family: 'erxes';
     display: inline-block;
-    color: ${colors.colorPrimaryDark};
+    color: ${colors.colorWhite};
     font-size: 18px;
     margin-right: ${coreSpace};
     transition: all ease 0.3s;
@@ -115,7 +118,7 @@ const PropertyTableHeader = styled.div`
   background: ${colors.bgLight};
 
   > label {
-    padding: 8px ${dimensions.coreSpacing}px;
+    padding: 15px ${dimensions.coreSpacing}px;
     position: sticky;
     z-index: 1;
     top: 0;
@@ -123,7 +126,7 @@ const PropertyTableHeader = styled.div`
 
     &:first-child {
       width: 45%;
-      padding: 8px 0px 8px 20px;
+      padding: 15px 0px 8px 20px;
       text-align: left;
     }
 

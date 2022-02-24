@@ -225,15 +225,15 @@ class PropertyRow extends React.Component<Props, State> {
     return (
       <PropertyListTable>
         <PropertyTableHeader>
-          <ControlLabel>{__('Name')}</ControlLabel>
-          <ControlLabel>{__('Last Updated By')}</ControlLabel>
+          <ControlLabel bold={true} uppercase={false}>{__('Name')}</ControlLabel>
+          <ControlLabel bold={true} uppercase={false}>{__('Last Update')}</ControlLabel>
           {showVisibleDetail ? (
-            <ControlLabel>{__('Visible in Team Inbox')}</ControlLabel>
+            <ControlLabel bold={true} uppercase={false}>{__('Visible in Team Inbox')}</ControlLabel>
           ) : (
-            <ControlLabel>{__('Visible')}</ControlLabel>
+            <ControlLabel bold={true} uppercase={false}>{__('Visible')}</ControlLabel>
           )}
           {showVisibleDetail && (
-            <ControlLabel>{__('Visible in detail')}</ControlLabel>
+            <ControlLabel bold={true} uppercase={false}>{__('Visible in detail')}</ControlLabel>
           )}
           <label />
         </PropertyTableHeader>
