@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import styledTS from 'styled-components-ts';
 import { TabContainer } from '@erxes/ui/src/components/tabs/styles';
 import { colors, dimensions, typography } from '../styles';
-import { lighten } from '../styles/ecolor';
 import { rgba } from '../styles/ecolor';
 import { twinkling } from '../utils/animations';
 
@@ -37,7 +36,6 @@ const PageHeader = styled.div`
 const Contents = styled.div`
   display: flex;
   flex: 1;
-  margin-left: ${dimensions.unitSpacing}px;
   max-height: 100%;
   position: absolute;
   left: 0;
@@ -152,19 +150,19 @@ const SideContent = styledTS<{
 
 const SidebarHeader = styledTS<{
   spaceBottom?: boolean;
-  uppercase?: boolean;
+  uppercase?: string;
   bold?: boolean;
 }>(styled.div)`
   background-color: ${colors.bgLight};
   height: ${dimensions.headerSpacing}px;
   margin-bottom: ${props => props.spaceBottom && '10px'};
   align-items: center;
-  padding: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
+  margin: 0 ${dimensions.coreSpacing}px 0 ${dimensions.coreSpacing}px;
   border-bottom: 1px solid ${colors.borderPrimary};
-  text-transform: ${props => props.uppercase && 'uppercase'};
+  text-transform: ${props => props.uppercase && props.uppercase};
   font-weight: ${props => (props.bold ? 'bold' : '500')};
   display: flex;
-  font-size: ${typography.fontSizeHeading8}px;
+  font-size: 15px;
   flex-direction: row;
   justify-content: space-between;
 `;
@@ -340,8 +338,8 @@ const SidebarList = styledTS<{ capitalize?: boolean }>(styled.ul)`
       text-decoration: none;
       outline: 0;
       color: ${colors.colorPrimaryDark};
-      font-weight: 800;
-      font-size: 15px;
+      font-weight: 500;
+      font-size: 14px;
     }
 
     &.multiple-choice {
@@ -387,7 +385,6 @@ const CenterContent = styled.div`
 
 const SectionContainer = styled.div`
   position: relative;
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.08);
   margin-bottom: 10px;
 
   > div {

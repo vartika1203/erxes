@@ -84,7 +84,7 @@ class HeaderDescription extends React.PureComponent<Props, State> {
         </Description>
         <Button btnStyle='link' onClick={this.onClick}>
           <Tip text={__(this.state.expand ? 'Shrink' : 'Expand')} placement="top">
-            <Icon icon={this.state.expand ? 'uparrow' : 'downarrow-2'}/>
+            <Icon icon={this.state.expand ? 'cancel' : 'downarrow-2'} bordered={true} size={8}/>
           </Tip>  
         </Button>
       </MainDescription>

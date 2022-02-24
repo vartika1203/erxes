@@ -253,13 +253,13 @@ class PropertyRow extends React.Component<Props, State> {
     return (
       <li key={group._id}>
         <CollapseRow>
-          <div style={{ flex: 1 }} onClick={this.handleCollapse}>
+          <div onClick={this.handleCollapse}>
             <DropIcon isOpen={this.state.collapse} />
-            {group.name}
           </div>
+            {group.name}
           <HeaderItems rightAligned={true}>
-            <Button icon="pen-1">Edit</Button>
-            <Button icon="trash-alt">Delete</Button>
+            <Button btnStyle="simple" icon="pen-1">Edit</Button>
+            <Button btnStyle="simple" icon="trash-alt">Delete</Button>
           </HeaderItems>
           {this.renderActionButtons(
             group,

@@ -111,14 +111,15 @@ class Section extends React.Component<Props, State> {
 
 type HeaderProps = {
   children: React.ReactNode;
-  uppercase?: boolean;
+  uppercase?: string;
   bold?: boolean;
   spaceBottom?: boolean;
+  onClick?: () => void;
 };
 
-function Header({ children, spaceBottom, uppercase, bold }: HeaderProps) {
+function Header({ children, spaceBottom, uppercase, bold, onClick }: HeaderProps) {
   return (
-    <SidebarHeader spaceBottom={spaceBottom} uppercase={uppercase} bold={bold}>
+    <SidebarHeader onClick={onClick} spaceBottom={spaceBottom} uppercase={uppercase} bold={bold}>
       {children}
     </SidebarHeader>
   );
