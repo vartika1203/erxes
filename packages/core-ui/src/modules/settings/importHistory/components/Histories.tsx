@@ -19,6 +19,7 @@ import HistoryRow from './Row';
 import Sidebar from './Sidebar';
 import { Title } from 'modules/common/styles/main';
 import { Link } from 'react-router-dom';
+import BreadCrumb from '@erxes/ui/src/components/breadcrumb/NewBreadCrumb';
 
 type Props = {
   queryParams: any;
@@ -136,7 +137,7 @@ class Histories extends React.Component<Props & IRouterProps> {
     };
 
     const editColumns = (
-      <Button btnStyle={btnStyle} size="small" icon={icon}>
+      <Button btnStyle={btnStyle} size="medium" icon={icon}>
         {__(`${text}`)}
       </Button>
     );
@@ -181,7 +182,7 @@ class Histories extends React.Component<Props & IRouterProps> {
     return (
       <Button
         btnStyle="simple"
-        size="small"
+        size="medium"
         icon="folder-download"
         href={`${REACT_APP_API_URL}/download-template/?name=${name}`}
       >
@@ -223,7 +224,7 @@ class Histories extends React.Component<Props & IRouterProps> {
     if (DYNAMICLY_TEMPLATE_TYPES.includes(currentType)) {
       return (
         <Link to={`/settings/export?type=${currentType}`}>
-          <Button icon="export" btnStyle="primary" size="small">
+          <Button icon="export" btnStyle="primary" size="medium">
             {__(`Export ${this.getButtonText()}`)}
           </Button>
         </Link>
@@ -234,7 +235,7 @@ class Histories extends React.Component<Props & IRouterProps> {
       <Button
         icon="export"
         btnStyle="primary"
-        size="small"
+        size="medium"
         onClick={exportData}
       >
         {__(`Export ${this.getButtonText()}`)}
@@ -279,28 +280,25 @@ class Histories extends React.Component<Props & IRouterProps> {
     const headerDescription = (
       <HeaderDescription
         icon="/images/actions/27.svg"
-        title={__('Import & export')}
-        description={`${__(
-          'Here you can find data of all your previous imports of companies and customers'
-        )}.${__('Find out when they joined and their current status')}.${__(
-          'Nothing goes missing around here'
-        )}`}
+        title={EMPTY_IMPORT_CONTENT.title}
+        description={EMPTY_IMPORT_CONTENT.description}
+        url={EMPTY_IMPORT_CONTENT.url}
+        urlText={EMPTY_IMPORT_CONTENT.urlText}
       />
     );
 
     return (
       <Wrapper
-        header={
-          <Wrapper.Header title={__(currentType)} breadcrumb={breadcrumb} />
-        }
+        header={headerDescription}
         actionBar={
           <Wrapper.ActionBar
+            background="bgActive"
             left={<Title capitalize={true}>{__(currentType)}</Title>}
             right={this.renderImportButton()}
           />
         }
-        leftSidebar={<Sidebar title={__('Types')} currentType={currentType} />}
-        mainHead={headerDescription}
+        leftSidebar={<Sidebar title={__('Filter by content type')} currentType={currentType} />}
+        mainHead={<BreadCrumb breadcrumbs={breadcrumb}/>}
         footer={<Pagination count={totalCount} />}
         content={
           <DataWithLoader

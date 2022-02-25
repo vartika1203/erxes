@@ -3,7 +3,9 @@ import LeftSidebar from 'modules/layout/components/Sidebar';
 import { SidebarList as List } from 'modules/layout/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SidebarHeader from '@erxes/ui-settings/src/common/components/SidebarHeader';
+import Box from '@erxes/ui/src/components/Box';
+import { HeaderItems } from '@erxes/ui/src/layout/styles';
+import Icon from '@erxes/ui/src/components/Icon';
 
 const ITEM_TYPES = {
   CUSTOMER: 'customer',
@@ -25,17 +27,6 @@ type Props = {
 };
 
 class Sidebar extends React.Component<Props> {
-  renderSidebarHeader = () => {
-    const { title } = this.props;
-    const { Header } = LeftSidebar;
-
-    return (
-      <div>
-        <SidebarHeader />
-        <Header uppercase={true}>{__(title)}</Header>
-      </div>
-    );
-  };
 
   renderListItem(type: string, text: string) {
     const className = this.props.currentType === type ? 'active' : '';
@@ -44,14 +35,17 @@ class Sidebar extends React.Component<Props> {
       <li>
         <Link to={`?type=${type}`} className={className}>
           {__(text)}
+          <HeaderItems rightAligned={true}>{this.props.currentType === type ? <Icon icon="angle-right"/> : null}</HeaderItems>
         </Link>
       </li>
     );
   }
 
   render() {
+    const { title } = this.props;
     return (
-      <LeftSidebar header={this.renderSidebarHeader()} full={true}>
+      <LeftSidebar full={true}>
+        <Box title={__(title)} isOpen={true} boldText={true} name="import collapsible">
         <LeftSidebar.Section>
           <List id={'ImportExportSidebar'}>
             {this.renderListItem(ITEM_TYPES.BRAND, 'Brands')}
@@ -67,6 +61,7 @@ class Sidebar extends React.Component<Props> {
             {this.renderListItem(ITEM_TYPES.TEAM_MEMBER, 'Team members')}
           </List>
         </LeftSidebar.Section>
+        </Box>
       </LeftSidebar>
     );
   }

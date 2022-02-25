@@ -1,18 +1,19 @@
 import Icon from 'modules/common/components/Icon';
 import { colors } from 'modules/common/styles';
-import { lighten } from 'modules/common/styles/color';
+import { darken } from 'modules/common/styles/color';
 import { rotate } from 'modules/common/utils/animations';
 import React from 'react';
 import styled from 'styled-components';
 
 const ImportButton = styled.label`
-  border-radius: 30px;
+  border-radius: 7px;
   transition: all 0.3s ease;
   padding: 6px 15px 6px 32px;
   background: ${colors.colorCoreGreen};
-  font-size: calc(10px + 1px);
+  font-size: 12px;
   color: ${colors.colorWhite};
   position: relative;
+  font-weight: 500;
 
   i {
     top: 5px;
@@ -27,7 +28,7 @@ const ImportButton = styled.label`
   &:hover {
     cursor: pointer;
     text-decoration: none;
-    box-shadow: 0 2px 22px 0 ${lighten(colors.colorCoreGreen, 25)};
+    background: ${darken(colors.colorCoreGreen, 20)};
   }
 `;
 
