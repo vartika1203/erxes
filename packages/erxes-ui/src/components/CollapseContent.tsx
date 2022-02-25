@@ -6,7 +6,7 @@ import { rgba } from '../styles/ecolor';
 import colors from '../styles/colors';
 import Icon from './Icon';
 
-const Title = styledTS<{
+export const Title = styledTS<{
   compact?: boolean;
   hasImage?: boolean;
   background?: string;
@@ -62,7 +62,7 @@ const Left = styled.div`
   align-items: center;
 `;
 
-const Container = styledTS<{ open: boolean }>(styled.div)`
+export const Container = styledTS<{ open: boolean }>(styled.div)`
   margin-bottom: 10px;
   box-shadow: 0 0 6px 1px rgba(0,0,0,0.08);
   border-radius: 4px;
@@ -79,7 +79,7 @@ const Container = styledTS<{ open: boolean }>(styled.div)`
   }
 `;
 
-const Content = styledTS<{ full: boolean }>(styled.div)`
+export const Content = styledTS<{ full: boolean }>(styled.div)`
   padding: ${props => (props.full ? '0' : '20px')};
   border-top: 1px solid ${colors.borderPrimary};
   background: ${colors.colorWhite};
