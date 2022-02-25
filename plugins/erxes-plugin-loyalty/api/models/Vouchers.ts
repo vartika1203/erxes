@@ -5,6 +5,7 @@ export const voucherSchema = {
   ...commonSchema,
 
   status: { type: String, enum: VOUCHER_STATUS.ALL, default: 'new', label: 'Status' },
+  bonusInfo: {type: Object, optional: true, label: 'Bonus log'}
 };
 
 export const voucherCompoundIndexes = {
