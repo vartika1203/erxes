@@ -60,9 +60,9 @@ class Settings extends React.PureComponent {
   }
 
   renderSettingsofPlugins(menu) {
-    const { url, type, text, image } = menu.props;
+    const { to, type, text, image } = menu.props;
 
-    return this.renderBox(text, image, url, "", [], type);
+    return this.renderBox(text, image, to, "", [], type);
   }
 
   render() {
@@ -93,12 +93,6 @@ class Settings extends React.PureComponent {
               "/images/icons/erxes-06.svg",
               "/settings/status",
               ""
-            )}
-            {this.renderBox(
-              "Logs",
-              "/images/icons/erxes-33.png",
-              "/settings/logs",
-              "viewLogs"
             )}
             {this.renderBox(
               "Team Members",
