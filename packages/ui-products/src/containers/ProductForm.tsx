@@ -9,7 +9,7 @@ import { withProps } from '@erxes/ui/src/utils';
 import From from '../components/ProductForm';
 import { mutations, queries } from '../graphql';
 import { IProduct } from '../types';
-import { ProductCategoriesQueryResponse } from '@erxes/ui-settings/src/productService/types';
+import { ProductCategoriesQueryResponse } from '@erxes/ui-products/src/types';
 
 type Props = {
   product?: IProduct;

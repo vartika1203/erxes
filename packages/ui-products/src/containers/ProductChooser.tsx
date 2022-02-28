@@ -18,7 +18,7 @@ import {
   ProductsQueryResponse
 } from '../types';
 import ProductForm from './ProductForm';
-import { ProductCategoriesQueryResponse } from '@erxes/ui-settings/src/productService/types';
+import { ProductCategoriesQueryResponse } from '@erxes/ui-products/src/types';
 
 type Props = {
   data: { name: string; products: IProduct[] };

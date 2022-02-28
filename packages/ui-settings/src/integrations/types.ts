@@ -7,7 +7,7 @@ import {
 import { IBrand } from '@erxes/ui/src/brands/types';
 import { IForm } from '@erxes/ui-forms/src/forms/types';
 import { IChannel } from '../channels/types';
-import { IProductCategory } from '../productService/types';
+import { IProductCategory } from '@erxes/ui-products/src/types';
 
 export interface IMessengerApp {
   _id: string;
