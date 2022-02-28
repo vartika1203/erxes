@@ -92,7 +92,7 @@ const StyledTable = styledTS<{
     @media (min-width: 1170px) {
       th,
       td {
-        padding: ${dimensions.unitSpacing - 2}px ${dimensions.coreSpacing -
+        padding: ${dimensions.unitSpacing + 2}px ${dimensions.coreSpacing -
     2}px;
 
         &:first-child {

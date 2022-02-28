@@ -17,7 +17,7 @@ import { IField } from '@erxes/ui/src/types';
 import PropertyRow from './PropertyRow';
 import Sidebar from './Sidebar';
 import SortableList from 'modules/common/components/SortableList';
-import BreadCrumb from '@erxes/ui/src/components/breadcrumb/BreadCrumb';
+import BreadCrumb from '@erxes/ui/src/components/breadcrumb/NewBreadCrumb';
 
 type Props = {
   queryParams: any;

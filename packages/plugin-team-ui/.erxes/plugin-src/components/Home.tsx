@@ -16,6 +16,9 @@ import Button from '@erxes/ui/src/components/Button';
 import { IButtonMutateProps } from '@erxes/ui/src/types';
 import { IUserGroup } from '@erxes/ui-settings/src/permissions/types';
 import { dimensions } from '@erxes/ui/src/styles';
+import BreadCrumb from '@erxes/ui/src/components/breadcrumb/NewBreadCrumb';
+import HeaderDescription from '@erxes/ui/src/components/HeaderDescription';
+import Icon from '@erxes/ui/src/components/Icon';
 
 type Props = {
   queryParams: any;
@@ -83,6 +86,7 @@ export default function Home(props: Props) {
     <FilterContainer style={{ paddingTop: dimensions.coreSpacing - 10 }}>
       <FlexRow>
         {renderBrandChooser()}
+          <Icon icon="info-circle" />
         <FlexItem>
           <FormControl
             placeholder={__('Search')}
@@ -94,7 +98,7 @@ export default function Home(props: Props) {
           />
         </FlexItem>
 
-        <FlexItem>
+        <FlexItem style={{maxWidth: "112px"}}>
           <Select
             placeholder={__('Choose status')}
             value={queryParams.isActive || true}
@@ -128,7 +132,7 @@ export default function Home(props: Props) {
     );
   };
 
-  const trigger = <Button btnStyle="success">Invite team members</Button>;
+  const trigger = <Button btnStyle="success" icon='plus'>Invite team members</Button>;
 
   const righActionBar = (
     <ModalTrigger
@@ -143,15 +147,25 @@ export default function Home(props: Props) {
     <Wrapper.ActionBar right={righActionBar} left={renderFilter} />
   );
 
+  const breadcrumb = [
+    { title: __('Settings'), link: '/settings' },
+    { title: __('Team member') }
+  ];
+
+  const headerDescription = (
+    <HeaderDescription
+      icon="/images/icons/erxes-23.svg"
+      title={__('Team member')}
+      description={`${__(
+        'Set up your initial account settings so that things run smoothly in unison'
+      )}.`}
+    />
+  );
+
   return (
     <Wrapper
-      header={
-        <Wrapper.Header
-          queryParams={queryParams}
-          title={'Team members'}
-          submenu={menuContacts}
-        />
-      }
+      mainHead={<BreadCrumb breadcrumbs={breadcrumb}/>}
+      header={headerDescription}
       leftSidebar={<Sidebar loadingMainQuery={loading} />}
       actionBar={actionBar}
       content={<UserList history={history} queryParams={queryParams} />}
