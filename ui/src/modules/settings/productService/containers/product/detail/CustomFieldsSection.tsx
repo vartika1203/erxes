@@ -2,7 +2,6 @@ import gql from 'graphql-tag';
 import * as compose from 'lodash.flowright';
 import Spinner from 'modules/common/components/Spinner';
 import Sidebar from 'modules/layout/components/Sidebar';
-import { ConfigsQueryResponse } from 'modules/settings/general/types';
 import {
   EditMutationResponse,
   IProduct
@@ -10,7 +9,6 @@ import {
 import GenerateCustomFields from 'modules/settings/properties/components/GenerateCustomFields';
 import { FIELDS_GROUPS_CONTENT_TYPES } from 'modules/settings/properties/constants';
 import { queries as fieldQueries } from 'modules/settings/properties/graphql';
-import { queries as settingsQueries } from 'modules/settings/general/graphql';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withProps } from '../../../../../common/utils';
@@ -19,12 +17,12 @@ import { mutations } from '../../../graphql';
 
 type Props = {
   product: IProduct;
+  refetchQueries: any[];
   loading?: boolean;
 };
 
 type FinalProps = {
   fieldsGroupsQuery: FieldsGroupsQueryResponse;
-  configsQuery: ConfigsQueryResponse;
 } & Props &
   EditMutationResponse;
 
@@ -34,7 +32,7 @@ const CustomFieldsSection = (props: FinalProps) => {
     product,
     editMutation,
     fieldsGroupsQuery,
-    configsQuery
+    refetchQueries
   } = props;
 
   if (fieldsGroupsQuery.loading) {
@@ -49,7 +47,8 @@ const CustomFieldsSection = (props: FinalProps) => {
 
   const save = (data, callback) => {
     editMutation({
-      variables: { _id, ...data }
+      variables: { _id, ...data },
+      refetchQueries
     })
       .then(() => {
         callback();
@@ -64,8 +63,7 @@ const CustomFieldsSection = (props: FinalProps) => {
     loading,
     customFieldsData: product.customFieldsData,
     fieldsGroups: fieldsGroupsQuery.fieldsGroups || [],
-    isDetail: true,
-    configs: configsQuery.configs || []
+    isDetail: true
   };
 
   return <GenerateCustomFields {...updatedProps} />;
@@ -89,9 +87,7 @@ export default withProps<Props>(
         })
       }
     ),
-    graphql<{}, ConfigsQueryResponse>(gql(settingsQueries.configs), {
-      name: 'configsQuery'
-    }),
+
     graphql<Props, EditMutationResponse, IProduct>(gql(mutations.productEdit), {
       name: 'editMutation',
       options
