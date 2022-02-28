@@ -263,9 +263,3 @@ export type EngageConfigQueryResponse = {
   engagesConfigDetail: Array<{ code: string; value: string }>;
 } & QueryResponse;
 
-export interface IIntegrationWithPhone {
-  _id: string;
-  name: string;
-  phoneNumber: string;
-  isActive: boolean;
-}

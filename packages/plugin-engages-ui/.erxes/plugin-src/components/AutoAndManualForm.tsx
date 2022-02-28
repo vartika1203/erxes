@@ -24,9 +24,9 @@ import {
   IEngageMessageDoc,
   IEngageMessenger,
   IEngageScheduleDate,
-  IEngageSms,
-  IIntegrationWithPhone
+  IEngageSms
 } from '../types';
+import { IIntegrationWithPhone } from '@erxes/ui-engage/src/types';
 import SmsForm from './SmsForm';
 import ChannelStep from './step/ChannelStep';
 import FullPreviewStep from './step/FullPreviewStep';
