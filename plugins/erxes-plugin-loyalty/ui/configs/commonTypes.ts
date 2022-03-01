@@ -5,6 +5,7 @@ export const commonParamDefs = `
   $description: String,
   $startDate: Date,
   $endDate: Date,
+  $finishDateOfUse: Date,
   $attachment: AttachmentInput,
   $status: String,
 `;
@@ -14,6 +15,7 @@ export const commonParams = `
   description: $description
   startDate: $startDate
   endDate: $endDate
+  finishDateOfUse: $finishDateOfUse
   attachment: $attachment
   status: $status
 `;
@@ -27,6 +29,7 @@ export const commonFields = `
   description
   startDate
   endDate
+  finishDateOfUse
   attachment {
     url
     name
@@ -73,6 +76,7 @@ export type ICommonTypes = {
   description?: string,
   startDate?: Date,
   endDate?: Date,
+  finishDateOfUse?: Date,
   attachment?: IAttachment,
 
   status?: string

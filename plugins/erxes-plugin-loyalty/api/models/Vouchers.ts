@@ -1,3 +1,4 @@
+import { checkVouchersSale, confirmVoucherSale } from '../utils';
 import { changeScoreOwner, commonSchema } from './CompaignUtils';
 import { VOUCHER_STATUS } from './Constants';
 
@@ -5,7 +6,7 @@ export const voucherSchema = {
   ...commonSchema,
 
   status: { type: String, enum: VOUCHER_STATUS.ALL, default: 'new', label: 'Status' },
-  bonusInfo: {type: Object, optional: true, label: 'Bonus log'}
+  bonusInfo: { type: Object, optional: true, label: 'Bonus log' }
 };
 
 export const voucherCompoundIndexes = {
@@ -90,5 +91,13 @@ export class Voucher {
 
   public static async removeVouchers(models, _ids: string[]) {
     return models.Vouchers.deleteMany({ _id: { $in: _ids } })
+  }
+
+  public static async checkVouchersSale(models, { ownerType, ownerId, products }) {
+    return checkVouchersSale(models, ownerType, ownerId, products);
+  }
+
+  public static async confirmVoucherSale(models, { checkInfo }) {
+    return confirmVoucherSale(models, checkInfo);
   }
 }

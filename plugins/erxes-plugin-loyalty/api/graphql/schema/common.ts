@@ -8,6 +8,7 @@ export const commonCompaignTypes = `
   description: String,
   startDate: Date,
   endDate: Date,
+  finishDateOfUse: Date,
   attachment: Attachment,
 
   status: String,
@@ -18,6 +19,7 @@ export const commonCompaignInputs = `
   description: String,
   startDate: Date,
   endDate: Date,
+  finishDateOfUse: Date,
   attachment: AttachmentInput,
   status: String,
 `;

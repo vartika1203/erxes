@@ -1,7 +1,3 @@
-export const checkVouchers = async (models, ownerType: string, ownerId: string) => {
-  const activeVouchers = await models.Vouchers.getVouchers(models, { ownerType, ownerId, statuses: ['new'] });
-}
-
 export const checkVouchersSale = async (models, ownerType: string, ownerId: string, products: { productId: string, quantity: number }[]) => {
   const result = {};
 
@@ -46,7 +42,7 @@ export const checkVouchersSale = async (models, ownerType: string, ownerId: stri
 
   const compaignFilter = {
     _id: { $in: activeCompaignIds },
-    useFinishDate: { $gte: now }
+    finishDateOfUse: { $gte: now }
   }
 
   // bonus

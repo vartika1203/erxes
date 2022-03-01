@@ -1,3 +1,5 @@
+import { confirmVoucherSale } from "../../../utils";
+
 export default [
   {
     name: 'vouchersAdd',
@@ -17,4 +19,11 @@ export default [
       return models.Vouchers.removeVouchers(models, doc._ids);
     }
   },
+  {
+    name: "confirmLoyalties",
+    handler: async (_root, params, { models }) => {
+      const { checkInfo } = params;
+      return confirmVoucherSale(models, checkInfo);
+    },
+  }
 ];

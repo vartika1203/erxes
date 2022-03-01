@@ -160,7 +160,7 @@ export default () => ({
       image: '/images/icons/erxes-16.svg',
       to: '/erxes-plugin-loyalty/settings/general',
       action: 'loyaltyConfig',
-      permissions: [],
+      permissions: ['loyaltyConfig'],
     }
   ],
   payments: [

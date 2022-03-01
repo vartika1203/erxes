@@ -1,4 +1,5 @@
 import { paginate } from 'erxes-api-utils'
+import { checkVouchersSale } from '../../../utils';
 
 export default [
   {
@@ -34,5 +35,12 @@ export default [
         totalCount: await models.Vouchers.find(filter).countDocuments()
       }
     }
+  },
+  {
+    name: "checkLoyalties",
+    handler: async (_root, params, { models }) => {
+      const { ownerType, ownerId, products } = params;
+      return checkVouchersSale(models, ownerType, ownerId, products);
+    },
   }
 ]

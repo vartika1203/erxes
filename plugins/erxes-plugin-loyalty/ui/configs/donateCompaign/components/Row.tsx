@@ -1,7 +1,8 @@
-import { FormControl, TextInfo, ModalTrigger } from 'erxes-ui';
+import { FormControl, TextInfo, ModalTrigger, Icon } from 'erxes-ui';
 import React from 'react';
 import Form from '../containers/Form';
 import { IDonateCompaign } from '../types';
+import { Link } from 'react-router-dom';
 
 type Props = {
   donateCompaign: IDonateCompaign;
@@ -42,6 +43,7 @@ class Row extends React.Component<Props> {
       title,
       startDate,
       endDate,
+      finishDateOfUse,
       status,
 
     } = donateCompaign;
@@ -58,8 +60,14 @@ class Row extends React.Component<Props> {
         <td>{title}</td>
         <td>{new Date(startDate).toLocaleDateString()}</td>
         <td>{new Date(endDate).toLocaleDateString()}</td>
+        <td>{new Date(finishDateOfUse).toLocaleDateString()}</td>
         <td>
           <TextInfo>{status}</TextInfo>
+        </td>
+        <td onClick={onClick}>
+          <Link to={`/erxes-plugin-loyalty/donates?compaignId=${_id}`}>
+            <Icon icon='list-2' />
+          </Link>
         </td>
       </tr>
     )

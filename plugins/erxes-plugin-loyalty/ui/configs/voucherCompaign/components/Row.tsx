@@ -45,6 +45,7 @@ class Row extends React.Component<Props> {
       voucherType,
       startDate,
       endDate,
+      finishDateOfUse,
       status,
     } = voucherCompaign;
 
@@ -60,13 +61,14 @@ class Row extends React.Component<Props> {
         <td>{title}</td>
         <td>{new Date(startDate).toLocaleDateString()}</td>
         <td>{new Date(endDate).toLocaleDateString()}</td>
+        <td>{new Date(finishDateOfUse).toLocaleDateString()}</td>
         <td>{VOUCHER_TYPES[voucherType].label}</td>
         <td>
           <TextInfo>{status}</TextInfo>
         </td>
         <td onClick={onClick}>
           <Link to={`/erxes-plugin-loyalty/vouchers?compaignId=${_id}`}>
-            <Icon icon='edit'/>
+            <Icon icon='list-2' />
           </Link>
         </td>
       </tr>

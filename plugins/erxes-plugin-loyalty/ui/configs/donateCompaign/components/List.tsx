@@ -182,7 +182,9 @@ class DonateCompaigns extends React.Component<Props, State> {
               <th>{__('Title')}</th>
               <th>{__('Start Date')}</th>
               <th>{__('End Date')}</th>
+              <th>{__('Finish Date of Use')}</th>
               <th>{__('Status')}</th>
+              <th>{__('Actions')}</th>
             </tr>
           </thead>
           <tbody>{this.renderRow()}</tbody>

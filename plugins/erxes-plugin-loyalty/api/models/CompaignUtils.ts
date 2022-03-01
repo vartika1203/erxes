@@ -23,6 +23,7 @@ export const commonCompaignSchema = {
   description: { type: String, label: 'Description' },
   startDate: { type: Date, label: 'Start Date' },
   endDate: { type: Date, label: 'End Date' },
+  finishDateOfUse: { type: Date, label: 'Use Finsh Date' },
   attachment: { type: attachmentSchema },
 
   status: { type: String, enum: COMPAIGN_STATUS.ALL, default: 'active' }
@@ -47,6 +48,10 @@ export const validCompaign = (doc) => {
 
   if (doc.endDate && doc.startDate > doc.endDate) {
     throw new Error('The end date must be after from start date')
+  }
+
+  if (doc.finishDateOfUse && doc.endDate > doc.finishDateOfUse) {
+    throw new Error('The finish date of use must be after from end date')
   }
 }
 

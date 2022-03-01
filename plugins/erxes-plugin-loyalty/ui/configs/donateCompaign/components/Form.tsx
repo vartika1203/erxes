@@ -240,6 +240,22 @@ class Form extends React.Component<Props, State> {
                 </DateContainer>
               </FormGroup>
             </FormColumn>
+
+            <FormColumn>
+              <FormGroup>
+                <ControlLabel required={true}>Finish Date of Use</ControlLabel>
+                <DateContainer>
+                  <DateControl
+                    {...formProps}
+                    required={true}
+                    name="finishDateOfUse"
+                    placeholder={__('Finish date of use')}
+                    value={donateCompaign.finishDateOfUse}
+                    onChange={this.onDateInputChange.bind(this, 'finishDateOfUse')}
+                  />
+                </DateContainer>
+              </FormGroup>
+            </FormColumn>
           </FormWrapper>
 
           <FormGroup>
