@@ -157,7 +157,46 @@ const queries = [
       return await models.Pos.getPos(models, { _id });
     }
   },
+  {
+    name: 'ecommerceGetBranches',
+    handler: async (_root, { posToken }, { models, messageBroker }) => {
+      const pos = await models.Pos.findOne({ token: posToken }).lean();
 
+      if (!pos) {
+        return { error: 'not found pos' }
+      }
+
+      const allowsPos = await models.Pos.find({ isOnline: { $ne: true }, branchId: { $in: pos.allowBranchIds } }).lean();
+
+      const healthyBranchIds = []
+
+      for (const allowPos of allowsPos) {
+        const syncIds = Object.keys(allowPos.syncInfos || {}) || [];
+
+        if (!syncIds.length) {
+          continue;
+        }
+
+        for (const syncId of syncIds) {
+          const syncDate = allowPos.syncInfos[syncId];
+
+          // expired sync 72 hour
+          if ((new Date().getTime() - syncDate.getTime()) / (60 * 60 * 1000) > 72) {
+            continue;
+          }
+
+          const response = await messageBroker().sendRPCMessage(`rpc_queue:health_check_${syncId}`, {});
+
+          if (response.healthy === 'ok') {
+            healthyBranchIds.push(allowPos.branchId)
+            break;
+          }
+        }
+      }
+
+      return await models.Branches.find({ _id: { $in: healthyBranchIds } }).lean();
+    }
+  },
   {
     name: 'productGroups',
     handler: async (

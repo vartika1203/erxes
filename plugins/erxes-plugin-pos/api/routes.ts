@@ -221,19 +221,6 @@ export default {
       }
     },
     {
-      method: 'GET',
-      path: '/pos-get-branches',
-      handler: async ({ req, models }) => {
-        const token = req.headers['pos-token'];
-        const pos = await models.Pos.findOne({ token }).lean();
-
-        if (!pos) {
-          return { error: 'not found pos' }
-        }
-        return  await models.Branches.find();
-      }
-    },
-    {
       method: 'POST',
       path: '/pos-sync-orders',
       handler: async ({ req, models }) => {

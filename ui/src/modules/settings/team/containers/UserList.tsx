@@ -61,7 +61,7 @@ class UserListContainer extends React.Component<Props> {
         changeStatus={this.changeStatus}
         resendInvitation={this.resendInvitation}
         renderButton={renderButton}
-        totalCount={totalCountQuery.usersTotalCount || 0}
+        totalCount={totalCountQuery ? totalCountQuery.usersTotalCount : 0 || 0}
       />
     );
   }

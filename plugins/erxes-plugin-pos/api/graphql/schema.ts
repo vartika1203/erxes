@@ -170,6 +170,7 @@ export const queries = `
   posOrderDetail(_id: String): PosOrderDetail
   posProducts(${queryParams} categoryId: String, searchValue: String): PosProducts
   posOrdersSummary(${queryParams}): JSON
+  ecommerceGetBranches(posToken: String): [Branch]
 `;
 
 export const mutations = `
