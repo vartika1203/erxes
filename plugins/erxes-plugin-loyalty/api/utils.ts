@@ -8,6 +8,18 @@ export const checkVouchersSale = async (models, ownerType: string, ownerId: stri
   const now = new Date();
   const productsIds = products.map(p => p.productId);
 
+  for (const productId of productsIds) {
+    if (!Object.keys(result).includes(productId)) {
+      result[productId] = {
+        voucherCompaignId: '',
+        voucherId: '',
+        potentialBonus: 0,
+        discount: 0,
+        sumDiscount: 0,
+      }
+    }
+  }
+
   const voucherProject = {
     compaignId: 1,
     createdAt: 1,
@@ -27,15 +39,17 @@ export const checkVouchersSale = async (models, ownerType: string, ownerId: stri
       as: 'compaign_doc'
     }
   }
-  const voucherFilter = { ownerType, ownerId, status: { $in: ['new'] } }
-  const activeVouchers = await models.Vouchers.find(voucherFilter).lean();
+  const voucherFilter = { ownerType, ownerId, status: { $in: ['new'] } };
 
-  const needCompaignIds = activeVouchers.map(v => v.compaignId);
+  const activeVouchers = await models.Vouchers.find(voucherFilter).lean();
+  const activeCompaignIds = activeVouchers.map(v => v.compaignId);
+
   const compaignFilter = {
-    _id: { $in: needCompaignIds },
+    _id: { $in: activeCompaignIds },
     useFinishDate: { $gte: now }
   }
 
+  // bonus
   const bonusCompaign = await models.VoucherCompaigns.find({
     ...compaignFilter,
     voucherType: { $in: ['bonus'] },
@@ -60,18 +74,14 @@ export const checkVouchersSale = async (models, ownerType: string, ownerId: stri
   for (const bonusVoucher of bonusVouchers) {
     for (const productId of productsIds) {
       if (bonusVoucher.compaign.bonusProductId === productId) {
-        if (!Object.keys(result).includes(productId)) {
-          result[productId] = {
-            potentialBonus: 0
-          }
-        }
-
+        result[productId].voucherCompaignId = bonusVoucher.compaignId;
+        result[productId].voucherId = bonusVoucher._id;
         result[productId].potentialBonus += (bonusVoucher.compaign.bonusCount - (bonusVoucher.bonusInfo || []).reduce((sum, i) => sum + i.usedCount, 0));
-
       }
     }
   }
 
+  // discount
   const discountCompaign = await models.VoucherCompaigns.find({
     ...compaignFilter,
     voucherType: { $in: ['discount'] },
@@ -92,30 +102,50 @@ export const checkVouchersSale = async (models, ownerType: string, ownerId: stri
     }
   ])
 
-  const relatedDiscountCompaigns = await models.VoucherCompaigns.find({ _id: { $in: discountVouchers.map(v => v.compaignId) } }).lean();
-  const productCatIds = relatedDiscountCompaigns.map(c => c.productCategoryIds);
-  const catProductsIds = await models.Products.find({ categoryId: { $in: [...new Set(productCatIds)] } }, { _id: 1 });
-  const productIds = [...new Set(relatedDiscountCompaigns.map(c => c.productIds).concat(catProductsIds))];
+  const productCatIds = discountCompaign.reduce((catIds, c) => catIds.concat(c.productCategoryIds), []);
+  const catProducts = await models.Products.find({ categoryId: { $in: [...new Set(productCatIds)] } }, { _id: 1, categoryId: 1 }).lean();
+  const productIdByCatId = {}
+  for (const pr of catProducts) {
+    if (!Object.keys(productCatIds).includes(pr.categoryId)) {
+      productIdByCatId[pr.categoryId] = []
+    }
 
-
-  const productIdsOfCompaign = {};
+    productIdByCatId[pr.categoryId].push(pr._id)
+  }
 
   for (const discountVoucher of discountVouchers) {
+    const catIds = discountVoucher.compaign.productCategoryIds;
+    let productIds = discountVoucher.compaign.productIds || [];
+
+    for (const catId of catIds) {
+      productIds = productIds.concat(productCatIds[catId])
+    }
 
     for (const productId of productsIds) {
-      if (discountVoucher.compaign.bonusProductId === productId) {
-        if (!Object.keys(result).includes(productId)) {
-          result[productId] = {
-            discount: 0,
-            sumDiscount: 0,
-          }
+      if (productIds.includes(productId)) {
+        if (result[productId].discount < discountVoucher.discountPercent) {
+          result[productId].voucherCompaignId = discountVoucher.compaignId;
+          result[productId].voucherId = discountVoucher._id;
+          result[productId].discount = discountVoucher.discountPercent;
         }
-
         result[productId].sumDiscount += discountVoucher.compaign.discountPercent;
-
       }
     }
   }
 
+  return result;
+}
 
+export const confirmVoucherSale = async (models, checkInfo) => {
+  for (const productId of Object.keys(checkInfo)) {
+    const rule = checkInfo[productId];
+
+    if (!rule.voucherId) {
+      continue;
+    }
+
+    if (rule.count) {
+      await models.updateOne({ _id: rule.voucherId }, { $push: { bonusInfo: {usedCount: rule.count, } } });
+    }
+  }
 }
