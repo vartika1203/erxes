@@ -1,18 +1,18 @@
+import { getOwner } from "../../models/utils";
+
 export default [
   {
     type: 'Lottery',
     field: 'owner',
     handler: (lottery, { }, { models }) => {
-      switch (lottery.ownerType) {
-        case 'customer':
-          return models.Customers.findOne({ _id: lottery.ownerId }).lean();
-        case 'user':
-          return models.Users.findOne({ _id: lottery.ownerId }).lean();
-        case 'company':
-          return models.Companies.findOne({ _id: lottery.ownerId }).lean();
-        default:
-          return {}
-      }
+      return getOwner(models, lottery.ownerType, lottery.OwnerId)
+    }
+  },
+  {
+    type: 'Lottery',
+    field: 'compaign',
+    handler: async (lottery, { }, { models }) => {
+      return models.LotteryCompaigns.findOne({ _id: lottery.compaignId }).lean();
     }
   },
 ]

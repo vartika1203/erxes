@@ -1,18 +1,18 @@
+import { getOwner } from "../../models/utils";
+
 export default [
   {
     type: 'Donate',
     field: 'owner',
     handler: (donate, { }, { models }) => {
-      switch (donate.ownerType) {
-        case 'customer':
-          return models.Customers.findOne({ _id: donate.ownerId }).lean();
-        case 'user':
-          return models.Users.findOne({ _id: donate.ownerId }).lean();
-        case 'company':
-          return models.Companies.findOne({ _id: donate.ownerId }).lean();
-        default:
-          return {}
-      }
+      return getOwner(models, donate.ownerType, donate.OwnerId)
+    }
+  },
+  {
+    type: 'Donate',
+    field: 'compaign',
+    handler: async (donate, { }, { models }) => {
+      return models.DonateCompaigns.findOne({ _id: donate.compaignId }).lean();
     }
   },
 ]

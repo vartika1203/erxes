@@ -3,7 +3,6 @@ import { ICommonDoc } from '../common/types';
 
 export interface IVoucherDoc extends ICommonDoc {
   status: string,
-  compaignType: string,
 }
 
 export interface IVoucher extends IVoucherDoc {

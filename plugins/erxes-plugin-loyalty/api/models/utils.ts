@@ -45,3 +45,16 @@ export const getRandomNumber = (number) => {
 
   return result.join('')
 }
+
+export const getOwner = async (models, ownerType, ownerId) => {
+  switch (ownerType) {
+    case 'customer':
+      return models.Customers.findOne({ _id: ownerId }).lean();
+    case 'user':
+      return models.Users.findOne({ _id: ownerId }).lean();
+    case 'company':
+      return models.Companies.findOne({ _id: ownerId }).lean();
+    default:
+      return {}
+  }
+}

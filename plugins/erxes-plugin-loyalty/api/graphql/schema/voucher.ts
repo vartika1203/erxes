@@ -4,7 +4,6 @@ export const types = `
   type Voucher {
     ${commonTypes}
     status: String
-    compaignType: String
   }
 
   type VoucherMain {

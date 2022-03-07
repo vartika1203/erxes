@@ -1,12 +1,21 @@
+// import { commonTypes } from './common';
+
 export const types = `
-  type CustomerLoyalty {
-    customerId: String
-    loyalty: Float
+  type Loyalty {
+    ownerId: String
+    ownerType: String
+    score: Float
+
+    vouchers: [Voucher]
+    lotteries: [Lottery]
+    spins: [Spin]
+    donates: [Donate]
   }
 `;
 
 export const queries = `
-  customerLoyalty(
-    customerId: String!
-  ): CustomerLoyalty
+  loyalties(
+    ownerType: String
+    ownerId: String
+  ): Loyalty
 `;
