@@ -1,4 +1,5 @@
 import { paginate } from 'erxes-api-utils'
+import { COMPAIGN_STATUS } from '../../../models/Constants';
 
 const generateFilter = async (params) => {
   const filter: any = {};
@@ -29,6 +30,17 @@ export default [
           perPage: params.perPage
         }
       )
+    }
+  },
+  {
+    name: 'cpDonateCompaigns',
+    handler: async (_root, _params, { models }) => {
+      const now = new Date();
+      return models.DonateCompaigns.find({
+        status: COMPAIGN_STATUS.ACTIVE,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      }).sort({ modifiedAt: -1 });
     }
   },
   {

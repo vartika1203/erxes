@@ -21,6 +21,7 @@ const DonateCompaignDoc = `
 export const queries = `
   donateCompaignDetail(_id: String!): DonateCompaign
   donateCompaigns(${commonFilterTypes} ${paginateTypes}): [DonateCompaign]
+  cpDonateCompaigns: [DonateCompaign]
   donateCompaignsCount(${commonFilterTypes}): Int
 `;
 

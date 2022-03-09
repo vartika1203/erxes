@@ -127,9 +127,11 @@ export class VoucherCompaign {
       'awards.voucherCompaignId': { $in: ids }
     }).distinct('awards.voucherCompaignId');
 
-    const usedCompaignIds = [...atVoucherIds, ...atDonateCompaignIds, ...atLotteryCompaignIds, ...atSpinCompaignIds];
+    const compaignIds = [...atVoucherIds, ...atDonateCompaignIds, ...atLotteryCompaignIds, ...atSpinCompaignIds];
+    const usedCompaignIds = ids.filter(id => (compaignIds.includes(id)));
 
     const deleteCompaignIds = ids.filter(id => (!usedCompaignIds.includes(id)));
+
     const now = new Date();
 
     await models.VoucherCompaigns.updateMany(

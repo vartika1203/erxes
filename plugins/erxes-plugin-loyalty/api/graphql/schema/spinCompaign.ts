@@ -20,6 +20,7 @@ const SpinCompaignDoc = `
 export const queries = `
   spinCompaignDetail(_id: String!): SpinCompaign
   spinCompaigns(${commonFilterTypes} ${paginateTypes}): [SpinCompaign]
+  cpSpinCompaigns: [SpinCompaign]
   spinCompaignsCount(${commonFilterTypes}): Int
 `;
 

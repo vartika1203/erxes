@@ -58,6 +58,7 @@ const VoucherCompaignDoc = `
 export const queries = `
   voucherCompaignDetail(_id: String!): VoucherCompaign
   voucherCompaigns(${commonFilterTypes} ${paginateTypes} equalTypeCompaignId: String voucherType: String): [VoucherCompaign]
+  cpVoucherCompaigns: [VoucherCompaign]
   voucherCompaignsCount(${commonFilterTypes}): Int
 `;
 

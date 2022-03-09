@@ -28,4 +28,5 @@ export const mutations = `
   vouchersEdit(_id: String!, ${VoucherDoc}): Voucher
   vouchersRemove(_ids: [String]): JSON
   confirmLoyalties(checkInfo: JSON): JSON
+  buyVoucher(compaignId: String, ownerType: String, ownerId: String, count: Int): Voucher
 `;

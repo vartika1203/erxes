@@ -1,4 +1,5 @@
 import { paginate } from 'erxes-api-utils'
+import { COMPAIGN_STATUS } from '../../../models/Constants';
 
 const generateFilter = async (models, params) => {
   const filter: any = {};
@@ -40,6 +41,18 @@ export default [
           perPage: params.perPage
         }
       )
+    }
+  },
+  {
+    name: 'cpVoucherCompaigns',
+    handler: async (_root, params, { models }) => {
+      const now = new Date();
+
+      return models.VoucherCompaigns.find({
+        status: COMPAIGN_STATUS.ACTIVE,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      }).sort({ modifiedAt: -1 })
     }
   },
   {

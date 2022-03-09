@@ -78,7 +78,9 @@ export class SpinCompaign {
       spinCompaignId: { $in: ids }
     }).distinct('spinCompaignId');
 
-    const usedCompaignIds = [...atSpinIds, ...atVoucherIds];
+    const compaignIds = [...atSpinIds, ...atVoucherIds];
+    const usedCompaignIds = ids.filter(id => (compaignIds.includes(id)));
+
     const deleteCompaignIds = ids.map(id => !usedCompaignIds.includes(id));
     const now = new Date();
 

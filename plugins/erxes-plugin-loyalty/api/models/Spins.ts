@@ -83,8 +83,9 @@ export class Spin {
     return models.Spins.deleteMany({ _id: { $in: _ids } })
   }
 
-  public static async doSpin(models, { spinId, ownerType, ownerId }) {
+  public static async doSpin(models, { spinId }) {
     const spin = await models.Spins.getSpin(models, spinId);
+    const { ownerType, ownerId } = spin;
     const spinCompaign = await models.SpinCompaigns.getSpinCompaign(models, spin.spinCompaignId);
 
     const now = new Date();

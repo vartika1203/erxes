@@ -14,8 +14,6 @@ export const types = `
 `;
 
 export const queries = `
-  loyalties(
-    ownerType: String
-    ownerId: String
-  ): Loyalty
+  loyalties(ownerType: String ownerId: String): Loyalty
+
 `;

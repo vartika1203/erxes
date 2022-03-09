@@ -26,4 +26,6 @@ export const mutations = `
   spinsAdd(${SpinDoc}): Spin
   spinsEdit(_id: String!, ${SpinDoc}): Spin
   spinsRemove(_ids: [String]): JSON
+  doSpin(_id: String!): Spin
+  buySpin(compaignId: String, ownerType: String, ownerId: String, count: Int): Spin
 `;

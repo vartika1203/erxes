@@ -24,6 +24,7 @@ const LotteryCompaignDoc = `
 export const queries = `
   lotteryCompaignDetail(_id: String!): LotteryCompaign
   lotteryCompaigns(${commonFilterTypes} ${paginateTypes}): [LotteryCompaign]
+  cpLotteryCompaigns: [LotteryCompaign]
   lotteryCompaignsCount(${commonFilterTypes}): Int
 `;
 

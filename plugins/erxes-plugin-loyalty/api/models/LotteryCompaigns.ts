@@ -74,7 +74,9 @@ export class LotteryCompaign {
       lotteryCompaignId: { $in: ids }
     }).distinct('lotteryCompaignId');
 
-    const usedCompaignIds = [...atLotteryIds, ...atVoucherIds];
+    const compaignIds = [...atLotteryIds, ...atVoucherIds];
+
+    const usedCompaignIds = ids.filter(id => (compaignIds.includes(id)));
     const deleteCompaignIds = ids.map(id => !usedCompaignIds.includes(id));
     const now = new Date();
 

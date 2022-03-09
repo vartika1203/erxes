@@ -17,4 +17,17 @@ export default [
       return models.Spins.removeSpins(models, doc._ids);
     }
   },
+  {
+    name: 'doSpin',
+    handler: async (_root, _id, { models }) => {
+      return models.Spins.doSpin(_id);
+    }
+  },
+  {
+    name: 'buySpin',
+    handler: async (_root, param, { models }) => {
+      const { compaignId, ownerType, ownerId, count } = param;
+      return models.Spins.buySpin(models, { compaignId, ownerType, ownerId, count })
+    }
+  },
 ];

@@ -27,4 +27,5 @@ export const mutations = `
   lotteriesAdd(${LotteryDoc}): Lottery
   lotteriesEdit(_id: String!, ${LotteryDoc}): Lottery
   lotteriesRemove(_ids: [String]): JSON
+  buyLottery(compaignId: String, ownerType: String, ownerId: String, count: Int): Lottery
 `;

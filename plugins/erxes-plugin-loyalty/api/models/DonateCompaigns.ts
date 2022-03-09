@@ -81,7 +81,9 @@ export class DonateCompaign {
       compaignId: { $in: ids }
     }).distinct('compaignId');
 
-    const usedCompaignIds = [...atDonateIds];
+    const compaignIds = [...atDonateIds];
+
+    const usedCompaignIds = ids.filter(id => (compaignIds.includes(id)));
     const deleteCompaignIds = ids.map(id => !usedCompaignIds.includes(id));
     const now = new Date();
 

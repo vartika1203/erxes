@@ -1,4 +1,5 @@
 import { paginate } from 'erxes-api-utils'
+import { COMPAIGN_STATUS } from '../../../models/Constants';
 
 const generateFilter = async (params) => {
   const filter: any = {};
@@ -29,6 +30,18 @@ export default [
           perPage: params.perPage
         }
       )
+    }
+  },
+  {
+    name: 'cpSpinCompaigns',
+    handler: async (_root, params, { models }) => {
+      const now = new Date();
+
+      return models.SpinCompaigns.find({
+        status: COMPAIGN_STATUS.ACTIVE,
+        startDate: { $lte: now },
+        endDate: { $gte: now }
+      }).sort({ modifiedAt: -1 })
     }
   },
   {

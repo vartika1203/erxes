@@ -17,4 +17,11 @@ export default [
       return models.Lotteries.removeLotteries(models, doc._ids);
     }
   },
+  {
+    name: 'buyLottery',
+    handler: async (_root, param, { models }) => {
+      const { compaignId, ownerType, ownerId, count } = param;
+      return models.Lotteries.buyLottery(models, { compaignId, ownerType, ownerId, count })
+    }
+  },
 ];

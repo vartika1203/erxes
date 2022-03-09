@@ -25,5 +25,12 @@ export default [
       const { checkInfo } = params;
       return confirmVoucherSale(models, checkInfo);
     },
-  }
+  },
+  {
+    name: 'buyVoucher',
+    handler: async (_root, param, { models }) => {
+      const { compaignId, ownerType, ownerId, count } = param;
+      return models.Vouchers.buyVoucher(models, { compaignId, ownerType, ownerId, count })
+    }
+  },
 ];
