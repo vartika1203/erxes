@@ -45,7 +45,7 @@ export default [
   },
   {
     name: 'cpVoucherCompaigns',
-    handler: async (_root, params, { models }) => {
+    handler: async (_root, _params, { models }) => {
       const now = new Date();
 
       return models.VoucherCompaigns.find({
