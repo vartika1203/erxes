@@ -7,7 +7,7 @@ import { mutations as lotteryMutations, queries as lotteryQueries, types as lott
 import { mutations as lotteryCompaignMutations, queries as lotteryCompaignQueries, types as lotteryCompaignTypes } from './schema/lotteryCompaign';
 import { mutations as spinCompaignMutations, queries as spinCompaignQueries, types as spinCompaignTypes } from './schema/spinCompaign';
 import { mutations as donateCompaignMutations, queries as donateCompaignQueries, types as donateCompaignTypes } from './schema/donateCompaign';
-import { queries as loyaltyQueries, types as loyaltyTypes } from './schema/loyalty';
+import { queries as loyaltyQueries, types as loyaltyTypes, mutations as loyaltyMutations } from './schema/loyalty';
 
 export const types = `
   ${configTypes}
@@ -41,6 +41,7 @@ export const mutations = `
   ${lotteryCompaignMutations}
   ${spinCompaignMutations}
   ${donateCompaignMutations}
+  ${loyaltyMutations}
   ${voucherMutations}
   ${donateMutations}
   ${spinMutations}

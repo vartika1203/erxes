@@ -1,5 +1,3 @@
-// import { commonTypes } from './common';
-
 export const types = `
   type Loyalty {
     ownerId: String
@@ -15,5 +13,10 @@ export const types = `
 
 export const queries = `
   loyalties(ownerType: String ownerId: String): Loyalty
+  checkLoyalties(ownerType: String, ownerId: String, products: JSON): JSON
+`;
 
+export const mutations = `
+  confirmLoyalties(checkInfo: JSON): JSON
+  shareScore(ownerType: String, ownerId: String, score: Float, destinationOwnerId: String): String
 `;

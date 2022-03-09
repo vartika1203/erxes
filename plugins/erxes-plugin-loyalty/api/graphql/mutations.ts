@@ -7,6 +7,7 @@ import spinCompaignMutations from './resolvers/mutations/spinCompaigns';
 import spins from './resolvers/mutations/spins';
 import voucherCompaignMutations from './resolvers/mutations/voucherCompaigns';
 import vouchers from './resolvers/mutations/vouchers';
+import loyalties from './resolvers/mutations/loyalties';
 
 const loyaltyMutations = [
   ...donateCompaignMutations,
@@ -18,6 +19,7 @@ const loyaltyMutations = [
   ...donates,
   ...spins,
   ...lotteries,
+  ...loyalties,
 ];
 
 export default loyaltyMutations;
