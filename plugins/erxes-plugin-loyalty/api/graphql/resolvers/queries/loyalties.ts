@@ -1,9 +1,14 @@
 import { getOwner } from "../../../models/utils";
+import { checkVouchersSale } from "../../../utils";
 
 export default [
-  /**
-   * Loyalty value for customer
-   */
+  {
+    name: "checkLoyalties",
+    handler: async (_root, params, { models }) => {
+      const { ownerType, ownerId, products } = params;
+      return checkVouchersSale(models, ownerType, ownerId, products);
+    },
+  },
   {
     name: 'loyalties',
     handler: async (_root, params, { models }) => {

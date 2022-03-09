@@ -20,13 +20,11 @@ export const queries = `
   vouchersMain(${commonFilters}): VoucherMain
   vouchers(${commonFilters}): [Voucher]
   voucherDetail(_id: String!): Voucher
-  checkLoyalties(ownerType: String, ownerId: String, products: JSON): JSON
 `;
 
 export const mutations = `
   vouchersAdd(${VoucherDoc}): Voucher
   vouchersEdit(_id: String!, ${VoucherDoc}): Voucher
   vouchersRemove(_ids: [String]): JSON
-  confirmLoyalties(checkInfo: JSON): JSON
   buyVoucher(compaignId: String, ownerType: String, ownerId: String, count: Int): Voucher
 `;
