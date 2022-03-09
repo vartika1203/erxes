@@ -15,7 +15,7 @@ export class LoyaltyConfig {
       throw new Error('Config not found');
     }
 
-    return config;
+    return config.value;
   }
 
   /**

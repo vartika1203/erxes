@@ -89,12 +89,11 @@ class GeneralSettings extends React.Component<Props, State> {
     const content = (
       <ContentBox id={'GeneralSettingsMenu'}>
         <CollapseContent title={__('General settings')}>
-          {this.renderItem('LOYALTY_RATIO_CURRENCY', 'Loyalty ratio currency')}
+          {this.renderItem('LoyaltyRatioCurrency', 'Loyalty ratio currency')}
         </CollapseContent>
 
         <CollapseContent title={__('Share settings')}>
-          {this.renderItem('ShareMinScore', 'Minimium score for score sharing')}
-          {this.renderItem('ShareMaxScore', 'Maximium score for score sharing')}
+          {this.renderItem('ShareScoreFee', 'Fee for score sharing')}
         </CollapseContent>
 
         <CollapseContent title={__('Invite settings')}>
