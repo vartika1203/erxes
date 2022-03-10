@@ -7,7 +7,6 @@ export type ILotteryCompaignAward = {
 }
 
 export type ILotteryCompaign = ICommonTypes & {
-  lotteryDate?: Date,
   numberFormat?: string,
   buyScore?: number,
   awards?: ILotteryCompaignAward[],

@@ -68,6 +68,10 @@ class Row extends React.Component<Props> {
           <Link to={`/erxes-plugin-loyalty/lotteries?compaignId=${_id}`}>
             <Icon icon='list-2' />
           </Link>
+          <span> </span>
+          <Link to={`/erxes-plugin-loyalty/lottery/${_id}`}>
+            <Icon icon='award' />
+          </Link>
         </td>
       </tr>
     )

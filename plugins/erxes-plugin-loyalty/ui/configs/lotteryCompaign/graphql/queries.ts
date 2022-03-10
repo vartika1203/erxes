@@ -3,7 +3,6 @@ import { commonFields, commonFilterDefs, commonFilterValues, paginateDefs, pagin
 export const lotteryCompaignFields = `
   _id
   ${commonFields}
-  lotteryDate
   numberFormat
   buyScore
   awards

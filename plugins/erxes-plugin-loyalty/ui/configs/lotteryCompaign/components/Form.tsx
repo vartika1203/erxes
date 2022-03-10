@@ -304,21 +304,6 @@ class Form extends React.Component<Props, State> {
                 />
               </FormGroup>
             </FormColumn>
-            <FormColumn>
-              <FormGroup>
-                <ControlLabel required={true}>Lottery Date</ControlLabel>
-                <DateContainer>
-                  <DateControl
-                    {...formProps}
-                    required={true}
-                    name="lotteryDate"
-                    placeholder={__('Lottery date')}
-                    value={lotteryCompaign.lotteryDate}
-                    onChange={this.onDateInputChange.bind(this, 'lotteryDate')}
-                  />
-                </DateContainer>
-              </FormGroup>
-            </FormColumn>
           </FormWrapper>
 
           <FormGroup>

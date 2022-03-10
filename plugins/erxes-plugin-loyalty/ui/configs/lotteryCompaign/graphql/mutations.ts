@@ -3,7 +3,6 @@ import { lotteryCompaignFields } from './queries';
 
 const paramDefs = `
   ${commonParamDefs}
-  $lotteryDate: Date,
   $numberFormat: String,
   $buyScore: Float,
   $awards: JSON
@@ -11,7 +10,6 @@ const paramDefs = `
 
 const params = `
   ${commonParams}
-  lotteryDate: $lotteryDate,
   numberFormat: $numberFormat,
   buyScore: $buyScore,
   awards: $awards,
