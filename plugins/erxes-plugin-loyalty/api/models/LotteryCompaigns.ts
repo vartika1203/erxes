@@ -11,7 +11,6 @@ const lotteryAward = {
 
 export const lotteryCompaignSchema = {
   ...commonCompaignSchema,
-  lotteryDate: { type: Date, label: 'Lottery Date' },
 
   numberFormat: { type: String, label: 'Number format type' },
   buyScore: { type: Number },

@@ -4,7 +4,6 @@ export const types = `
   type LotteryCompaign {
     _id: String,
     ${commonCompaignTypes}
-    lotteryDate: Date,
     numberFormat: String,
     buyScore: Float,
     awards: JSON,
@@ -15,7 +14,6 @@ export const types = `
 
 const LotteryCompaignDoc = `
   ${commonCompaignInputs}
-  lotteryDate: Date,
   numberFormat: String,
   buyScore: Float,
   awards: JSON
