@@ -185,7 +185,18 @@ const queries = [
             continue;
           }
 
-          const response = await messageBroker().sendRPCMessage(`rpc_queue:health_check_${syncId}`, {});
+          const longTask = async () => (
+            await messageBroker().sendRPCMessage(`rpc_queue:health_check_${syncId}`, {})
+          );
+
+          const timeout = (cb, interval) => () =>
+            new Promise(resolve => setTimeout(() => cb(resolve), interval))
+
+          const onTimeout = timeout(resolve =>
+            resolve({}), 3000)
+
+          let response = { healthy: 'down' };
+          await Promise.race([longTask, onTimeout].map(f => f())).then((result) => response = result)
 
           if (response.healthy === 'ok') {
             healthyBranchIds.push(allowPos.branchId)
