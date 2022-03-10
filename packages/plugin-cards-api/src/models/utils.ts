@@ -288,7 +288,7 @@ export const destroyBoardItemRelations = async (
     mainTypeId: contentTypeId
   });
 
-  await removeInternalNotes("os", contentType, [contentTypeId]);
+  removeInternalNotes("os", contentType, [contentTypeId]);
 };
 
 // Get board item link

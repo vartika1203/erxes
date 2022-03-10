@@ -1,4 +1,3 @@
-import { Boards, Checklists, PipelineLabels, Pipelines, Stages } from '../models';
 import { getNewOrder } from '../models/utils';
 import { NOTIFICATION_TYPES } from '../models/definitions/constants';
 import { IDealDocument } from '../models/definitions/deals';

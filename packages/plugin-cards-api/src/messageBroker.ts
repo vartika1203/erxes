@@ -374,7 +374,7 @@ export const findMongoDocuments = async (serviceName: string, data: any) => {
 
 export const removeInternalNotes = async (subdomain, contentType, contentTypeIds) => {
   if (!(await serviceDiscovery.isEnabled("internalnotes"))) {
-    return [];
+    return;
   }
 
   if (!(await serviceDiscovery.isAvailable("internalnotes"))) {
