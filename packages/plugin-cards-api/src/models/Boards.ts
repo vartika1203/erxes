@@ -1,4 +1,4 @@
-import { Model, model } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   getCollection,
   updateOrder,
@@ -25,6 +25,7 @@ import {
 import { configReplacer } from '../utils';
 import { putActivityLog } from '../logUtils';
 import { Checklists } from '.';
+import { IModels } from '../connectionResolver';
 
 export interface IOrderInput {
   _id: string;
@@ -35,6 +36,7 @@ export interface IOrderInput {
 type IPipelineStage = IStage & { _id: string };
 
 const removeStageWithItems = async (
+  { Stages }: IModels,
   type: string,
   pipelineId: string,
   prevItemIds: string[] = []
@@ -78,6 +80,7 @@ const removeItems = async (type: string, stageIds: string[]) => {
 };
 
 const removePipelineStagesWithItems = async (
+  { Stages }:IModels,
   type: string,
   pipelineId: string
 ) => {
@@ -93,10 +96,13 @@ const removeStageItems = async (type: string, stageId: string) => {
 };
 
 const createOrUpdatePipelineStages = async (
+  models: IModels,
   stages: IPipelineStage[],
   pipelineId: string,
   type: string
 ) => {
+  const { Stages } = models;
+
   let order = 0;
 
   const validStageIds: string[] = [];
@@ -111,7 +117,7 @@ const createOrUpdatePipelineStages = async (
   const prevEntries = await Stages.find({ _id: { $in: prevItemIds } });
   const prevEntriesIds = prevEntries.map(entry => entry._id);
 
-  await removeStageWithItems(type, pipelineId, prevItemIds);
+  await removeStageWithItems(models, type, pipelineId, prevItemIds);
 
   for (const stage of stages) {
     order++;
@@ -152,7 +158,8 @@ const createOrUpdatePipelineStages = async (
 };
 
 // pipeline lastNum generater
-const generateLastNum = async (doc: IPipeline) => {
+const generateLastNum = async (models: IModels, doc: IPipeline) => {
+  const { Pipelines } = models;
   const replacedConfig = await configReplacer(doc.numberConfig);
   const re = replacedConfig + '[0-9]+$';
 
@@ -201,7 +208,8 @@ export interface IBoardModel extends Model<IBoardDocument> {
   ): Promise<any>;
 }
 
-export const loadBoardClass = () => {
+export const loadBoardClass = (models: IModels) => {
+  const { Boards, Pipelines } = models;
   class Board {
     /*
      * Get a Board
@@ -245,7 +253,7 @@ export const loadBoardClass = () => {
       const pipelines = await Pipelines.find({ boardId: _id });
 
       for (const pipeline of pipelines) {
-        await removePipelineStagesWithItems(pipeline.type, pipeline._id);
+        await removePipelineStagesWithItems(models, pipeline.type, pipeline._id);
       }
 
       for (const pipeline of pipelines) {
@@ -301,7 +309,8 @@ export interface IPipelineModel extends Model<IPipelineDocument> {
   archivePipeline(_id: string, status?: string): object;
 }
 
-export const loadPipelineClass = () => {
+export const loadPipelineClass = (models: IModels) => {
+  const { Pipelines, Stages } = models;
   class Pipeline {
     /*
      * Get a pipeline
@@ -324,25 +333,26 @@ export const loadPipelineClass = () => {
       stages?: IPipelineStage[]
     ) {
       if (doc.numberSize) {
-        doc.lastNum = await generateLastNum(doc);
+        doc.lastNum = await generateLastNum(models, doc);
       }
 
       const pipeline = await Pipelines.create(doc);
 
       if (doc.templateId) {
-        const duplicatedStages = await getDuplicatedStages({
+        const duplicatedStages = await getDuplicatedStages(models, {
           templateId: doc.templateId,
           pipelineId: pipeline._id,
           type: doc.type
         });
 
         await createOrUpdatePipelineStages(
+          models,
           duplicatedStages,
           pipeline._id,
           pipeline.type
         );
       } else if (stages) {
-        await createOrUpdatePipelineStages(stages, pipeline._id, pipeline.type);
+        await createOrUpdatePipelineStages(models, stages, pipeline._id, pipeline.type);
       }
 
       return pipeline;
@@ -360,23 +370,23 @@ export const loadPipelineClass = () => {
         const pipeline = await Pipelines.getPipeline(_id);
 
         if (doc.templateId !== pipeline.templateId) {
-          const duplicatedStages = await getDuplicatedStages({
+          const duplicatedStages = await getDuplicatedStages(models, {
             templateId: doc.templateId,
             pipelineId: _id,
             type: doc.type
           });
 
-          await createOrUpdatePipelineStages(duplicatedStages, _id, doc.type);
+          await createOrUpdatePipelineStages(models, duplicatedStages, _id, doc.type);
         }
       } else if (stages) {
-        await createOrUpdatePipelineStages(stages, _id, doc.type);
+        await createOrUpdatePipelineStages(models, stages, _id, doc.type);
       }
 
       if (doc.numberSize) {
         const pipeline = await Pipelines.getPipeline(_id);
 
         if (pipeline.numberConfig !== doc.numberConfig) {
-          doc.lastNum = await generateLastNum(doc);
+          doc.lastNum = await generateLastNum(models, doc);
         }
       }
 
@@ -399,7 +409,7 @@ export const loadPipelineClass = () => {
       const pipeline = await Pipelines.getPipeline(_id);
 
       if (!checked) {
-        await removePipelineStagesWithItems(pipeline.type, pipeline._id);
+        await removePipelineStagesWithItems(models, pipeline.type, pipeline._id);
       }
 
       const stages = await Stages.find({ pipelineId: pipeline._id });
@@ -442,7 +452,7 @@ export interface IStageModel extends Model<IStageDocument> {
   updateOrder(orders: IOrderInput[]): Promise<IStageDocument[]>;
 }
 
-export const loadStageClass = () => {
+export const loadStageClass = ({ Stages, Pipelines }: IModels) => {
   class Stage {
     /*
      * Get a stage
@@ -499,20 +509,3 @@ export const loadStageClass = () => {
   return stageSchema;
 };
 
-loadBoardClass();
-loadPipelineClass();
-loadStageClass();
-
-// tslint:disable-next-line
-const Boards = model<IBoardDocument, IBoardModel>('boards', boardSchema);
-
-// tslint:disable-next-line
-const Pipelines = model<IPipelineDocument, IPipelineModel>(
-  'pipelines',
-  pipelineSchema
-);
-
-// tslint:disable-next-line
-const Stages = model<IStageDocument, IStageModel>('stages', stageSchema);
-
-export { Boards, Pipelines, Stages };

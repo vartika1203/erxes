@@ -8,6 +8,7 @@ import {
 import { IItemCommonFields as ITask } from './definitions/boards';
 import { ACTIVITY_CONTENT_TYPES } from './definitions/constants';
 import { ITaskDocument, taskSchema } from './definitions/tasks';
+import { IModels } from '../connectionResolver';
 
 export interface ITaskModel extends Model<ITaskDocument> {
   createTask(doc: ITask): Promise<ITaskDocument>;
@@ -17,7 +18,7 @@ export interface ITaskModel extends Model<ITaskDocument> {
   removeTasks(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadTaskClass = () => {
+export const loadTaskClass = ({ Tasks }: IModels) => {
   class Task {
     /**
      * Retreives Task
@@ -81,10 +82,3 @@ export const loadTaskClass = () => {
 
   return taskSchema;
 };
-
-loadTaskClass();
-
-// tslint:disable-next-line
-const Tasks = model<ITaskDocument, ITaskModel>('tasks', taskSchema);
-
-export default Tasks;

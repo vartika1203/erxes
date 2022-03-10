@@ -5,6 +5,7 @@ import {
   IPipelineTemplateStage,
   pipelineTemplateSchema
 } from './definitions/pipelineTemplates';
+import { IModels } from '../connectionResolver';
 
 interface IDoc {
   name: string;
@@ -12,7 +13,9 @@ interface IDoc {
   type: string;
 }
 
-export const getDuplicatedStages = async ({
+export const getDuplicatedStages = async (
+  { PipelineTemplates }: IModels,
+  {
   templateId,
   pipelineId,
   type
@@ -56,7 +59,8 @@ export interface IPipelineTemplateModel
   duplicatePipelineTemplate(_id: string): Promise<IPipelineTemplateDocument>;
 }
 
-export const loadPipelineTemplateClass = () => {
+export const loadPipelineTemplateClass = (models: IModels) => {
+  const { PipelineTemplates } = models;
   class PipelineTemplate {
     /*
      * Get a pipeline template
@@ -117,7 +121,7 @@ export const loadPipelineTemplateClass = () => {
         type: pipelineTemplate.type
       };
 
-      const stages: any[] = await getDuplicatedStages({
+      const stages: any[] = await getDuplicatedStages(models, {
         templateId: pipelineTemplate._id
       });
 
@@ -146,13 +150,3 @@ export const loadPipelineTemplateClass = () => {
 
   return pipelineTemplateSchema;
 };
-
-loadPipelineTemplateClass();
-
-// tslint:disable-next-line
-const PipelineTemplates = model<
-  IPipelineTemplateDocument,
-  IPipelineTemplateModel
->('pipeline_templates', pipelineTemplateSchema);
-
-export default PipelineTemplates;

@@ -7,6 +7,7 @@ import {
 } from './utils';
 import { ACTIVITY_CONTENT_TYPES } from './definitions/constants';
 import { ITicket, ITicketDocument, ticketSchema } from './definitions/tickets';
+import { IModels } from '../connectionResolver';
 
 export interface ITicketModel extends Model<ITicketDocument> {
   createTicket(doc: ITicket): Promise<ITicketDocument>;
@@ -16,7 +17,7 @@ export interface ITicketModel extends Model<ITicketDocument> {
   removeTickets(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadTicketClass = () => {
+export const loadTicketClass = ({ Tickets }: IModels) => {
   class Ticket {
     /**
      * Retreives Ticket
@@ -84,10 +85,3 @@ export const loadTicketClass = () => {
 
   return ticketSchema;
 };
-
-loadTicketClass();
-
-// tslint:disable-next-line
-const Tickets = model<ITicketDocument, ITicketModel>('tickets', ticketSchema);
-
-export default Tickets;

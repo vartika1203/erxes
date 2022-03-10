@@ -1,6 +1,5 @@
 import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
-import apiConnect from './apiCollections';
 
 import { initBroker, sendSegmentMessage } from './messageBroker';
 import { IFetchElkArgs } from '@erxes/api-utils/src/types';
@@ -10,7 +9,9 @@ import permissions from './permissions';
 import { routeErrorHandling } from '@erxes/api-utils/src/requests';
 import { buildFile } from './exporter';
 import segments from './segments';
+import { coreModels, generateModels, models } from './connectionResolver';
 
+export let mainDb;
 export let graphqlPubsub;
 export let serviceDiscovery;
 
@@ -42,12 +43,15 @@ export default {
     segments
   },
   apolloServerContext: context => {
+    context.models = models;
+    context.coreModels = coreModels;
     return context;
   },
   onServerInit: async options => {
-    await apiConnect();
-
+    mainDb = options.db;
     const app = options.app;
+
+    await generateModels('os');
 
     app.get(
       '/file-export',

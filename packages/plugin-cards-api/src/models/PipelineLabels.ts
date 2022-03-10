@@ -6,6 +6,7 @@ import {
   IPipelineLabelDocument,
   pipelineLabelSchema
 } from './definitions/pipelineLabels';
+import { IModels } from '../connectionResolver';
 
 interface IFilter extends IPipelineLabel {
   _id?: any;
@@ -30,7 +31,7 @@ export interface IPipelineLabelModel extends Model<IPipelineLabelDocument> {
   labelObject(params: ILabelObjectParams): void;
 }
 
-export const loadPipelineLabelClass = () => {
+export const loadPipelineLabelClass = ({ PipelineLabels }: IModels) => {
   class PipelineLabel {
     public static async getPipelineLabel(_id: string) {
       const pipelineLabel = await PipelineLabels.findOne({ _id });
@@ -164,13 +165,3 @@ export const loadPipelineLabelClass = () => {
 
   return pipelineLabelSchema;
 };
-
-loadPipelineLabelClass();
-
-// tslint:disable-next-line
-const PipelineLabels = model<IPipelineLabelDocument, IPipelineLabelModel>(
-  'pipeline_labels',
-  pipelineLabelSchema
-);
-
-export default PipelineLabels;

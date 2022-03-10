@@ -5,6 +5,7 @@ import {
   IGrowthHack,
   IGrowthHackDocument
 } from './definitions/growthHacks';
+import { IModels } from '../connectionResolver';
 
 export interface IGrowthHackModel extends Model<IGrowthHackDocument> {
   getGrowthHack(_id: string): Promise<IGrowthHackDocument>;
@@ -18,7 +19,7 @@ export interface IGrowthHackModel extends Model<IGrowthHackDocument> {
   ): Promise<IGrowthHackDocument>;
 }
 
-export const loadGrowthHackClass = () => {
+export const loadGrowthHackClass = ({ GrowthHacks }: IModels) => {
   class GrowthHack {
     public static async getGrowthHack(_id: string) {
       const growthHack = await GrowthHacks.findOne({ _id });
@@ -93,13 +94,3 @@ export const loadGrowthHackClass = () => {
 
   return growthHackSchema;
 };
-
-loadGrowthHackClass();
-
-// tslint:disable-next-line
-const GrowthHacks = model<IGrowthHackDocument, IGrowthHackModel>(
-  'growth_hacks',
-  growthHackSchema
-);
-
-export default GrowthHacks;

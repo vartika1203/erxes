@@ -7,6 +7,7 @@ import {
 } from './utils';
 import { ACTIVITY_CONTENT_TYPES } from './definitions/constants';
 import { dealSchema, IDeal, IDealDocument } from './definitions/deals';
+import { IModels } from '../connectionResolver';
 
 export interface IDealModel extends Model<IDealDocument> {
   getDeal(_id: string): Promise<IDealDocument>;
@@ -16,7 +17,7 @@ export interface IDealModel extends Model<IDealDocument> {
   removeDeals(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadDealClass = () => {
+export const loadDealClass = ({ Deals }: IModels) => {
   class Deal {
     public static async getDeal(_id: string) {
       const deal = await Deals.findOne({ _id });
@@ -77,10 +78,3 @@ export const loadDealClass = () => {
 
   return dealSchema;
 };
-
-loadDealClass();
-
-// tslint:disable-next-line
-const Deals = model<IDealDocument, IDealModel>('deals', dealSchema);
-
-export default Deals;

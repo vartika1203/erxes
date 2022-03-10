@@ -1,4 +1,4 @@
-import { Model, model } from 'mongoose';
+import { Model } from 'mongoose';
 
 import {
   checklistItemSchema,
@@ -10,6 +10,7 @@ import {
 } from './definitions/checklists';
 import { putChecklistActivityLog } from '../logUtils';
 import { IUserDocument } from '@erxes/api-utils/src/types';
+import { IModels } from '../connectionResolver';
 
 export interface IChecklistModel extends Model<IChecklistDocument> {
   getChecklist(_id: string): Promise<IChecklistDocument>;
@@ -41,7 +42,7 @@ export interface IChecklistItemModel extends Model<IChecklistItemDocument> {
   ): Promise<IChecklistItemDocument>;
 }
 
-export const loadClass = () => {
+export const loadChecklistClass = ({ Checklists, ChecklistItems }: IModels) => {
   class Checklist {
     public static async getChecklist(_id: string) {
       const checklist = await Checklists.findOne({ _id });
@@ -135,7 +136,7 @@ export const loadClass = () => {
   return checklistSchema;
 };
 
-export const loadItemClass = () => {
+export const loadChecklistItemClass = ({ ChecklistItems }: IModels) => {
   class ChecklistItem {
     public static async getChecklistItem(_id: string) {
       const checklistItem = await ChecklistItems.findOne({ _id });
@@ -231,20 +232,3 @@ export const loadItemClass = () => {
 
   return checklistItemSchema;
 };
-
-loadClass();
-loadItemClass();
-
-// tslint:disable-next-line
-const Checklists = model<IChecklistDocument, IChecklistModel>(
-  'checklists',
-  checklistSchema
-);
-
-// tslint:disable-next-line
-const ChecklistItems = model<IChecklistItemDocument, IChecklistItemModel>(
-  'checklist_items',
-  checklistItemSchema
-);
-
-export { Checklists, ChecklistItems };
