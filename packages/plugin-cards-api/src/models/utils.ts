@@ -1,27 +1,19 @@
-import {
-  Boards,
-  Checklists,
-  Deals,
-  GrowthHacks,
-  Pipelines,
-  Stages,
-  Tasks,
-  Tickets
-} from '.';
 import { validSearchText } from '@erxes/api-utils/src';
 import { IItemCommonFields, IOrderInput } from './definitions/boards';
 import { BOARD_STATUSES, BOARD_TYPES } from './definitions/constants';
 
-import { InternalNotes } from '../apiCollections';
 import {
   sendConformityMessage,
   sendInboxRPCMessage,
   sendProductRPCMessage,
-  sendConfigRPCMessage
+  sendConfigRPCMessage,
+  removeInternalNotes
 } from '../messageBroker';
 import { configReplacer } from '../utils';
 import { putActivityLog } from '../logUtils';
 import { itemsAdd } from '../graphql/resolvers/mutations/utils';
+import { IModels } from '../connectionResolver';
+import { client as msgBroker } from '../messageBroker';
 
 interface ISetOrderParam {
   collection: any;
@@ -201,7 +193,7 @@ export const fillSearchTextItem = (
   return validSearchText([document.name || '', document.description || '']);
 };
 
-export const getCollection = (type: string) => {
+export const getCollection = ({ Deals, GrowthHacks, Tasks, Tickets }: IModels, type: string) => {
   let collection;
   let create;
   let update;
@@ -242,8 +234,8 @@ export const getCollection = (type: string) => {
   return { collection, create, update, remove };
 };
 
-export const getItem = async (type: string, doc: any) => {
-  const item = await getCollection(type).collection.findOne({ ...doc });
+export const getItem = async (models: IModels, type: string, doc: any) => {
+  const item = await getCollection(models, type).collection.findOne({ ...doc });
 
   if (!item) {
     throw new Error(`${type} not found`);
@@ -280,6 +272,7 @@ export const getCustomerIds = async (
 
 // Removes all board item related things
 export const destroyBoardItemRelations = async (
+  { Checklists }: IModels,
   contentTypeId: string,
   contentType: string
 ) => {
@@ -295,11 +288,11 @@ export const destroyBoardItemRelations = async (
     mainTypeId: contentTypeId
   });
 
-  await InternalNotes.deleteMany({ contentType, contentTypeId });
+  await removeInternalNotes("os", contentType, [contentTypeId]);
 };
 
 // Get board item link
-export const getBoardItemLink = async (stageId: string, itemId: string) => {
+export const getBoardItemLink = async ({ Stages, Pipelines, Boards }: IModels, stageId: string, itemId: string) => {
   const stage = await Stages.getStage(stageId);
   const pipeline = await Pipelines.getPipeline(stage.pipelineId);
   const board = await Boards.getBoard(pipeline.boardId);
@@ -327,6 +320,7 @@ const numberCalculator = (size: number, num?: any, skip?: boolean) => {
 };
 
 export const boardNumberGenerator = async (
+  { Pipelines }: IModels,
   config: string,
   size: string,
   skip: boolean,
@@ -362,7 +356,8 @@ export const boardNumberGenerator = async (
   return number;
 };
 
-export const generateBoardNumber = async (doc: IItemCommonFields) => {
+export const generateBoardNumber = async (models: IModels, doc: IItemCommonFields) => {
+  const { Stages, Pipelines } = models;
   const stage = await Stages.getStage(doc.stageId);
   const pipeline = await Pipelines.getPipeline(stage.pipelineId);
 
@@ -370,6 +365,7 @@ export const generateBoardNumber = async (doc: IItemCommonFields) => {
     const { numberSize, numberConfig = '' } = pipeline;
 
     const number = await boardNumberGenerator(
+      models,
       numberConfig,
       numberSize,
       false,
@@ -382,10 +378,11 @@ export const generateBoardNumber = async (doc: IItemCommonFields) => {
   return { updatedDoc: doc, pipeline };
 };
 
-export const createBoardItem = async (doc: IItemCommonFields, type: string) => {
-  const { collection } = await getCollection(type);
+export const createBoardItem = async (models: IModels, doc: IItemCommonFields, type: string) => {
+  const { Pipelines } = models;
+  const { collection } = await getCollection(models, type);
 
-  const response = await generateBoardNumber(doc);
+  const response = await generateBoardNumber(models, doc);
 
   const { pipeline, updatedDoc } = response;
 
@@ -403,7 +400,7 @@ export const createBoardItem = async (doc: IItemCommonFields, type: string) => {
     if (
       e.message === `E11000 duplicate key error dup key: { : "${doc.number}" }`
     ) {
-      await createBoardItem(doc, type);
+      await createBoardItem(models, doc, type);
     }
   }
 
@@ -467,7 +464,7 @@ const checkBookingConvert = async (productId: string) => {
   };
 };
 
-export const conversationConvertToCard = async args => {
+export const conversationConvertToCard = async (models: IModels, args) => {
   const {
     _id,
     type,
@@ -480,7 +477,7 @@ export const conversationConvertToCard = async args => {
     docModifier
   } = args;
 
-  const { collection, create, update } = getCollection(type);
+  const { collection, create, update } = getCollection(models, type);
 
   if (itemId) {
     const oldItem = await collection.findOne({ _id: itemId }).lean();

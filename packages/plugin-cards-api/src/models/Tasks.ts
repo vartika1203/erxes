@@ -18,7 +18,8 @@ export interface ITaskModel extends Model<ITaskDocument> {
   removeTasks(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadTaskClass = ({ Tasks }: IModels) => {
+export const loadTaskClass = (models: IModels) => {
+  const { Tasks } = models;
   class Task {
     /**
      * Retreives Task
@@ -47,7 +48,7 @@ export const loadTaskClass = ({ Tasks }: IModels) => {
         }
       }
 
-      return createBoardItem(doc, 'task');
+      return createBoardItem(models, doc, 'task');
     }
 
     /**
@@ -71,7 +72,7 @@ export const loadTaskClass = ({ Tasks }: IModels) => {
     public static async removeTasks(_ids: string[]) {
       // completely remove all related things
       for (const _id of _ids) {
-        await destroyBoardItemRelations(_id, ACTIVITY_CONTENT_TYPES.TASK);
+        await destroyBoardItemRelations(models, _id, ACTIVITY_CONTENT_TYPES.TASK);
       }
 
       return Tasks.deleteMany({ _id: { $in: _ids } });

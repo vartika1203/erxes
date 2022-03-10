@@ -17,7 +17,8 @@ export interface IDealModel extends Model<IDealDocument> {
   removeDeals(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadDealClass = ({ Deals }: IModels) => {
+export const loadDealClass = (models: IModels) => {
+  const { Deals } = models;
   class Deal {
     public static async getDeal(_id: string) {
       const deal = await Deals.findOne({ _id });
@@ -43,7 +44,7 @@ export const loadDealClass = ({ Deals }: IModels) => {
         }
       }
 
-      return createBoardItem(doc, 'deal');
+      return createBoardItem(models, doc, 'deal');
     }
 
     /**
@@ -67,7 +68,7 @@ export const loadDealClass = ({ Deals }: IModels) => {
     public static async removeDeals(_ids: string[]) {
       // completely remove all related things
       for (const _id of _ids) {
-        await destroyBoardItemRelations(_id, ACTIVITY_CONTENT_TYPES.DEAL);
+        await destroyBoardItemRelations(models, _id, ACTIVITY_CONTENT_TYPES.DEAL);
       }
 
       return Deals.deleteMany({ _id: { $in: _ids } });

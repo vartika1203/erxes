@@ -24,7 +24,6 @@ import {
 } from '../messageBroker';
 import { configReplacer } from '../utils';
 import { putActivityLog } from '../logUtils';
-import { Checklists } from '.';
 import { IModels } from '../connectionResolver';
 
 export interface IOrderInput {
@@ -36,24 +35,28 @@ export interface IOrderInput {
 type IPipelineStage = IStage & { _id: string };
 
 const removeStageWithItems = async (
-  { Stages }: IModels,
+  models: IModels,
   type: string,
   pipelineId: string,
   prevItemIds: string[] = []
 ) => {
+  const { Stages } = models;
+
   const selector = { pipelineId, _id: { $nin: prevItemIds } };
 
   const stageIds = await Stages.find(selector).distinct('_id');
 
-  const { collection } = getCollection(type);
+  const { collection } = getCollection(models, type);
 
   await collection.deleteMany({ stageId: { $in: stageIds } });
 
   return Stages.deleteMany(selector);
 };
 
-const removeItems = async (type: string, stageIds: string[]) => {
-  const { collection } = getCollection(type);
+const removeItems = async (models: IModels, type: string, stageIds: string[]) => {
+  const { Checklists } = models;
+
+  const { collection } = getCollection(models, type);
 
   const items = await collection.find(
     { stageId: { $in: stageIds } },
@@ -80,19 +83,20 @@ const removeItems = async (type: string, stageIds: string[]) => {
 };
 
 const removePipelineStagesWithItems = async (
-  { Stages }:IModels,
+  models :IModels,
   type: string,
   pipelineId: string
 ) => {
+  const { Stages } = models;
   const stageIds = await Stages.find({ pipelineId }).distinct('_id');
 
-  await removeItems(type, stageIds);
+  await removeItems(models, type, stageIds);
 
   return Stages.deleteMany({ pipelineId });
 };
 
-const removeStageItems = async (type: string, stageId: string) => {
-  await removeItems(type, [stageId]);
+const removeStageItems = async (models: IModels, type: string, stageId: string) => {
+  await removeItems(models, type, [stageId]);
 };
 
 const createOrUpdatePipelineStages = async (
@@ -172,7 +176,7 @@ const generateLastNum = async (models: IModels, doc: IPipeline) => {
     return pipeline.lastNum;
   }
 
-  const { collection } = await getCollection(doc.type);
+  const { collection } = await getCollection(models, doc.type);
 
   const item = await collection
     .findOne({
@@ -186,6 +190,7 @@ const generateLastNum = async (models: IModels, doc: IPipeline) => {
 
   // generate new number by new numberConfig
   const generatedNum = await boardNumberGenerator(
+    models,
     doc.numberConfig || '',
     doc.numberSize || '',
     true
@@ -279,7 +284,7 @@ export const loadBoardClass = (models: IModels) => {
         doc.startDate = startDate;
       }
 
-      const { collection } = getCollection(type);
+      const { collection } = getCollection(models, type);
 
       await collection.updateOne({ _id }, { $set: { timeTrack: doc } });
 
@@ -452,7 +457,8 @@ export interface IStageModel extends Model<IStageDocument> {
   updateOrder(orders: IOrderInput[]): Promise<IStageDocument[]>;
 }
 
-export const loadStageClass = ({ Stages, Pipelines }: IModels) => {
+export const loadStageClass = (models: IModels) => {
+  const { Stages, Pipelines } = models;
   class Stage {
     /*
      * Get a stage
@@ -494,7 +500,7 @@ export const loadStageClass = ({ Stages, Pipelines }: IModels) => {
       const stage = await Stages.getStage(_id);
       const pipeline = await Pipelines.getPipeline(stage.pipelineId);
 
-      await removeStageItems(pipeline.type, _id);
+      await removeStageItems(models, pipeline.type, _id);
 
       if (stage.formId) {
         // await Forms.removeForm(stage.formId);

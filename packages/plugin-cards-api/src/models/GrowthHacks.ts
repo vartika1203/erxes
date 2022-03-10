@@ -19,7 +19,8 @@ export interface IGrowthHackModel extends Model<IGrowthHackDocument> {
   ): Promise<IGrowthHackDocument>;
 }
 
-export const loadGrowthHackClass = ({ GrowthHacks }: IModels) => {
+export const loadGrowthHackClass = (models: IModels) => {
+  const { GrowthHacks } = models;
   class GrowthHack {
     public static async getGrowthHack(_id: string) {
       const growthHack = await GrowthHacks.findOne({ _id });
@@ -35,7 +36,7 @@ export const loadGrowthHackClass = ({ GrowthHacks }: IModels) => {
      * Create a growth hack
      */
     public static async createGrowthHack(doc: IGrowthHack) {
-      return createBoardItem(doc, 'growthHack');
+      return createBoardItem(models, doc, 'growthHack');
     }
 
     /**

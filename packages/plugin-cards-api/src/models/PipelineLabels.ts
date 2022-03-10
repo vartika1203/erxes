@@ -1,5 +1,4 @@
-import { Model, model } from 'mongoose';
-import { Pipelines } from '.';
+import { Model } from 'mongoose';
 import { getCollection } from './utils';
 import {
   IPipelineLabel,
@@ -31,7 +30,9 @@ export interface IPipelineLabelModel extends Model<IPipelineLabelDocument> {
   labelObject(params: ILabelObjectParams): void;
 }
 
-export const loadPipelineLabelClass = ({ PipelineLabels }: IModels) => {
+export const loadPipelineLabelClass = (models: IModels) => {
+
+  const { PipelineLabels, Pipelines } = models;
   class PipelineLabel {
     public static async getPipelineLabel(_id: string) {
       const pipelineLabel = await PipelineLabels.findOne({ _id });
@@ -130,7 +131,7 @@ export const loadPipelineLabelClass = ({ PipelineLabels }: IModels) => {
 
       const pipeline = await Pipelines.getPipeline(pipelineLabel.pipelineId);
 
-      const { collection } = getCollection(pipeline.type);
+      const { collection } = getCollection(models, pipeline.type);
 
       // delete labelId from collection that used labelId
       await collection.updateMany(
@@ -151,7 +152,7 @@ export const loadPipelineLabelClass = ({ PipelineLabels }: IModels) => {
     ) {
       const pipeline = await Pipelines.getPipeline(pipelineId);
 
-      const { collection } = getCollection(pipeline.type);
+      const { collection } = getCollection(models, pipeline.type);
 
       await PipelineLabels.labelObject({
         labelIds,

@@ -17,7 +17,8 @@ export interface ITicketModel extends Model<ITicketDocument> {
   removeTickets(_ids: string[]): Promise<{ n: number; ok: number }>;
 }
 
-export const loadTicketClass = ({ Tickets }: IModels) => {
+export const loadTicketClass = (models: IModels) => {
+  const { Tickets } = models;
   class Ticket {
     /**
      * Retreives Ticket
@@ -46,7 +47,7 @@ export const loadTicketClass = ({ Tickets }: IModels) => {
         }
       }
 
-      return createBoardItem(doc, 'ticket');
+      return createBoardItem(models, doc, 'ticket');
     }
 
     /**
@@ -74,7 +75,7 @@ export const loadTicketClass = ({ Tickets }: IModels) => {
     public static async removeTickets(_ids: string[]) {
       // completely remove all related things
       for (const _id of _ids) {
-        await destroyBoardItemRelations(_id, ACTIVITY_CONTENT_TYPES.TICKET);
+        await destroyBoardItemRelations(models, _id, ACTIVITY_CONTENT_TYPES.TICKET);
       }
 
       return Tickets.deleteMany({ _id: { $in: _ids } });
