@@ -9,6 +9,10 @@ export interface IFieldLogic {
   __typename?: string;
 }
 
+export interface ICustomPropertyText {
+  name: string;
+}
+
 export interface IField {
   _id: string;
   key?: string;
@@ -17,6 +21,7 @@ export interface IField {
   type: string;
   validation?: string;
   text?: string;
+  code?: string;
   content?: string;
   description?: string;
   options?: string[];
@@ -41,6 +46,7 @@ export interface IField {
   logicAction?: string;
   groupName?: string;
   pageNumber?: number;
+  showInCard?: boolean;
 }
 
 export interface IBoardSelectItem {
@@ -55,6 +61,7 @@ export interface IFieldGroup {
   contentType: string;
   order: React.ReactNode;
   description: string;
+  code: string;
   isVisible: boolean;
   isVisibleInDetail: boolean;
   isDefinedByErxes: boolean;
@@ -62,6 +69,8 @@ export interface IFieldGroup {
   lastUpdatedUserId: string;
   lastUpdatedUser: IUser;
   boardsPipelines?: IBoardSelectItem[];
+  visibility?: string;
+  memberIds?: string[];
 }
 
 export interface IContentTypeFields {
@@ -156,6 +165,8 @@ export type FieldsGroupsMutationVariables = {
   description: string;
   isVisible: boolean;
   isVisibleInDetail: boolean;
+  visibility: string;
+  memberIds: string[];
 };
 
 export type FieldsGroupsRemoveMutationResponse = {

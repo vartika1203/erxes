@@ -5,6 +5,7 @@ import Spinner from 'modules/common/components/Spinner';
 import { Alert, confirm, withProps } from 'modules/common/utils';
 import { queries as userQueries } from 'modules/settings/team/graphql';
 import { AllUsersQueryResponse } from 'modules/settings/team/types';
+import { ProductTemplatesQueryResponse } from '../../../settings/templates/types';
 import React from 'react';
 import { graphql } from 'react-apollo';
 import ErrorMsg from '../../../common/components/ErrorMsg';
@@ -20,6 +21,7 @@ import {
 } from '../../types';
 import { invalidateCache } from '../../utils';
 import { PipelineConsumer } from '../PipelineContext';
+import { ICustomPropertyText } from 'modules/settings/properties/types';
 
 type WrapperProps = {
   itemId: string;
@@ -31,6 +33,7 @@ type WrapperProps = {
   onRemove?: (itemId: string, stageId: string) => void;
   onUpdate?: (item: IItem, prevStageId: string) => void;
   hideHeader?: boolean;
+  customPropertyTexts?: ICustomPropertyText[];
 };
 
 type ContainerProps = {
@@ -43,6 +46,7 @@ type ContainerProps = {
 type FinalProps = {
   detailQuery: DetailQueryResponse;
   usersQuery: AllUsersQueryResponse;
+  productTemplatesQuery: ProductTemplatesQueryResponse;
   // Using this mutation to copy item in edit form
   addMutation: SaveMutation;
   editMutation: SaveMutation;
@@ -198,7 +202,12 @@ class EditFormContainer extends React.Component<FinalProps> {
   };
 
   render() {
-    const { usersQuery, detailQuery, options } = this.props;
+    const {
+      usersQuery,
+      detailQuery,
+      options,
+      productTemplatesQuery
+    } = this.props;
 
     if (usersQuery.loading || detailQuery.loading) {
       return <Spinner />;
@@ -210,6 +219,8 @@ class EditFormContainer extends React.Component<FinalProps> {
 
     const users = usersQuery.allUsers;
     const item = detailQuery[options.queriesName.detailQuery];
+    const productTemplates =
+      productTemplatesQuery[options.queriesName.productTemplatesQuery];
 
     if (!item) {
       return null;
@@ -223,7 +234,8 @@ class EditFormContainer extends React.Component<FinalProps> {
       saveItem: this.saveItem,
       copyItem: this.copyItem,
       updateTimeTrack: this.updateTimeTrack,
-      users
+      users,
+      productTemplates
     };
 
     const EditForm = options.EditForm;
@@ -264,6 +276,18 @@ const withQuery = (props: ContainerProps) => {
         gql(userQueries.allUsers),
         {
           name: 'usersQuery'
+        }
+      ),
+      graphql<ContainerProps, ProductTemplatesQueryResponse>(
+        gql(options.queries.productTemplatesQuery),
+        {
+          name: 'productTemplatesQuery',
+          options: {
+            variables: {
+              status: 'active'
+            },
+            fetchPolicy: 'network-only'
+          }
         }
       ),
       graphql<ContainerProps, SaveMutation, IItemParams>(

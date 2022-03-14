@@ -38,6 +38,7 @@ export const fieldsTypes = `
     contentType: String!
     contentTypeId: String
     name: String
+    code: String
     isVisible: Boolean
     isVisibleInDetail: Boolean
     canHide: Boolean
@@ -48,6 +49,7 @@ export const fieldsTypes = `
     associatedField: Field
     logics: [Logic]
     locationOptions: [LocationOption]
+    showInCard: Boolean
     ${fieldCommonFields}
   }
 
@@ -97,6 +99,7 @@ const fieldsCommonFields = `
   validation: String
   text: String
   description: String
+  code: String
   options: [String]
   locationOptions: [LocationOptionInput]
   isRequired: Boolean
@@ -106,6 +109,7 @@ const fieldsCommonFields = `
   canHide: Boolean
   associatedFieldId: String
   logic: LogicInput
+  showInCard: Boolean
 `;
 
 export const fieldsMutations = `
@@ -136,9 +140,13 @@ export const fieldsGroupsTypes = `
     name: String
     contentType: String
     order: Int
+    code: String
     description: String
     isVisible: Boolean
     isVisibleInDetail: Boolean
+    visibility: String
+    memberIds: [String]
+    departmentIds: [String]
     isDefinedByErxes: Boolean
     fields: [Field]
     lastUpdatedUserId: String
@@ -152,9 +160,13 @@ const fieldsGroupsCommonFields = `
   contentType: String
   order: Int
   description: String
+  code: String
   isVisible: Boolean
   isVisibleInDetail: Boolean
   boardsPipelines: [BoardsPipelinesInput]
+  visibility: String
+  memberIds: [String]
+  departmentIds: [String]
 `;
 
 export const fieldsGroupsQueries = `
