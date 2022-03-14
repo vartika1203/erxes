@@ -106,6 +106,7 @@ class Form extends React.Component<Props, State> {
     const { awards = [] } = lotteryCompaign;
     awards.push({
       _id: Math.random().toString(),
+      name: '',
       count: 0,
       voucherCompaignId: ''
     })
@@ -127,6 +128,11 @@ class Form extends React.Component<Props, State> {
       lotteryCompaign.awards = (lotteryCompaign.awards || []).map(a => a._id === award._id && award || a)
       this.setState({ lotteryCompaign });
     }
+    const onChangeName = e => {
+      e.preventDefault();
+      const value = e.target.value
+      changeAward('name', value)
+    };
     const onChangeCount = e => {
       e.preventDefault();
       const value = e.target.value
@@ -140,6 +146,15 @@ class Form extends React.Component<Props, State> {
 
     return (
       <FormWrapper key={award._id}>
+        <FormColumn>
+          <FormControl
+            {...formProps}
+            name="name"
+            defaultValue={award.name}
+            required={true}
+            onChange={onChangeName}
+          />
+        </FormColumn>
         <FormColumn>
           <Select
             placeholder={__('Choose voucher')}
@@ -358,6 +373,9 @@ class Form extends React.Component<Props, State> {
           </FormGroup>
 
           <FormWrapper>
+            <FormColumn>
+              <ControlLabel required={true}>Name</ControlLabel>
+            </FormColumn>
             <FormColumn>
               <ControlLabel required={true}>voucher Compaign</ControlLabel>
             </FormColumn>

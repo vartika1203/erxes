@@ -20,7 +20,7 @@ export default [
   {
     name: 'doSpin',
     handler: async (_root, _id, { models }) => {
-      return models.Spins.doSpin(_id);
+      return models.Spins.doSpin(models, {spinId: _id});
     }
   },
   {

@@ -56,7 +56,7 @@ class Form extends React.Component<Props, State> {
     }
 
     spinCompaign.buyScore = Number(spinCompaign.buyScore || 0);
-    spinCompaign.awards = spinCompaign.awards && spinCompaign.awards.sort((a, b) => (a.count - b.count)) || []
+    spinCompaign.awards = spinCompaign.awards && spinCompaign.awards.sort((a, b) => (a.probability - b.probability)) || []
 
     return {
       ...finalValues,
@@ -99,6 +99,7 @@ class Form extends React.Component<Props, State> {
     const { awards = [] } = spinCompaign;
     awards.push({
       _id: Math.random().toString(),
+      name: '',
       probability: 0,
       voucherCompaignId: ''
     })
@@ -120,6 +121,11 @@ class Form extends React.Component<Props, State> {
       spinCompaign.awards = (spinCompaign.awards || []).map(a => a._id === award._id && award || a)
       this.setState({ spinCompaign });
     }
+    const onChangeName = e => {
+      e.preventDefault();
+      const value = e.target.value
+      changeAward('name', value)
+    };
     const onChangeProbability = e => {
       e.preventDefault();
       const value = e.target.value
@@ -133,6 +139,15 @@ class Form extends React.Component<Props, State> {
 
     return (
       <FormWrapper key={award._id}>
+        <FormColumn>
+          <FormControl
+            {...formProps}
+            name="name"
+            defaultValue={award.name}
+            required={true}
+            onChange={onChangeName}
+          />
+        </FormColumn>
         <FormColumn>
           <Select
             placeholder={__('Choose voucher')}
@@ -276,6 +291,9 @@ class Form extends React.Component<Props, State> {
           </FormWrapper>
 
           <FormWrapper>
+            <FormColumn>
+              <ControlLabel required={true}>Name</ControlLabel>
+            </FormColumn>
             <FormColumn>
               <ControlLabel required={true}>voucher Compaign</ControlLabel>
             </FormColumn>

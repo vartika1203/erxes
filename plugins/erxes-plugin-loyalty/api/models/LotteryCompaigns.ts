@@ -4,6 +4,7 @@ import { randomBetween, getRandomNumber } from './utils';
 
 const lotteryAward = {
   _id: { type: String },
+  name: { type: String },
   voucherCompaignId: { type: String },
   count: { type: Number, min: 0 },
   wonLotteryIds: { type: [String], optional: true }
