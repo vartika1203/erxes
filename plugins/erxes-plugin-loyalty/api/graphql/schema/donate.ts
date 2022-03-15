@@ -24,6 +24,7 @@ export const queries = `
 
 export const mutations = `
   donatesAdd(${DonateDoc}): Donate
-  donatesEdit(_id: String!, ${DonateDoc}): Donate
   donatesRemove(_ids: [String]): JSON
+  cpDonatesAdd(${DonateDoc}): Donate
+  cpDonatesRemove(_ids: [String]): JSON
 `;

@@ -6,13 +6,19 @@ export default [
     }
   },
   {
-    name: 'donatesEdit',
-    handler: async (_root, doc, { models, user }) => {
-      return models.Donates.updateDonate(models, doc._id, { ...doc, userId: user._id });
+    name: 'donatesRemove',
+    handler: async (_root, doc, { models }) => {
+      return models.Donates.removeDonates(models, doc._ids);
     }
   },
   {
-    name: 'donatesRemove',
+    name: 'cpDonatesAdd',
+    handler: async (_root, doc, { models }) => {
+      return models.Donates.createDonate(models, { ...doc });
+    }
+  },
+  {
+    name: 'cpDonatesRemove',
     handler: async (_root, doc, { models }) => {
       return models.Donates.removeDonates(models, doc._ids);
     }
