@@ -2,6 +2,7 @@ import { ICommonTypes } from "../commonTypes";
 
 export type ILotteryCompaignAward = {
   _id: string,
+  name?: string,
   count?: number,
   voucherCompaignId?: string
 }

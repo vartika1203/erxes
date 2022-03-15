@@ -79,7 +79,7 @@ export class Lottery {
     }
     await changeScoreOwner(models, { ownerType, ownerId, changeScore: -1 * lotteryCompaign.buyScore * count });
 
-    return models.createLottery(models, { compaignId, ownerType, ownerId });
+    return models.Lotteries.createLottery(models, { compaignId, ownerType, ownerId });
   }
 
   public static async removeLotteries(models, _ids: string[]) {

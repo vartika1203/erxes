@@ -3,6 +3,7 @@ import { COMPAIGN_STATUS } from './Constants';
 
 const spinAward = {
   _id: { type: String },
+  name: { type: String },
   voucherCompaignId: { type: String },
   probability: { type: Number, max: 100, min: 0 }
 }

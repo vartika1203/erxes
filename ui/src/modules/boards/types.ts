@@ -12,6 +12,7 @@ import { IUser } from '../auth/types';
 import { ICompany } from '../companies/types';
 import { ICustomer } from '../customers/types';
 import { IActivityLog } from 'modules/activityLogs/types';
+import { ICustomPropertyText } from 'modules/settings/properties/types';
 
 export interface IOptions {
   EditForm: any;
@@ -24,6 +25,7 @@ export interface IOptions {
     detailQuery: string;
     archivedItemsQuery: string;
     archivedItemsCountQuery: string;
+    productTemplatesQuery: string;
   };
   mutationsName: {
     addMutation: string;
@@ -40,6 +42,7 @@ export interface IOptions {
     detailQuery: string;
     archivedItemsQuery: string;
     archivedItemsCountQuery: string;
+    productTemplatesQuery: string;
   };
   mutations: {
     addMutation: string;
@@ -160,6 +163,7 @@ export interface IItem {
   score?: number;
   number?: string;
   relations: any[];
+  customPropertyTexts?: ICustomPropertyText[];
 }
 
 export interface IDraggableLocation {

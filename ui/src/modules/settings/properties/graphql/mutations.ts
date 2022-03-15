@@ -3,9 +3,13 @@ const commonFields = `
   $contentType: String,
   $order: Int,
   $description: String,
+  $code: String,
   $isVisible: Boolean,
   $isVisibleInDetail: Boolean,
   $boardsPipelines: [BoardsPipelinesInput],
+  $visibility: String,
+  $memberIds: [String]
+  $departmentIds: [String]
 `;
 
 const commonTypes = `
@@ -13,9 +17,13 @@ const commonTypes = `
   contentType: $contentType,
   order: $order,
   description: $description,
+  code: $code,
   isVisible: $isVisible,
   isVisibleInDetail: $isVisibleInDetail,
-  boardsPipelines: $boardsPipelines
+  boardsPipelines: $boardsPipelines,
+  visibility: $visibility,
+  memberIds: $memberIds,
+  departmentIds: $departmentIds
 `;
 
 const updateVisibleFields = `
@@ -65,12 +73,14 @@ const commonVariables = `
   $validation: String,
   $text: String,
   $description: String,
+  $code: String,
   $options: [String],
   $locationOptions: [LocationOptionInput]
   $isRequired: Boolean,
   $order: Int,
   $groupId: String,
   $isVisible: Boolean,
+  $showInCard: Boolean,
 `;
 
 const commonParams = `
@@ -78,12 +88,14 @@ const commonParams = `
   validation: $validation,
   text: $text,
   description: $description,
+  code: $code,
   options: $options,
   locationOptions: $locationOptions,
   isRequired: $isRequired,
   order: $order,
   groupId: $groupId,
   isVisible: $isVisible,
+  showInCard: $showInCard
 `;
 
 const fieldsAdd = `

@@ -2,6 +2,7 @@ import { ICommonTypes } from "../commonTypes";
 
 export type ISpinCompaignAward = {
   _id: string,
+  name?: string,
   probability?: number,
   voucherCompaignId?: string
 }
