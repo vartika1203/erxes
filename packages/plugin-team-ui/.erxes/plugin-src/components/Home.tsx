@@ -54,6 +54,7 @@ export default function Home(props: Props) {
   let timer;
   const { queryParams, history, loading, configsEnvQuery = {} } = props;
   const [searchValue, setSearchValue] = useState("");
+  const [active, setActive]= useState(true);
 
   const search = (e) => {
     if (timer) {
@@ -77,6 +78,7 @@ export default function Home(props: Props) {
 
   const onStatusChange = (status: { label: string; value: boolean }) => {
     router.setParams(history, { isActive: status.value });
+    setActive(status.value);
   };
 
   const renderBrandChooser = () => {
@@ -102,7 +104,7 @@ export default function Home(props: Props) {
       </FlexItem>
     );
   };
-console.log("cjsjcwsjcows", queryParams.isActive )
+
   const renderFilter = (
     <FilterContainer style={{ paddingBottom: 0 }}>
       <FlexRow>
@@ -121,7 +123,7 @@ console.log("cjsjcwsjcows", queryParams.isActive )
           </FlexItem>
         </SearchBar>
         <SearchBar width="160px">
-          <ActiveColor active={queryParams.isActive || true}/>
+        <ActiveColor active={active}/>
         <FlexItem style={{ maxWidth: "112px" }}>
           <Select
             placeholder={__("Choose status")}
@@ -144,7 +146,6 @@ console.log("cjsjcwsjcows", queryParams.isActive )
       </FlexRow>
     </FilterContainer>
   );
-  console.log("jcows", queryParams.isActive )
 
   const renderInvitationForm = (formProps) => {
     const { usersGroups, renderButton } = props;

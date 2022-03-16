@@ -1,6 +1,5 @@
 import { AppConsumer } from "coreui/appContext";
 import { IUser } from "@erxes/ui/src/auth/types";
-import ActionButtons from "@erxes/ui/src/components/ActionButtons";
 import Button from "@erxes/ui/src/components/Button";
 import Icon from "@erxes/ui/src/components/Icon";
 import ModalTrigger from "@erxes/ui/src/components/ModalTrigger";
