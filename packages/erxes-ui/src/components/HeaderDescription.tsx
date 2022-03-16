@@ -12,7 +12,7 @@ const MainDescription = styledTS<{
   expand: boolean;
 }>(styled.div)`
   width: 100%;
-  padding: 10px;
+  padding: 10px 20px 20px 20px;
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -20,10 +20,11 @@ const MainDescription = styledTS<{
   font-size: 12px;
   position: relative;
   cursor: pointer;
-  margin-bottom: 13px;
 
   ${props => css`
-    height: ${props.expand === false && '0px'};
+    height: ${props.expand === false && '50px'};
+    padding-top: 15px;
+    margin-bottom: 8px;
   `}
 
   h4 {

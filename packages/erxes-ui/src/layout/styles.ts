@@ -114,9 +114,10 @@ const ContenFooter = styled.div`
   }
 `;
 
-const HeaderItems = styledTS<{ rightAligned?: boolean }>(styled.div)`
+const HeaderItems = styledTS<{ rightAligned?: boolean, width?: string }>(styled.div)`
   align-self: center;
   margin-left: ${props => props.rightAligned && 'auto'};
+  width: ${props => props.width && props.width};
 
   > * + * {
     margin-left: ${dimensions.unitSpacing}px;

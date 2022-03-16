@@ -1,24 +1,29 @@
-import { AppConsumer } from 'coreui/appContext';
-import { IUser } from '@erxes/ui/src/auth/types';
-import ActionButtons from '@erxes/ui/src/components/ActionButtons';
-import Button from '@erxes/ui/src/components/Button';
-import Icon from '@erxes/ui/src/components/Icon';
-import ModalTrigger from '@erxes/ui/src/components/ModalTrigger';
-import NameCard from '@erxes/ui/src/components/nameCard/NameCard';
-import Table from '@erxes/ui/src/components/table';
-import TextInfo from '@erxes/ui/src/components/TextInfo';
-import Tip from '@erxes/ui/src/components/Tip';
-import Toggle from '@erxes/ui/src/components/Toggle';
-import { IButtonMutateProps } from '@erxes/ui/src/types';
-import { __ } from 'coreui/utils';
-import Pagination from '@erxes/ui/src/components/pagination/Pagination';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { ICommonFormProps, ICommonListProps } from '@erxes/ui-settings/src/common/types';
-import UserForm from '@erxes/ui-team/src/containers/UserForm';
-import UserResetPasswordForm from '@erxes/ui-team/src/containers/UserResetPasswordForm';
-import { UserAvatar } from '../styles';
-import { ControlLabel } from '@erxes/ui/src/components/form'; 
+import { AppConsumer } from "coreui/appContext";
+import { IUser } from "@erxes/ui/src/auth/types";
+import ActionButtons from "@erxes/ui/src/components/ActionButtons";
+import Button from "@erxes/ui/src/components/Button";
+import Icon from "@erxes/ui/src/components/Icon";
+import ModalTrigger from "@erxes/ui/src/components/ModalTrigger";
+import NameCard from "@erxes/ui/src/components/nameCard/NameCard";
+import Table from "@erxes/ui/src/components/table";
+import TextInfo from "@erxes/ui/src/components/TextInfo";
+import Tip from "@erxes/ui/src/components/Tip";
+import Toggle from "@erxes/ui/src/components/Toggle";
+import { IButtonMutateProps } from "@erxes/ui/src/types";
+import { __ } from "coreui/utils";
+import Pagination from "@erxes/ui/src/components/pagination/Pagination";
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  ICommonFormProps,
+  ICommonListProps,
+} from "@erxes/ui-settings/src/common/types";
+import UserForm from "@erxes/ui-team/src/containers/UserForm";
+import UserResetPasswordForm from "@erxes/ui-team/src/containers/UserResetPasswordForm";
+import { UserAvatar } from "../styles";
+import { ControlLabel } from "@erxes/ui/src/components/form";
+import DropdownToggle from "@erxes/ui/src/components/DropdownToggle";
+import Dropdown from "react-bootstrap/Dropdown";
 
 type IProps = {
   changeStatus: (id: string) => void;
@@ -41,19 +46,19 @@ class UserList extends React.Component<FinalProps, States> {
     super(props);
 
     const {
-      queryParams: { searchValue }
+      queryParams: { searchValue },
     } = props;
 
     this.state = {
-      searchValue: searchValue || ''
+      searchValue: searchValue || "",
     };
   }
 
-  onAvatarClick = object => {
+  onAvatarClick = (object) => {
     return this.props.history.push(`team/details/${object._id}`);
   };
 
-  renderForm = props => {
+  renderForm = (props) => {
     return <UserForm {...props} renderButton={this.props.renderButton} />;
   };
 
@@ -62,23 +67,17 @@ class UserList extends React.Component<FinalProps, States> {
 
     if (user._id === currentUser._id) {
       return (
-        <Tip text={__('View Profile')} placement="top">
-          <Link to="/profile">
-            <Icon icon="user-6" size={15} />
-          </Link>
+        <Tip text={__("View Profile")} placement="top">
+          <Dropdown.Item>
+            <Link to="/profile">{__("View Profile")}</Link>
+          </Dropdown.Item>
         </Tip>
       );
     }
 
-    const editTrigger = (
-      <Button btnStyle="link">
-        <Tip text={__('Edit')} placement="top">
-          <Icon icon="pen-1" size={15} />
-        </Tip>
-      </Button>
-    );
+    const editTrigger = <Dropdown.Item>{__("Edit Action")}</Dropdown.Item>;
 
-    const content = props => {
+    const content = (props) => {
       return this.renderForm({ ...props, object: user });
     };
 
@@ -92,20 +91,14 @@ class UserList extends React.Component<FinalProps, States> {
     );
   };
 
-  renderResetPasswordForm = props => {
+  renderResetPasswordForm = (props) => {
     return <UserResetPasswordForm {...props} />;
   };
 
   renderResetPassword = (user: IUser) => {
-    const editTrigger = (
-      <Button btnStyle="link">
-        <Tip text={__('Reset Member Password')} placement="top">
-          <Icon icon="lock-alt" size={15} />
-        </Tip>
-      </Button>
-    );
+    const editTrigger = <Dropdown.Item>{__("Reset Password")}</Dropdown.Item>;
 
-    const content = props => {
+    const content = (props) => {
       return this.renderResetPasswordForm({ ...props, object: user });
     };
 
@@ -123,21 +116,15 @@ class UserList extends React.Component<FinalProps, States> {
       this.props.resendInvitation(user.email);
     };
 
-    if (user.status !== 'Not verified') {
+    if (user.status !== "Not verified") {
       return null;
     }
 
-    return (
-      <Button btnStyle="link" onClick={onClick}>
-        <Tip text={__('Resend')} placement="top">
-          <Icon icon="redo" size={15} />
-        </Tip>
-      </Button>
-    );
+    return <Dropdown.Item onClick={onClick}>{__("Resend")}</Dropdown.Item>;
   }
 
   renderRows({ objects }: { objects: IUser[] }) {
-    return objects.map(object => {
+    return objects.map((object) => {
       const onClick = () => this.onAvatarClick(object);
       const onChange = () => this.props.changeStatus(object._id);
 
@@ -148,45 +135,69 @@ class UserList extends React.Component<FinalProps, States> {
           </UserAvatar>
           <td>
             <TextInfo
-              textStyle={object.status === 'Verified' ? 'success' : 'warning'}
+              textStyle={object.status === "Verified" ? "success" : "warning"}
             >
-              {object.status || 'Verified'}
+              {object.status || "Verified"}
             </TextInfo>
           </td>
           <td>{object.email}</td>
-          <td>
+          <td style={{width: 3}}>
             <Toggle
               defaultChecked={object.isActive}
               icons={{
                 checked: <span>Yes</span>,
-                unchecked: <span>No</span>
+                unchecked: <span>No</span>,
               }}
               onChange={onChange}
             />
-          </td>
-          <td>
-            <ActionButtons>
-              {this.renderResendInvitation(object)}
-              {this.renderEditAction(object)}
-              {this.renderResetPassword(object)}
-            </ActionButtons>
+            </td><td style={{width: 3}}>
+            <Dropdown alignRight={true}>
+              <Dropdown.Toggle as={DropdownToggle} id="dropdown-team-member">
+                <Button btnStyle="link">
+                  <Tip text={__("Actions")} placement="top">
+                    <Icon icon="ellipsis-v" size={20} />
+                  </Tip>
+                </Button>
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {this.renderResendInvitation(object)}
+                {this.renderEditAction(object)}
+                {this.renderResetPassword(object)}
+              </Dropdown.Menu>
+            </Dropdown>
           </td>
         </tr>
       );
     });
   }
 
-  renderContent = props => {
+  renderContent = (props) => {
     return (
       <>
         <Table>
-          <thead style={{padding: "5px 0"}}>
+          <thead style={{ padding: "5px 0" }}>
             <tr>
-              <th><ControlLabel bold={true} uppercase={false}>{__('Full name')}</ControlLabel></th>
-              <th><ControlLabel bold={true} uppercase={false}>{__('Invitation status')}</ControlLabel></th>
-              <th><ControlLabel bold={true} uppercase={false}>{__('Email')}</ControlLabel></th>
-              <th><ControlLabel bold={true} uppercase={false}>{__('Status')}</ControlLabel></th>
-              <th><ControlLabel bold={true} uppercase={false}>{__('Actions')}</ControlLabel></th>
+              <th>
+                <ControlLabel bold={true} uppercase={false}>
+                  {__("Full name")}
+                </ControlLabel>
+              </th>
+              <th>
+                <ControlLabel bold={true} uppercase={false}>
+                  {__("Invitation status")}
+                </ControlLabel>
+              </th>
+              <th>
+                <ControlLabel bold={true} uppercase={false}>
+                  {__("Email")}
+                </ControlLabel>
+              </th>
+              <th/>
+              <th>
+                <ControlLabel bold={true} uppercase={false}>
+                  {__("Status")}
+                </ControlLabel>
+              </th>
             </tr>
           </thead>
           <tbody>{this.renderRows(props)}</tbody>
@@ -204,9 +215,9 @@ class UserList extends React.Component<FinalProps, States> {
 const WithConsumer = (props: IProps & ICommonListProps & ICommonFormProps) => {
   return (
     <AppConsumer>
-      {({ currentUser }) => 
+      {({ currentUser }) => (
         <UserList {...props} currentUser={currentUser || ({} as IUser)} />
-      }
+      )}
     </AppConsumer>
   );
 };

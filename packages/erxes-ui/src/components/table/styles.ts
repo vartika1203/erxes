@@ -21,7 +21,7 @@ const StyledTable = styledTS<{
 
     th,
     td {
-      border-top: 1px solid ${colors.borderPrimary};
+      border-top: 1px solid ${colors.borderDarker};
       color: ${colors.textPrimary};
       padding: ${dimensions.unitSpacing - 2}px;
       display: table-cell;
