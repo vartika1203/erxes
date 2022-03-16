@@ -12,7 +12,7 @@ export const types = `
 `;
 
 export const queries = `
-  loyalties(ownerType: String ownerId: String): Loyalty
+  loyalties(ownerType: String ownerId: String, statuses: [String]): Loyalty
   checkLoyalties(ownerType: String, ownerId: String, products: JSON): JSON
 `;
 

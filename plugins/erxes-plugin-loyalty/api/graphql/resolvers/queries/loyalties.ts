@@ -13,7 +13,9 @@ export default [
     name: 'loyalties',
     handler: async (_root, params, { models }) => {
       const score = (await getOwner(models, params.ownerType, params.ownerType) || {}).score || 0;
-      const filter = { ...params, statuses: ['new'] }
+      const filter: any = { ownerType: params.ownerType, ownerId: params.ownerId }
+
+      filter.statuses = (params.statuses && params.statuses.length ) ? params.statuses : ['new']
 
       return {
         ownerId: params.ownerId,
