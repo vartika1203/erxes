@@ -4,6 +4,8 @@ export const types = `
   type Donate {
     ${commonTypes}
     donateScore: Float
+    awardId: String
+    voucherId: String
   }
 
   type DonateMain {

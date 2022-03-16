@@ -114,7 +114,7 @@ export class Spin {
 
     if (!interval) {
       await models.updateOne({ _id: spinId }, { status: SPIN_STATUS.LOSS, usedAt: new Date() });
-      return {}
+      return models.Spins.getSpin(models, spinId);
     }
 
     const award = awards.find(a => a._id === interval.awardId);

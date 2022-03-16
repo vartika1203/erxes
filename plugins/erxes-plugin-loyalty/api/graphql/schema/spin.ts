@@ -4,6 +4,8 @@ export const types = `
   type Spin {
     ${commonTypes}
     status: String
+    awardId: String
+    voucherId: String
   }
 
   type SpinMain {

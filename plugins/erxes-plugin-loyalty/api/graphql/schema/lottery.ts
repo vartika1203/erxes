@@ -5,6 +5,8 @@ export const types = `
     ${commonTypes}
     status: String
     number: String
+    awardId: String
+    voucherId: String
   }
 
   type LotteryMain {

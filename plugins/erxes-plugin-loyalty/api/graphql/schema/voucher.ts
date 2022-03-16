@@ -4,6 +4,7 @@ export const types = `
   type Voucher {
     ${commonTypes}
     status: String
+    bonusInfo: JSON
   }
 
   type VoucherMain {
