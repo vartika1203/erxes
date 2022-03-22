@@ -1,4 +1,3 @@
-import { ISocialPayConfig } from './../../../ui/src/modules/leads/types';
 import {
   Brands,
   Companies,
@@ -26,6 +25,7 @@ import { IFormOrderInfo } from './types';
 import SocialPayInvoices from '../db/models/SocialPayInvoice';
 import FormOrders from '../db/models/FormOrders';
 import * as crypto from 'crypto';
+import { ISocialPayConfig } from '../db/models/definitions/integrations';
 
 export const getOrCreateEngageMessage = async (
   integrationId: string,
@@ -693,9 +693,11 @@ export const getOrderInfo = async (
     });
   }
 
-  await settleOrder(integrationId, formId, customerId, orderInfo);
-
-  return orderInfo;
+  try {
+    return await settleOrder(integrationId, formId, customerId, orderInfo);
+  } catch (e) {
+    throw new Error(e.message);
+  }
 };
 
 export const makeInvoiceNo = length => {
@@ -708,15 +710,14 @@ export const makeInvoiceNo = length => {
   return result;
 };
 
-export const socialPayInvoicePhone = async (body: any, url: string) => {
+export const socialPayInvoice = async (body: any, url: string) => {
   const response = await sendRequest({
-    url: `${url}pos/invoice/phone`,
+    url,
     method: 'POST',
     body,
     redirect: 'follow'
   });
 
-  console.log('response: ', response);
   return response;
 };
 
@@ -725,7 +726,7 @@ export const hmac256 = (key, message) => {
   return hash.digest('hex');
 };
 
-export const settleOrder = async (
+const settleOrder = async (
   formId: string,
   integrationId: string,
   customerId: string,
@@ -735,7 +736,12 @@ export const settleOrder = async (
   const { amount, phone, paymentType, items } = orderInfo;
 
   if (paymentType === 'socialPay') {
-    const { terminal, key, url } = orderInfo.paymentConfig as ISocialPayConfig;
+    const {
+      terminal,
+      key,
+      url,
+      useQrCode
+    } = orderInfo.paymentConfig as ISocialPayConfig;
     const invoiceNo = await makeInvoiceNo(32);
 
     invoice = await SocialPayInvoices.createInvoice({
@@ -745,15 +751,56 @@ export const settleOrder = async (
       phone
     });
 
-    const requestBody = {
+    const requestBody: any = {
       amount,
-      checksum: await hmac256(key, terminal + invoiceNo + amount + phone),
+      checksum: await hmac256(key, terminal + invoiceNo + amount),
       invoice: invoiceNo,
-      phone,
       terminal
     };
 
-    await socialPayInvoicePhone(requestBody, url || '');
+    let requestUrl = `${url}pos/invoice/qr`;
+
+    if (!useQrCode) {
+      requestUrl = `${url}pos/invoice/phone`;
+
+      requestBody.phone = phone;
+      requestBody.checksum = await hmac256(
+        key,
+        terminal + invoiceNo + amount + phone
+      );
+    }
+
+    // response:  {
+    //   header: { code: 200, status: 'success' },
+    //   body: {
+    //     response: {
+    //       desc: 'Төлбөрийн мэдээлэл амжилттай илгээгдлээ.',
+    //       status: 'SUCCESS'
+    //     }
+    //   }
+    // }
+
+    // response:  {
+    //   header: { code: 200, status: 'success' },
+    //   body: {
+    //     response: {
+    //       desc: 'socialpay-payment://key=DVclDuoRh53Z9zScbZ5ydg568yxw8ehXi0gbJiqTYyAeHZf3jPN7+rnQBUEYhM+MJlLa7cLAuV/FAr32quPrzMZwMc1PvHiUM8eZdCb5rUZmM15QWDPhX1XWmFrb6DC+',
+    //       status: 'SUCCESS'
+    //     }
+    //   }
+    // }
+
+    try {
+      const { body } = await socialPayInvoice(requestBody, requestUrl || '');
+      const { response } = body;
+      if (response.status !== 'SUCCESS') {
+        throw new Error(response.desc);
+      }
+
+      return { socialPayResponse: response.desc };
+    } catch (e) {
+      throw new Error(e.message);
+    }
   }
 
   const order = await FormOrders.createOrder({

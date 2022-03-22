@@ -29,6 +29,7 @@ export const types = `
     messageId: String
     customerId: String
     userId: String
+    socialPayResponse: String
   }
 
   type Error {

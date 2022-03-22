@@ -121,6 +121,7 @@ export interface ISocialPayConfig {
   key: string;
   url: string;
   pushNotification: string;
+  useQrCode: boolean;
 }
 
 export interface IGolomtConfig {

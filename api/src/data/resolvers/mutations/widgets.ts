@@ -139,14 +139,17 @@ const createFormConversation = async (
 ) => {
   const { integrationId, formId, submissions } = args;
 
-  const res = await getOrderInfo(
-    integrationId,
-    formId,
-    args.cachedCustomerId,
-    submissions
-  );
+  let orderResponse: any = {};
 
-  if (res.paymentType !== 'none' || res.paymentConfig) {
+  try {
+    orderResponse = await getOrderInfo(
+      integrationId,
+      formId,
+      args.cachedCustomerId,
+      submissions
+    );
+  } catch (e) {
+    return { status: 'error', errors: [e.message] };
   }
 
   const form = await Forms.findOne({ _id: formId });
@@ -235,7 +238,8 @@ const createFormConversation = async (
   return {
     status: 'ok',
     messageId: message._id,
-    customerId: cachedCustomer._id
+    customerId: cachedCustomer._id,
+    ...orderResponse
   };
 };
 

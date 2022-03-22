@@ -1,4 +1,4 @@
-import { IIntegration } from '../types';
+import { IIntegration } from "../types";
 
 export interface IConnectResponse {
   form: IForm;
@@ -106,6 +106,7 @@ export interface IFormDoc {
 export interface ISaveFormResponse {
   status: string;
   errors?: IFieldError[];
+  socialPayResponse?: string;
 }
 
 export interface ILocationOption {
