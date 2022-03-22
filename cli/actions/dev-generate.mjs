@@ -16,9 +16,11 @@ WORKDIR /app
 function createStatic() {
   if (!fs.existsSync("./.dev")) {
     fs.mkdirSync("./.dev");
+    console.log(chalk.green("Create dir ./.dev"))
   }
 
   fs.writeFileSync("./.dev/Dockerfile", dockerfile);
+  console.log(chalk.green("Create file ./.dev/Dockerfile"))
 }
 
 async function readConfig() {
@@ -28,6 +30,8 @@ async function readConfig() {
   }
   const yamlString = fs.readFileSync("./erxes.config.dev.yml").toString();
   const erxesConfig = yaml.parse(yamlString);
+
+  console.log(chalk.green("Read erxes config from ./erxes.config.dev.yml"));
   return erxesConfig;
 }
 
@@ -66,4 +70,6 @@ async function generateDockerCompose(erxesConfig) {
   const yamlString = yaml.stringify(dockerComposeConfig);
 
   fs.writeFileSync("./.dev/docker-compose.yml", yamlString);
+
+  console.log(chalk.green('Created a docker-compose file in ./.dev/docker-compose.yml'));
 }
