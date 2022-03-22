@@ -1,0 +1,26 @@
+# From inside a container, host's IP address is 172.17.0.1
+
+CORE_MONGO_URL: mongodb://172.17.0.1:27017/erxes
+
+# Redis
+REDIS_HOST: 172.17.0.1
+REDIS_PORT: 6379
+REDIS_PASSWORD: "123"
+
+# RabbitMQ
+RABBITMQ_HOST: amqp://172.17.0.1
+
+# ELASTICSEARCH
+ELASTICSEARCH_URL: http://172.17.0.1:9200
+
+GATEWAY_PORT: 4000
+
+JWT_TOKEN_SECRET: token
+
+services:
+  public-server:
+    MONGO_URL: mongo://172.17.0.1:27017/erxes-tag
+  private-server:
+    MONGO_URL: asdfl;kjasdlfk;jasdf
+  bookings-service:
+    MONGO_URL: asdfasdl;kjasdfasdf
