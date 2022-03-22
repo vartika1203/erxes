@@ -16,11 +16,11 @@ WORKDIR /app
 function createStatic() {
   if (!fs.existsSync("./.dev")) {
     fs.mkdirSync("./.dev");
-    console.log(chalk.green("Create dir ./.dev"));
+    console.log(chalk.green("Created dir ./.dev"));
   }
 
   fs.writeFileSync("./.dev/Dockerfile", dockerfile);
-  console.log(chalk.green("Create file ./.dev/Dockerfile"));
+  console.log(chalk.green("Created file ./.dev/Dockerfile"));
 }
 
 async function readConfig() {
@@ -94,6 +94,27 @@ async function generateDockerCompose(erxesConfig) {
           CORE_URL
         },
       },
+      gateway: {
+        container_name: "gateway",
+        build,
+        secrets: ["erxes.config.yml"],
+        volumes: ["../:/app"],
+        command: "yarn workspace gateway dev",
+        networks: ["erxes-dev"],
+        ports: ['4000:80'],
+        environment: {
+          PORT: 80,
+          NODE_ENV,
+          JWT_TOKEN_SECRET,
+          API_DOMAIN: "http://core",
+          MAIN_APP_DOMAIN: "http://172.17.0.1:3000",
+          MONGO_URL: CORE_MONGO_URL,
+          REDIS_HOST,
+          REDIS_PASSWORD,
+          REDIS_PASSWORD,
+          RABBITMQ_HOST
+        }
+      }
     },
   };
 

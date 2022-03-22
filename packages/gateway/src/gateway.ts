@@ -11,7 +11,7 @@ dotenv.config();
 import { GraphQLRequestContext, GraphQLResponse } from "apollo-server-core";
 import { ValueOrPromise } from "apollo-server-types";
 import splitCookiesString from "./util/splitCookiesString";
-import { getService, getServices } from "./redis";
+import erxesConfigs from './erxes-configs';
 
 export interface IGatewayContext {
   req?: express.Request & { user?: any };
@@ -19,20 +19,16 @@ export interface IGatewayContext {
 }
 
 async function getConfiguredServices(): Promise<ServiceEndpointDefinition[]> {
-  const serviceNames = await getServices();
+  const plugins = Object.keys(erxesConfigs.plugins || {});
 
-  const services: ServiceEndpointDefinition[] = await Promise.all(
-    serviceNames.map(async (name) => {
-      const service = await getService(name);
+  const services: ServiceEndpointDefinition[] = ["core", ...plugins].map(name => {
+    const def: ServiceEndpointDefinition = {
+      name,
+      url: `http://${name}/graphql`
+    }
 
-      const def: ServiceEndpointDefinition = {
-        name,
-        url: `${service.address}/graphql`
-      }
-
-      return def;
-    })
-  );
+    return def;
+  });
 
   return services;
 }

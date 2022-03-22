@@ -5,17 +5,18 @@ import { ApolloServer } from 'apollo-server-express';
 import { ApolloGateway } from '@apollo/gateway';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import ws from 'ws';
+// import ws from 'ws';
 import express, { Request, Response } from 'express';
 import http from 'http';
 import cookieParser from 'cookie-parser';
-import { loadSubscriptions } from './subscription';
+// import { loadSubscriptions } from './subscription';
 import { createGateway, IGatewayContext } from './gateway';
 import userMiddleware from './middlewares/userMiddleware';
 import * as db from './db';
 import pubsub from './subscription/pubsub';
-import { getService, getServices, redis } from './redis';
+import { redis } from './redis';
 import { initBroker } from './messageBroker';
+import erxesConfigs from './erxes-configs';
 
 const {
   MAIN_APP_DOMAIN,
@@ -41,14 +42,12 @@ const {
     createProxyMiddleware({
       target: API_DOMAIN,
       router: async req => {
-        const services = await getServices();
-
+        const plugins = Object.keys(erxesConfigs.plugins);
         let host;
 
-        for (const service of services) {
-          if (req.path.includes(`/pl:${service}/`)) {
-            const foundService = await getService(service);
-            host = foundService.address;
+        for (const plugin of plugins) {
+          if (req.path.includes(`/pl:${plugin}/`)) {
+            host = `http://${plugin}`
             break;
           }
         }
@@ -60,10 +59,10 @@ const {
       pathRewrite: async path => {
         let newPath = path;
 
-        const services = await getServices();
+        const plugins = Object.keys(erxesConfigs.plugins);
 
-        for (const service of services) {
-          newPath = newPath.replace(`/pl:${service}`, '');
+        for (const plugin of plugins) {
+          newPath = newPath.replace(`/pl:${plugin}`, '');
         }
 
         return newPath;
@@ -87,10 +86,10 @@ const {
     }
   });
 
-  const wsServer = new ws.Server({
-    server: httpServer,
-    path: '/graphql'
-  });
+  // const wsServer = new ws.Server({
+  //   server: httpServer,
+  //   path: '/graphql'
+  // });
 
   const gateway: ApolloGateway = await createGateway();
 
@@ -109,19 +108,19 @@ const {
     }
   });
 
-  let subscriptionsLoaded = false;
-  gateway.onSchemaLoadOrUpdate(async ({ apiSchema }) => {
-    if (subscriptionsLoaded) {
-      return;
-    }
+  // let subscriptionsLoaded = false;
+  // gateway.onSchemaLoadOrUpdate(async ({ apiSchema }) => {
+  //   if (subscriptionsLoaded) {
+  //     return;
+  //   }
 
-    try {
-      await loadSubscriptions(apiSchema, wsServer);
-      subscriptionsLoaded = true;
-    } catch (e) {
-      console.error(e);
-    }
-  });
+  //   try {
+  //     await loadSubscriptions(apiSchema, wsServer);
+  //     subscriptionsLoaded = true;
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // });
 
   await apolloServer.start();
 
@@ -147,6 +146,6 @@ const {
   await initBroker({ RABBITMQ_HOST, MESSAGE_BROKER_PREFIX, redis });
 
   console.log(
-    `Erxes gateway ready at http://localhost:${port}${apolloServer.graphqlPath}`
+    `Erxes gateway ready at http://localhost:4000${apolloServer.graphqlPath}`
   );
 })();

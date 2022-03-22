@@ -27,15 +27,10 @@ import { initMemoryStorage } from './inmemoryStorage';
 import { initBroker } from './messageBroker';
 import { uploader } from './middlewares/fileMiddleware';
 import {
-  join,
-  leave,
-  redis,
-  // refreshEnabledServicesCache
+  redis
 } from './serviceDiscovery';
-import logs from './logUtils';
 
 import init from './startup';
-import forms from './forms';
 
 // load environment variables
 dotenv.config();
@@ -228,15 +223,6 @@ httpServer.listen(PORT, async () => {
       });
   });
 
-  await join({
-    name: 'core',
-    port: PORT,
-    dbConnectionString: MONGO_URL,
-    hasSubscriptions: false,
-    meta: { logs: { providesActivityLog: true, consumers: logs },
-    forms
-  }
-  });
 
   debugInit(`GraphQL Server is now running on ${PORT}`);
 });
@@ -248,15 +234,6 @@ async function closeMongooose() {
   try {
     await mongoose.connection.close();
     console.log('Mongoose connection disconnected');
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-async function leaveServiceDiscovery() {
-  try {
-    await leave('core', PORT);
-    console.log('Left from service discovery');
   } catch (e) {
     console.error(e);
   }
@@ -283,9 +260,6 @@ async function closeHttpServer() {
   process.on(sig, async () => {
     await closeHttpServer();
     await closeMongooose();
-    await leaveServiceDiscovery();
     process.exit(0);
   });
 });
-
-// refreshEnabledServicesCache();
