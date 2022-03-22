@@ -16,11 +16,11 @@ WORKDIR /app
 function createStatic() {
   if (!fs.existsSync("./.dev")) {
     fs.mkdirSync("./.dev");
-    console.log(chalk.green("Create dir ./.dev"))
+    console.log(chalk.green("Create dir ./.dev"));
   }
 
   fs.writeFileSync("./.dev/Dockerfile", dockerfile);
-  console.log(chalk.green("Create file ./.dev/Dockerfile"))
+  console.log(chalk.green("Create file ./.dev/Dockerfile"));
 }
 
 async function readConfig() {
@@ -41,7 +41,22 @@ const build = {
 };
 
 async function generateDockerCompose(erxesConfig) {
-  console.log(chalk.green(erxesConfig));
+  console.log(JSON.stringify(erxesConfig, null, 2));
+
+  const {
+    NODE_ENV,
+    USE_BRAND_RESTRICTIONS,
+    JWT_TOKEN_SECRET,
+    CORE_MONGO_URL,
+    ELASTICSEARCH_URL,
+    MAIN_APP_DOMAIN,
+    REDIS_HOST,
+    REDIS_PORT,
+    REDIS_PASSWORD,
+    RABBITMQ_HOST,
+    ELK_SYNCER,
+    CORE_URL
+  } = erxesConfig;
 
   const dockerComposeConfig = {
     version: "3.8",
@@ -62,7 +77,22 @@ async function generateDockerCompose(erxesConfig) {
         secrets: ["erxes.config.yml"],
         volumes: ["../:/app"],
         command: "yarn workspace core dev",
-        networks: ['erxes-dev']
+        networks: ["erxes-dev"],
+        environment: {
+          NODE_ENV,
+          USE_BRAND_RESTRICTIONS: USE_BRAND_RESTRICTIONS,
+          PORT: 80,
+          JWT_TOKEN_SECRET,
+          MONGO_URL: CORE_MONGO_URL,
+          ELASTICSEARCH_URL,
+          MAIN_APP_DOMAIN,
+          REDIS_HOST,
+          REDIS_PASSWORD,
+          REDIS_PORT,
+          RABBITMQ_HOST,
+          ELK_SYNCER,
+          CORE_URL
+        },
       },
     },
   };
@@ -71,5 +101,7 @@ async function generateDockerCompose(erxesConfig) {
 
   fs.writeFileSync("./.dev/docker-compose.yml", yamlString);
 
-  console.log(chalk.green('Created a docker-compose file in ./.dev/docker-compose.yml'));
+  console.log(
+    chalk.green("Created a docker-compose file in ./.dev/docker-compose.yml")
+  );
 }

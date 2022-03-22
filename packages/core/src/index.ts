@@ -30,7 +30,7 @@ import {
   join,
   leave,
   redis,
-  refreshEnabledServicesCache
+  // refreshEnabledServicesCache
 } from './serviceDiscovery';
 import logs from './logUtils';
 
@@ -288,4 +288,4 @@ async function closeHttpServer() {
   });
 });
 
-refreshEnabledServicesCache();
+// refreshEnabledServicesCache();
