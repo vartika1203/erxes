@@ -22,8 +22,8 @@ import pubsub from './pubsub';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import * as path from 'path';
 import {
-  // getService,
-  // getServices,
+  getService,
+  getServices,
   // join,
   // leave,
   redis
@@ -157,8 +157,9 @@ const generateApolloServer = async serviceDiscovery => {
 
 async function startServer() {
   const serviceDiscovery = {
-    // getServices,
-    // getService,
+    getServices,
+    getService,
+    // TODO: remove isAvailable
     isAvailable: async name => {
       return true;
       // const serviceNames = await getServices();

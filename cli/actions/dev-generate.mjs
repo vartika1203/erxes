@@ -136,7 +136,7 @@ async function generateDockerCompose(erxesConfig) {
         dockerfile: "./.dev/Dockerfile",
       },
       secrets: ["erxes.config.yml"],
-      volumes: ["../:/app", `../packages/api-plugin-template.erxes:/app/packages/${pluginName}/.erxes`],
+      volumes: ["../:/app", `../packages/api-plugin-template.erxes:/app/packages/plugin-${pluginName}-api/.erxes`],
       networks: ["erxes-dev"],
       environment: {
         PORT : 80,
@@ -149,7 +149,7 @@ async function generateDockerCompose(erxesConfig) {
         ELASTICSEARCH_URL,
         MONGO_URL
       },
-      command: `yarn workspace @erxes/${pluginName} dev`
+      command: `yarn workspace @erxes/plugin-${pluginName}-api dev`
     }
   }
 

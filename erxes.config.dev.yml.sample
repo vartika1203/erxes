@@ -22,12 +22,14 @@ JWT_TOKEN_SECRET: token
 USE_BRAND_RESTRICTIONS:
 
 # UI domain. Host's IP is 172.17.0.1 for a container
-MAIN_APP_DOMAIN: http://172.17.0.1:3000
+MAIN_APP_DOMAIN: http://localhost:3000
 
 ELK_SYNCER: "false"
 
 CORE_URL:
 
 plugins:
-  plugin-contacts-api:
+  contacts:
     MONGO_URL: mongo://172.17.0.1:27017/erxes-contacts
+  tags:
+    MONGO_URL: mongo://172.17.0.1:27017/erxes-tags
