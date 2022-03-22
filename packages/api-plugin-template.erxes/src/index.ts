@@ -22,12 +22,13 @@ import pubsub from './pubsub';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import * as path from 'path';
 import {
-  getService,
-  getServices,
-  join,
-  leave,
+  // getService,
+  // getServices,
+  // join,
+  // leave,
   redis
 } from '@erxes/api-utils/src/serviceDiscovery';
+import erxesConfigs from './erxes-configs';
 
 const configs = require('../../src/configs').default;
 
@@ -97,20 +98,20 @@ async function closeHttpServer() {
   }
 }
 
-async function leaveServiceDiscovery() {
-  try {
-    await leave(configs.name, PORT || '');
-    console.log(`Left service discovery. name=${configs.name} port=${PORT}`);
-  } catch (e) {
-    console.error(e);
-  }
-}
+// async function leaveServiceDiscovery() {
+//   try {
+//     await leave(configs.name, PORT || '');
+//     console.log(`Left service discovery. name=${configs.name} port=${PORT}`);
+//   } catch (e) {
+//     console.error(e);
+//   }
+// }
 
 // If the Node process ends, close the Mongoose connection
 (['SIGINT', 'SIGTERM'] as NodeJS.Signals[]).forEach(sig => {
   process.on(sig, async () => {
     await closeHttpServer();
-    await leaveServiceDiscovery();
+    // await leaveServiceDiscovery();
     process.exit(0);
   });
 });
@@ -156,18 +157,21 @@ const generateApolloServer = async serviceDiscovery => {
 
 async function startServer() {
   const serviceDiscovery = {
-    getServices,
-    getService,
+    // getServices,
+    // getService,
     isAvailable: async name => {
-      const serviceNames = await getServices();
-      return serviceNames.includes(name);
+      return true;
+      // const serviceNames = await getServices();
+      // return serviceNames.includes(name);
     },
     isEnabled: async name => {
       if (name === 'core') {
         return true;
       }
 
-      return !!(await redis.sismember('erxes:plugins:enabled', name));
+      return !!erxesConfigs.plugins[name]
+
+      // return !!(await redis.sismember('erxes:plugins:enabled', name));
     }
   };
 
@@ -312,15 +316,15 @@ async function startServer() {
       }
     }
 
-    await join({
-      name: configs.name,
-      port: PORT || '',
-      dbConnectionString: mongoUrl,
-      hasSubscriptions: configs.hasSubscriptions,
-      importTypes: configs.importTypes,
-      exportTypes: configs.exportTypes,
-      meta: configs.meta
-    });
+    // await join({
+    //   name: configs.name,
+    //   port: PORT || '',
+    //   dbConnectionString: mongoUrl,
+    //   hasSubscriptions: configs.hasSubscriptions,
+    //   importTypes: configs.importTypes,
+    //   exportTypes: configs.exportTypes,
+    //   meta: configs.meta
+    // });
 
     configs.onServerInit({
       db,

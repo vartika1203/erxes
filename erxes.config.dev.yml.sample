@@ -1,5 +1,7 @@
 # From inside a container, host's IP address is 172.17.0.1
 
+NODE_ENV: development
+
 CORE_MONGO_URL: mongodb://172.17.0.1:27017/erxes
 
 # Redis
@@ -17,10 +19,15 @@ GATEWAY_PORT: 4000
 
 JWT_TOKEN_SECRET: token
 
-services:
-  public-server:
-    MONGO_URL: mongo://172.17.0.1:27017/erxes-tag
-  private-server:
-    MONGO_URL: asdfl;kjasdlfk;jasdf
-  bookings-service:
-    MONGO_URL: asdfasdl;kjasdfasdf
+USE_BRAND_RESTRICTIONS:
+
+# UI domain. Host's IP is 172.17.0.1 for a container
+MAIN_APP_DOMAIN: http://172.17.0.1:3000
+
+ELK_SYNCER: "false"
+
+CORE_URL:
+
+plugins:
+  plugin-contacts-api:
+    MONGO_URL: mongo://172.17.0.1:27017/erxes-contacts
