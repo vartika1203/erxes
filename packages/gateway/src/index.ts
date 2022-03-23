@@ -124,7 +124,13 @@ const {
     }
   });
 
-  await apolloServer.start();
+  
+  try {
+    await apolloServer.start();
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 
   apolloServer.applyMiddleware({
     app,

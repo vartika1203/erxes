@@ -107,8 +107,9 @@ async function generateDockerCompose(erxesConfig) {
         depends_on: ["core"],
         ...commonConstConfig,
         volumes: ["../:/erxes"],
-        command: `bash -c "sleep 30 && yarn workspace gateway dev"`,
+        command: "yarn workspace gateway dev",
         ports: [`${GATEWAY_PORT || 4000}:80`],
+        restart: "on-failure",
         environment: {
           ...commonEnv,
           MONGO_URL: CORE_MONGO_URL,

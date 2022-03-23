@@ -8,7 +8,12 @@ export default async function devStart({ build }) {
             args.push('--build');
         }
         console.log("docker-compose " + args.join(" "));
-        await execa('docker-compose', args).stdout.pipe(process.stdout);
+
+        const cmd  = execa('docker-compose', args);
+        cmd.stdout.pipe(process.stdout);
+        cmd.stderr.pipe(process.stderr);
+
+        await cmd;
     } catch (e) {
         console.error(e);
     }
