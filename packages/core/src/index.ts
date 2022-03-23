@@ -28,9 +28,7 @@ import { initBroker } from './messageBroker';
 import { uploader } from './middlewares/fileMiddleware';
 import {
   join,
-  leave,
   redis,
-  refreshEnabledServicesCache
 } from './serviceDiscovery';
 import logs from './logUtils';
 
@@ -230,7 +228,6 @@ httpServer.listen(PORT, async () => {
 
   await join({
     name: 'core',
-    port: PORT,
     dbConnectionString: MONGO_URL,
     hasSubscriptions: false,
     meta: { logs: { providesActivityLog: true, consumers: logs },
@@ -253,14 +250,6 @@ async function closeMongooose() {
   }
 }
 
-async function leaveServiceDiscovery() {
-  try {
-    await leave('core', PORT);
-    console.log('Left from service discovery');
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 async function closeHttpServer() {
   try {
@@ -283,9 +272,6 @@ async function closeHttpServer() {
   process.on(sig, async () => {
     await closeHttpServer();
     await closeMongooose();
-    await leaveServiceDiscovery();
     process.exit(0);
   });
 });
-
-refreshEnabledServicesCache();

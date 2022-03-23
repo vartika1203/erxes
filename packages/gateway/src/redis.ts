@@ -1,10 +1,14 @@
 import * as dotenv from "dotenv";
 import Redis from "ioredis";
-import ServiceRegistry from 'clerq';
+import erxesConfigs from "./erxes-configs";
 
 dotenv.config();
 
-const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
+const {
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
+} = process.env;
 
 export const redis = new Redis({
   host: REDIS_HOST,
@@ -12,30 +16,23 @@ export const redis = new Redis({
   password: REDIS_PASSWORD,
 });
 
-const registry = new ServiceRegistry(redis, {});
-
 export const getServices = () => {
-  return registry.services();
-}
+  return ["core", ...Object.keys(erxesConfigs.plugins || {})];
+};
 
 export const getService = async (name: string, meta?: boolean) => {
-  const result = {
-    address: await registry.get(name),
-    meta: {}
-  }
+  const result: any = { address: `http://${name}`, meta: {} };
 
   if (meta) {
     const value = await redis.get(`service:config:${name}`);
-    result.meta = JSON.parse(value || '{}');
+    result.meta = JSON.parse(value || "{}");
   }
 
   return result;
-}
+};
 
 export const isAvailable = async (name) => {
-  const serviceNames = await getServices();
-
-  return serviceNames.includes(name);
-}
+  return (name === "core") || (!!erxesConfigs.plugins[name])
+};
 
 export default redis;

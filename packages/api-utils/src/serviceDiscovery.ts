@@ -1,11 +1,10 @@
 import * as Redis from 'ioredis';
-import * as ServiceRegistry from 'clerq';
 import * as dotenv from 'dotenv';
+import erxesConfigs from './erxes-configs';
 
 dotenv.config();
 
-const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, NODE_ENV, LOAD_BALANCER_ADDRESS } = process.env;
-const isDev = NODE_ENV === 'development';
+const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
 
 export const redis = new Redis({
   host: REDIS_HOST,
@@ -13,17 +12,15 @@ export const redis = new Redis({
   password: REDIS_PASSWORD
 });
 
-const registry = new ServiceRegistry(redis, {});
-
 const generateKey = name => `service:config:${name}`;
 
 export const getServices = () => {
-  return registry.services();
+  return ["core", ...Object.keys(erxesConfigs.plugins || {})]
 };
 
 export const getService = async (name: string, config?: boolean) => {
   const result = {
-    address: await registry.get(name),
+    address: `http://${name}`,
     config: {}
   };
 
@@ -37,7 +34,6 @@ export const getService = async (name: string, config?: boolean) => {
 
 export const join = async ({
   name,
-  port,
   dbConnectionString,
   hasSubscriptions = false,
   importTypes,
@@ -45,7 +41,6 @@ export const join = async ({
   meta
 }: {
   name: string;
-  port: string;
   dbConnectionString: string;
   hasSubscriptions?: boolean;
   importTypes?: any;
@@ -63,18 +58,4 @@ export const join = async ({
       meta
     })
   );
-
-  return registry.up(
-    name,
-    LOAD_BALANCER_ADDRESS || `http://${isDev ? 'localhost' : `plugin-${name}-api`}:${port}`
-  );
-};
-
-export const leave = async (name, port) => {
-  await registry.down(
-    name,
-    LOAD_BALANCER_ADDRESS || `http://${isDev ? 'localhost' : `plugin-${name}-api`}:${port}`
-  );
-
-  return redis.del(generateKey(name));
 };
