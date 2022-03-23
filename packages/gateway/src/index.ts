@@ -16,6 +16,7 @@ import * as db from './db';
 import pubsub from './subscription/pubsub';
 import { getService, getServices, redis } from './redis';
 import { initBroker } from './messageBroker';
+import erxesConfigs from './erxes-configs';
 
 const {
   MAIN_APP_DOMAIN,
@@ -147,6 +148,6 @@ const {
   await initBroker({ RABBITMQ_HOST, MESSAGE_BROKER_PREFIX, redis });
 
   console.log(
-    `Erxes gateway ready at http://localhost:${port}${apolloServer.graphqlPath}`
+    `Erxes gateway ready at http://localhost:${erxesConfigs.GATEWAY_PORT}${apolloServer.graphqlPath}`
   );
 })();

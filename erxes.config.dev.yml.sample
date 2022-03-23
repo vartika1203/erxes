@@ -23,13 +23,18 @@ USE_BRAND_RESTRICTIONS:
 
 # UI domain. Host's IP is 172.17.0.1 for a container
 MAIN_APP_DOMAIN: http://localhost:3000
+WIDGETS_DOMAIN: ""
+CLIENT_PORTAL_DOMAINS: ""
+DASHBOARD_DOMAIN: ""
 
 ELK_SYNCER: "false"
 
 CORE_URL:
 
-plugins:
-  contacts:
-    MONGO_URL: mongo://172.17.0.1:27017/erxes-contacts
-  tags:
-    MONGO_URL: mongo://172.17.0.1:27017/erxes-tags
+# plugins:
+#   contacts:
+#     environment:
+#       MONGO_URL: mongo://172.17.0.1:27017/erxes-contacts
+#   tags:
+#     environment:
+#       MONGO_URL: mongo://172.17.0.1:27017/erxes-tags

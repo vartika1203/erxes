@@ -3,21 +3,21 @@ import chalk from "chalk";
 import yaml from "yaml";
 
 export default async function devGenerate() {
-  await createStatic();
   const erxesConfig = await readConfig();
+  await createStatic();
   await generateDockerCompose(erxesConfig);
 }
-
-const dockerfile = `FROM node:14-slim
-WORKDIR /app
-
-`;
 
 function createStatic() {
   if (!fs.existsSync("./.dev")) {
     fs.mkdirSync("./.dev");
     console.log(chalk.green("Created dir ./.dev"));
   }
+
+  const dockerfile = `FROM node:14-slim
+WORKDIR /app
+
+`;
 
   fs.writeFileSync("./.dev/Dockerfile", dockerfile);
   console.log(chalk.green("Created file ./.dev/Dockerfile"));
@@ -26,6 +26,7 @@ function createStatic() {
 async function readConfig() {
   if (!fs.existsSync("./erxes.config.dev.yml")) {
     console.log(chalk.red.bold("./erxes.config.dev.yml file does not exist."));
+    process.exit(1);
     return;
   }
   const yamlString = fs.readFileSync("./erxes.config.dev.yml").toString();
@@ -35,17 +36,16 @@ async function readConfig() {
   return erxesConfig;
 }
 
-const build = {
-  context: "../",
-  dockerfile: "./.dev/Dockerfile",
+const commonConstConfig = {
+  build: {
+    context: "../",
+    dockerfile: "./.dev/Dockerfile",
+  },
+  secrets: ["erxes.config.yml"],
+  networks: ["erxes-dev"],
 };
 
-const JWT_TOKEN_SECRET = "token";
-const NODE_ENV = "development";
-
 async function generateDockerCompose(erxesConfig) {
-  console.log(JSON.stringify(erxesConfig, null, 2));
-
   const {
     USE_BRAND_RESTRICTIONS,
     CORE_MONGO_URL,
@@ -55,8 +55,23 @@ async function generateDockerCompose(erxesConfig) {
     REDIS_PORT,
     REDIS_PASSWORD,
     RABBITMQ_HOST,
-    ELK_SYNCER
+    ELK_SYNCER,
+    WIDGETS_DOMAIN,
+    CLIENT_PORTAL_DOMAINS,
+    DASHBOARD_DOMAIN,
+    GATEWAY_PORT,
   } = erxesConfig;
+
+  const commonEnv = {
+    PORT: 80,
+    NODE_ENV: "development",
+    REDIS_HOST,
+    REDIS_PASSWORD,
+    REDIS_PORT,
+    RABBITMQ_HOST,
+    ELASTICSEARCH_URL,
+    JWT_TOKEN_SECRET: "token",
+  };
 
   const dockerComposeConfig = {
     version: "3.8",
@@ -73,84 +88,59 @@ async function generateDockerCompose(erxesConfig) {
     services: {
       core: {
         container_name: "core",
-        build: {
-          context: "../",
-          dockerfile: "./.dev/Dockerfile",
-        },
-        secrets: ["erxes.config.yml"],
+        ...commonConstConfig,
         volumes: ["../:/app"],
         command: "yarn workspace core dev",
-        networks: ["erxes-dev"],
         environment: {
-          NODE_ENV,
+          ...commonEnv,
           USE_BRAND_RESTRICTIONS: USE_BRAND_RESTRICTIONS,
-          PORT: 80,
-          JWT_TOKEN_SECRET,
           MONGO_URL: CORE_MONGO_URL,
-          ELASTICSEARCH_URL,
           MAIN_APP_DOMAIN,
-          REDIS_HOST,
-          REDIS_PASSWORD,
-          REDIS_PORT,
-          RABBITMQ_HOST,
-          ELK_SYNCER
+          ELK_SYNCER,
+          WIDGETS_DOMAIN,
+          CLIENT_PORTAL_DOMAINS,
+          DASHBOARD_DOMAIN,
         },
       },
       gateway: {
         container_name: "gateway",
         depends_on: ["core"],
-        build: {
-          context: "../",
-          dockerfile: "./.dev/Dockerfile",
-        },
-        secrets: ["erxes.config.yml"],
+        ...commonConstConfig,
         volumes: ["../:/app"],
-        command: `bash -c "sleep 20 && yarn workspace gateway dev"`,
-        networks: ["erxes-dev"],
-        ports: ['4000:80'],
+        command: `bash -c "sleep 30 && yarn workspace gateway dev"`,
+        ports: [`${GATEWAY_PORT || 4000}:80`],
         environment: {
-          PORT: 80,
-          NODE_ENV: "development",
-          JWT_TOKEN_SECRET,
-          API_DOMAIN: "http://core",
-          MAIN_APP_DOMAIN: "http://172.17.0.1:3000",
+          ...commonEnv,
           MONGO_URL: CORE_MONGO_URL,
-          REDIS_HOST,
-          REDIS_PASSWORD,
-          REDIS_PASSWORD,
-          RABBITMQ_HOST
-        }
-      }
+          API_DOMAIN: "http://core",
+          MAIN_APP_DOMAIN,
+          WIDGETS_DOMAIN,
+          CLIENT_PORTAL_DOMAINS,
+          DASHBOARD_DOMAIN,
+        },
+      },
     },
   };
 
-  const pluginNames = Object.keys(erxesConfig.plugins) || [];
+  const pluginNames = Object.keys(erxesConfig.plugins || {});
 
-  for(const pluginName of pluginNames) {
-    const { MONGO_URL } = erxesConfig.plugins[pluginName];
+  for (const pluginName of pluginNames) {
+    const pluginEnvironment = erxesConfig.plugins[pluginName].environment || {};
 
     dockerComposeConfig.services[pluginName] = {
       container_name: pluginName,
-      build: {
-        context: "../",
-        dockerfile: "./.dev/Dockerfile",
-      },
-      secrets: ["erxes.config.yml"],
-      volumes: ["../:/app", `../packages/api-plugin-template.erxes:/app/packages/plugin-${pluginName}-api/.erxes`],
-      networks: ["erxes-dev"],
+      ...commonConstConfig,
+      volumes: [
+        "../:/app",
+        `../packages/api-plugin-template.erxes:/app/packages/plugin-${pluginName}-api/.erxes`,
+      ],
       environment: {
-        PORT : 80,
-        NODE_ENV: "development",
+        ...commonEnv,
         API_MONGO_URL: CORE_MONGO_URL,
-        REDIS_HOST,
-        REDIS_PASSWORD,
-        REDIS_PORT,
-        RABBITMQ_HOST,
-        ELASTICSEARCH_URL,
-        MONGO_URL
+        ...pluginEnvironment,
       },
-      command: `yarn workspace @erxes/plugin-${pluginName}-api dev`
-    }
+      command: `yarn workspace @erxes/plugin-${pluginName}-api dev`,
+    };
   }
 
   dockerComposeConfig.services.gateway.depends_on = ["core", ...pluginNames];
