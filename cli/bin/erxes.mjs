@@ -4,9 +4,9 @@
 import _ from "lodash";
 // import packageJSON from '../package.json';
 import { program } from "commander";
-import actionDev from "../actions/dev.mjs";
-import actionDevGenerate from "../actions/dev-generate.mjs";
-import actionDevStart from "../actions/dev-start.mjs";
+import actionDev from "../src/dev.mjs";
+import actionDevGenerate from "../src/dev-generate.mjs";
+import actionDevStart from "../src/dev-start.mjs";
 
 const cmdDev = program.command("dev").option("-b, --build", "rebuild images");
 

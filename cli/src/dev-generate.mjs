@@ -1,11 +1,11 @@
 import fs from "fs";
 import chalk from "chalk";
 import yaml from "yaml";
+import erxesConfigDev from "./erxes-config-dev.mjs";
 
 export default async function devGenerate() {
-  const erxesConfig = await readConfig();
   await createStatic();
-  await generateDockerCompose(erxesConfig);
+  await generateDockerCompose();
 }
 
 function createStatic() {
@@ -23,19 +23,6 @@ WORKDIR /erxes
   console.log(chalk.green("Created file ./.dev/Dockerfile"));
 }
 
-async function readConfig() {
-  if (!fs.existsSync("./erxes.config.dev.yml")) {
-    console.log(chalk.red.bold("./erxes.config.dev.yml file does not exist."));
-    process.exit(1);
-    return;
-  }
-  const yamlString = fs.readFileSync("./erxes.config.dev.yml").toString();
-  const erxesConfig = yaml.parse(yamlString);
-
-  console.log(chalk.green("Read erxes config from ./erxes.config.dev.yml"));
-  return erxesConfig;
-}
-
 const commonConstConfig = {
   build: {
     context: "../",
@@ -45,34 +32,34 @@ const commonConstConfig = {
   networks: ["erxes-dev"],
 };
 
-async function generateDockerCompose(erxesConfig) {
-  const {
-    USE_BRAND_RESTRICTIONS,
-    CORE_MONGO_URL,
-    ELASTICSEARCH_URL,
-    MAIN_APP_DOMAIN,
-    REDIS_HOST,
-    REDIS_PORT,
-    REDIS_PASSWORD,
-    RABBITMQ_HOST,
-    ELK_SYNCER,
-    WIDGETS_DOMAIN,
-    CLIENT_PORTAL_DOMAINS,
-    DASHBOARD_DOMAIN,
-    GATEWAY_PORT,
-  } = erxesConfig;
+const {
+  USE_BRAND_RESTRICTIONS,
+  CORE_MONGO_URL,
+  ELASTICSEARCH_URL,
+  MAIN_APP_DOMAIN,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
+  RABBITMQ_HOST,
+  ELK_SYNCER,
+  WIDGETS_DOMAIN,
+  CLIENT_PORTAL_DOMAINS,
+  DASHBOARD_DOMAIN,
+  GATEWAY_PORT,
+} = erxesConfigDev;
 
-  const commonEnv = {
-    PORT: 80,
-    NODE_ENV: "development",
-    REDIS_HOST,
-    REDIS_PASSWORD,
-    REDIS_PORT,
-    RABBITMQ_HOST,
-    ELASTICSEARCH_URL,
-    JWT_TOKEN_SECRET: "token",
-  };
+const commonEnv = {
+  PORT: 80,
+  NODE_ENV: "development",
+  REDIS_HOST,
+  REDIS_PASSWORD,
+  REDIS_PORT,
+  RABBITMQ_HOST,
+  ELASTICSEARCH_URL,
+  JWT_TOKEN_SECRET: "token",
+};
 
+async function generateDockerCompose() {
   const dockerComposeConfig = {
     version: "3.8",
     secrets: {
@@ -123,10 +110,10 @@ async function generateDockerCompose(erxesConfig) {
     },
   };
 
-  const pluginNames = Object.keys(erxesConfig.plugins || {});
+  const pluginNames = Object.keys(erxesConfigDev.plugins || {});
 
   for (const pluginName of pluginNames) {
-    const pluginEnvironment = erxesConfig.plugins[pluginName].environment || {};
+    const pluginEnvironment = erxesConfigDev.plugins[pluginName].environment || {};
 
     dockerComposeConfig.services[pluginName] = {
       container_name: pluginName,
