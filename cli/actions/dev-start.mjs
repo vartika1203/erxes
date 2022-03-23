@@ -1,10 +1,14 @@
 import { execa } from 'execa';
 import chalk from 'chalk';
 
-export default async function devStart() {
+export default async function devStart({ build }) {
     try {
-        console.log(chalk.green('Running command `docker-compose -f ./.dev/docker-compose.yml up --force-recreate`'));
-        await execa('docker-compose', ['-f',  './.dev/docker-compose.yml',  'up', '--force-recreate']).stdout.pipe(process.stdout);
+        const args = ['-f',  './.dev/docker-compose.yml',  'up', '--force-recreate'];
+        if(build) {
+            args.push('--build');
+        }
+        console.log("docker-compose " + args.join(" "));
+        await execa('docker-compose', args).stdout.pipe(process.stdout);
     } catch (e) {
         console.error(e);
     }

@@ -1,20 +1,22 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
 import _ from "lodash";
 // import packageJSON from '../package.json';
 import { program } from "commander";
-import actionDev from '../actions/dev.mjs';
-import actionDevGenerate from '../actions/dev-generate.mjs';
-import actionDevStart from '../actions/dev-start.mjs';
+import actionDev from "../actions/dev.mjs";
+import actionDevGenerate from "../actions/dev-generate.mjs";
+import actionDevStart from "../actions/dev-start.mjs";
 
-const cmdDev = program.command('dev');
+const cmdDev = program.command("dev").option("-b, --build", "rebuild images");
 
 cmdDev.action(actionDev);
 
 cmdDev.command("generate").action(actionDevGenerate);
-cmdDev.command('start').action(actionDevStart);
-
+cmdDev
+  .command("start")
+  .option("-b, --build", "rebuild images")
+  .action(actionDevStart);
 
 program.parse();
 

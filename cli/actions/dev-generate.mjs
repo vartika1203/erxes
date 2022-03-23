@@ -15,7 +15,7 @@ function createStatic() {
   }
 
   const dockerfile = `FROM node:14-slim
-WORKDIR /app
+WORKDIR /erxes
 
 `;
 
@@ -89,7 +89,7 @@ async function generateDockerCompose(erxesConfig) {
       core: {
         container_name: "core",
         ...commonConstConfig,
-        volumes: ["../:/app"],
+        volumes: ["../:/erxes"],
         command: "yarn workspace core dev",
         environment: {
           ...commonEnv,
@@ -106,7 +106,7 @@ async function generateDockerCompose(erxesConfig) {
         container_name: "gateway",
         depends_on: ["core"],
         ...commonConstConfig,
-        volumes: ["../:/app"],
+        volumes: ["../:/erxes"],
         command: `bash -c "sleep 30 && yarn workspace gateway dev"`,
         ports: [`${GATEWAY_PORT || 4000}:80`],
         environment: {
@@ -131,7 +131,7 @@ async function generateDockerCompose(erxesConfig) {
       container_name: pluginName,
       ...commonConstConfig,
       volumes: [
-        "../:/app",
+        "../:/erxes",
         `../packages/api-plugin-template.erxes:/app/packages/plugin-${pluginName}-api/.erxes`,
       ],
       environment: {
