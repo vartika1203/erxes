@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 export default async function devStart({ build }) {
     try {
-        const args = ['-f',  './.dev/docker-compose.yml',  'up', '--force-recreate'];
+        const args = ['-f',  './.dev/docker-compose.yml',  'up', '--force-recreate', '--remove-orphans'];
         if(build) {
             args.push('--build');
         }
