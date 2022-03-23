@@ -1,7 +1,10 @@
 import { execa } from "execa";
+import startWatchDotErxes from "./start-watch-doterxes.mjs";
 
 export default async function devStart({ build }) {
   try {
+    await startWatchDotErxes();
+    
     const args = [
       "-f",
       "./.dev/docker-compose.yml",

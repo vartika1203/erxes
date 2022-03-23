@@ -6,22 +6,24 @@
   "repository": "https://github.com/erxes/erxes",
   "bugs": "https://github.com/erxes/erxes/issues",
   "license": "GNU General Public License v3.0 with Commons Clause",
-  "type" : "module",
+  "type": "module",
   "keywords": [
     "node",
     "graphql",
     "apollo",
     "react"
   ],
-  "main" : "./bin/erxes.mjs",
+  "main": "./bin/erxes.mjs",
   "bin": {
     "erxes": "./bin/erxes.mjs"
   },
   "dependencies": {
     "chalk": "^5.0.1",
+    "chokidar": "^3.5.3",
     "commander": "^9.1.0",
     "execa": "^6.1.0",
+    "fs-extra": "^10.0.1",
     "lodash": "^4.17.21",
-    "yaml" : "^1.10.2"
+    "yaml": "^1.10.2"
   }
 }

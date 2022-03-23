@@ -30,6 +30,7 @@ const commonConstConfig = {
   },
   secrets: ["erxes.config.yml"],
   networks: ["erxes-dev"],
+  volumes: ["../:/erxes"],
 };
 
 const {
@@ -76,7 +77,6 @@ async function generateDockerCompose() {
       core: {
         container_name: "core",
         ...commonConstConfig,
-        volumes: ["../:/erxes"],
         command: "yarn workspace core dev",
         environment: {
           ...commonEnv,
@@ -93,7 +93,6 @@ async function generateDockerCompose() {
         container_name: "gateway",
         depends_on: ["core"],
         ...commonConstConfig,
-        volumes: ["../:/erxes"],
         command: "yarn workspace gateway dev",
         ports: [`${GATEWAY_PORT || 4000}:80`],
         restart: "on-failure",
@@ -118,10 +117,6 @@ async function generateDockerCompose() {
     dockerComposeConfig.services[pluginName] = {
       container_name: pluginName,
       ...commonConstConfig,
-      volumes: [
-        "../:/erxes",
-        `../packages/api-plugin-template.erxes:/app/packages/plugin-${pluginName}-api/.erxes`,
-      ],
       environment: {
         ...commonEnv,
         API_MONGO_URL: CORE_MONGO_URL,
