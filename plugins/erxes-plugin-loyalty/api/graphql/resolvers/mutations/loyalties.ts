@@ -16,7 +16,15 @@ export default [
       let destOwnerId = destinationOwnerId;
 
       if (ownerType === 'customer') {
-        const customer = await models.Customers.getWidgetCustomer({ email: destinationEmail, phone: destinationPhone, code: destinationCode })
+        let customer;
+        if (destinationOwnerId) {
+          customer = await models.Customer.getCustomer(destinationOwnerId)
+        }
+
+        if (!customer) {
+          customer = await models.Customers.getWidgetCustomer({ email: destinationEmail, phone: destinationPhone, code: destinationCode })
+        }
+
         if (!customer) {
           throw new Error('Destination customer not found')
         }
