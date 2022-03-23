@@ -35,6 +35,7 @@ type Props = {
   isSubmitting?: boolean;
   color?: string;
   extraContent?: string;
+  socialPayResponse?: any;
 };
 
 type State = {
@@ -136,8 +137,6 @@ class Form extends React.Component<Props, State> {
     if (groupId) {
       doc[fieldId].groupId = groupId;
     }
-
-    console.log("value", value);
 
     this.setState({ doc });
   };
@@ -492,8 +491,65 @@ class Form extends React.Component<Props, State> {
     );
   }
 
+  renderSocialPayResponse(response: string) {
+    const onClick = () => {
+      console.log("onclick");
+    };
+
+    const button = () => {
+      return (
+        <button
+          style={{ background: this.props.color, margin: "5px" }}
+          type="button"
+          onClick={onClick}
+          className={"erxes-button btn-block"}
+        >
+          Cancel
+        </button>
+      );
+    };
+
+    if (response.includes("data:image")) {
+      return (
+        <div className="erxes-form">
+          {this.renderHead("Open social pay and scan qr code")}
+          <div className="erxes-form-content">
+            <div
+              style={{
+                verticalAlign: "middle",
+                textAlign: "center",
+                display: "table-cell"
+              }}
+            >
+              <img src={response} width="200px" height={"200px"} />
+            </div>
+            {button()}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="erxes-form">
+        {this.renderHead("finish order")}
+        <div className="erxes-form-content">
+          <div className="erxes-callout-body">
+            {"open social pay and finalize payment"}
+          </div>
+          {button()}
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    const { form, currentStatus, sendEmail, integration } = this.props;
+    const {
+      form,
+      currentStatus,
+      sendEmail,
+      integration,
+      socialPayResponse
+    } = this.props;
     const doc = this.state.doc;
 
     if (currentStatus.status === "SUCCESS") {
@@ -553,6 +609,11 @@ class Form extends React.Component<Props, State> {
       } // end successAction = "email"
 
       return this.renderSuccessForm(thankTitle, thankContent, successImage);
+    }
+
+    if (currentStatus.status === "PENDING" && socialPayResponse) {
+      console.log(socialPayResponse);
+      return this.renderSocialPayResponse(socialPayResponse);
     }
 
     return this.renderForm();

@@ -167,4 +167,6 @@ export const mutations = `
     cachedCustomerId: String
     productId: String
   ): SaveFormResponse
+
+  widgetsCancelOrder(): String
 `;

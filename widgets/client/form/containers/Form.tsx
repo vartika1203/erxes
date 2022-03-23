@@ -41,6 +41,7 @@ interface IProps {
   callSubmit: boolean;
   extraContent?: string;
   isSubmitting?: boolean;
+  socialPayResponse?: any;
 }
 
 const FormWithData = graphql<IProps, QueryResponse>(
@@ -68,7 +69,8 @@ const WithContext = () => (
       callSubmit,
       extraContent,
       isSubmitting,
-      getForm
+      getForm,
+      socialPayResponse
     }) => {
       const integration = getIntegration();
       const form = getForm();
@@ -85,6 +87,7 @@ const WithContext = () => (
           integration={integration}
           extraContent={extraContent}
           callSubmit={callSubmit}
+          socialPayResponse={socialPayResponse}
         />
       );
     }}

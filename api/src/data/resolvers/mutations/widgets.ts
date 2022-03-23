@@ -139,7 +139,7 @@ const createFormConversation = async (
 ) => {
   const { integrationId, formId, submissions } = args;
 
-  let orderResponse: any = {};
+  let orderResponse: any = undefined;
 
   try {
     orderResponse = await getOrderInfo(
@@ -236,7 +236,7 @@ const createFormConversation = async (
   }
 
   return {
-    status: 'ok',
+    status: orderResponse ? 'pending' : 'ok',
     messageId: message._id,
     customerId: cachedCustomer._id,
     ...orderResponse

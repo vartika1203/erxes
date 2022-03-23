@@ -10,7 +10,6 @@ import {
   sendEmailMutation
 } from "../graphql";
 import { IFormDoc, ISaveFormResponse } from "../types";
-import QRCode = require("qrcode");
 
 /*
  * Send message to iframe's parent
@@ -142,7 +141,6 @@ export const saveLead = (params: {
     .then(async ({ data }) => {
       if (data) {
         const { widgetsSaveLead } = data;
-        const { socialPayResponse } = data;
 
         if (widgetsSaveLead.customerId) {
           connection.customerId = widgetsSaveLead.customerId;
@@ -156,13 +154,6 @@ export const saveLead = (params: {
         }
 
         saveCallback(widgetsSaveLead);
-
-        if (
-          socialPayResponse &&
-          socialPayResponse.includes("socialpay-payment")
-        ) {
-          const qrCode = await QRCode.toDataURL(socialPayResponse);
-        }
 
         if (widgetsSaveLead && widgetsSaveLead.status === "ok") {
           postMessage({

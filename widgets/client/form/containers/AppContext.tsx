@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { IEmailParams, IIntegration, IIntegrationLeadData } from '../../types';
-import { checkRules } from '../../utils';
-import { connection } from '../connection';
-import { ICurrentStatus, IForm, IFormDoc, ISaveFormResponse } from '../types';
-import { increaseViewCount, postMessage, saveLead, sendEmail } from './utils';
-
+import * as React from "react";
+import { IEmailParams, IIntegration, IIntegrationLeadData } from "../../types";
+import { checkRules } from "../../utils";
+import { connection } from "../connection";
+import { ICurrentStatus, IForm, IFormDoc, ISaveFormResponse } from "../types";
+import { increaseViewCount, postMessage, saveLead, sendEmail } from "./utils";
+import QRCode = require("qrcode");
 interface IState {
   isPopupVisible: boolean;
   isFormVisible: boolean;
@@ -13,6 +13,7 @@ interface IState {
   isSubmitting?: boolean;
   extraContent?: string;
   callSubmit: boolean;
+  socialPayResponse?: string;
 }
 
 interface IStore extends IState {
@@ -44,9 +45,10 @@ export class AppProvider extends React.Component<{}, IState> {
       isPopupVisible: false,
       isFormVisible: false,
       isCalloutVisible: false,
-      currentStatus: { status: 'INITIAL' },
-      extraContent: '',
-      callSubmit: false
+      currentStatus: { status: "INITIAL" },
+      extraContent: "",
+      callSubmit: false,
+      socialPayResponse: ""
     };
   }
 
@@ -75,7 +77,7 @@ export class AppProvider extends React.Component<{}, IState> {
     }
 
     // if there is popup handler then do not show it initially
-    if (loadType === 'popup' && hasPopupHandlers) {
+    if (loadType === "popup" && hasPopupHandlers) {
       return null;
     }
 
@@ -87,7 +89,7 @@ export class AppProvider extends React.Component<{}, IState> {
     }
 
     // If load type is shoutbox then hide form component initially
-    if (callout.skip && loadType !== 'shoutbox') {
+    if (callout.skip && loadType !== "shoutbox") {
       return this.setState({ isFormVisible: true });
     }
 
@@ -149,7 +151,7 @@ export class AppProvider extends React.Component<{}, IState> {
       isPopupVisible: false,
       isCalloutVisible: false,
       isFormVisible: false,
-      currentStatus: { status: 'INITIAL' }
+      currentStatus: { status: "INITIAL" }
     });
 
     // Increasing view count
@@ -167,19 +169,41 @@ export class AppProvider extends React.Component<{}, IState> {
       browserInfo: connection.browserInfo,
       integrationId: this.getIntegration()._id,
       formId: this.getForm()._id,
-      saveCallback: (response: ISaveFormResponse) => {
+      saveCallback: async (response: ISaveFormResponse) => {
+        console.log(response);
         const { errors } = response;
+        let { socialPayResponse } = response;
 
-        const status = response.status === 'ok' ? 'SUCCESS' : 'ERROR';
+        let status = "ERROR";
+
+        switch (response.status) {
+          case "ok":
+            status = "SUCESS";
+            break;
+          case "pending":
+            status = "PENDING";
+            break;
+          default:
+            status = "ERROR";
+            break;
+        }
 
         postMessage({
-          message: 'submitResponse',
+          message: "submitResponse",
           status
         });
+
+        if (
+          socialPayResponse &&
+          socialPayResponse.includes("socialpay-payment")
+        ) {
+          socialPayResponse = await QRCode.toDataURL(socialPayResponse);
+        }
 
         this.setState({
           callSubmit: false,
           isSubmitting: false,
+          socialPayResponse,
           currentStatus: {
             status,
             errors
@@ -201,11 +225,11 @@ export class AppProvider extends React.Component<{}, IState> {
    * Redisplay form component after submission
    */
   createNew = () => {
-    this.setState({ currentStatus: { status: 'INITIAL' } });
+    this.setState({ currentStatus: { status: "INITIAL" } });
   };
 
   setHeight = () => {
-    const container = document.getElementById('erxes-container');
+    const container = document.getElementById("erxes-container");
 
     if (!container) {
       return;
@@ -214,7 +238,7 @@ export class AppProvider extends React.Component<{}, IState> {
     const elementsHeight = container.clientHeight;
 
     postMessage({
-      message: 'changeContainerStyle',
+      message: "changeContainerStyle",
       style: `height: ${elementsHeight}px;`
     });
   };
