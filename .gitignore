@@ -30,3 +30,6 @@ widgets/static
 tsconfig.tsbuildinfo
 packages/plugin*api/.erxes
 /api/src/__tests__/coverage
+
+erxes.config.dev.yml
+/.dev
