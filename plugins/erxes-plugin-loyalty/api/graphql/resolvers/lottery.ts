@@ -5,7 +5,7 @@ export default [
     type: 'Lottery',
     field: 'owner',
     handler: (lottery, { }, { models }) => {
-      return getOwner(models, lottery.ownerType, lottery.OwnerId)
+      return getOwner(models, lottery.ownerType, lottery.ownerId)
     }
   },
   {

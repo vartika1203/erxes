@@ -5,7 +5,7 @@ export default [
     type: 'Voucher',
     field: 'owner',
     handler: (voucher, { }, { models }) => {
-      return getOwner(models, voucher.ownerType, voucher.OwnerId)
+      return getOwner(models, voucher.ownerType, voucher.ownerId)
     }
   },
   {

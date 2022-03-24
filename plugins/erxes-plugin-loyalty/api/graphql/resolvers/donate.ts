@@ -5,7 +5,7 @@ export default [
     type: 'Donate',
     field: 'owner',
     handler: (donate, { }, { models }) => {
-      return getOwner(models, donate.ownerType, donate.OwnerId)
+      return getOwner(models, donate.ownerType, donate.ownerId)
     }
   },
   {

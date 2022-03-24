@@ -5,7 +5,7 @@ export default [
     type: 'Spin',
     field: 'owner',
     handler: (spin, { }, { models }) => {
-      return getOwner(models, spin.ownerType, spin.OwnerId)
+      return getOwner(models, spin.ownerType, spin.ownerId)
     }
   },
   {
