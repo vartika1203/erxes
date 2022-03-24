@@ -27,6 +27,7 @@ import {
   join,
   redis
 } from '@erxes/api-utils/src/serviceDiscovery';
+import erxesConfigs from './erxes-configs';
 
 const configs = require('../../src/configs').default;
 
@@ -147,16 +148,11 @@ async function startServer() {
   const serviceDiscovery = {
     getServices,
     getService,
-    isAvailable: async name => {
-      const serviceNames = await getServices();
-      return serviceNames.includes(name);
+    isAvailable: async _name => {
+      return true;
     },
     isEnabled: async name => {
-      if (name === 'core') {
-        return true;
-      }
-
-      return !!(await redis.sismember('erxes:plugins:enabled', name));
+      return (name === "core") || (!!erxesConfigs.plugins[name])
     }
   };
 

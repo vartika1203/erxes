@@ -11,11 +11,17 @@ const targets = pluginNames.map(
 
 const templatePath = "./packages/api-plugin-template.erxes/";
 
-async function copy() {
-  await Promise.all(targets.map((target) => fs.remove(target)));
+async function deleteTargets() {
+  await Promise.all(targets.map((target) => {
+    console.log(chalk.blueBright`Deleting ${target}`)
+    return fs.remove(target);
+  }));
+}
+
+async function copy(event, path) {
   const copyTasks = targets.map((target) =>
     fs.copy(templatePath, target, {
-      overwrite: true,
+      overwrite: true
     })
   );
 
@@ -29,7 +35,8 @@ async function copy() {
 const copyDebounced = _.debounce(copy, 300);
 
 export default async function startWatchDotErxes() {
+  await deleteTargets();
   await copy();
   // One-liner for current directory
-  chokidar.watch(templatePath).on("all", copyDebounced);
+  chokidar.watch(templatePath, { ignoreInitial: true }).on("all", copyDebounced);
 }
