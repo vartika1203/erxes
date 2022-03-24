@@ -13,7 +13,7 @@ import {
   sendRequest
 } from '../../utils';
 
-import * as enabledServices from '../../../../enabled-services';
+import erxesConfigs from '../../../erxes-configs';
 
 const doSearch = async (index, value, fields) => {
   const highlightFields = {};
@@ -270,7 +270,13 @@ moduleRequireLogin(configQueries);
 
 // @ts-ignore
 configQueries.enabledServices = () => {
-  return enabledServices;
+  const result = {
+    core: true
+  };
+  for(const pluginName of Object.keys(erxesConfigs.plugins || {})) {
+    result[pluginName] = true;
+  }
+  return result;
 }
 
 export default configQueries;
