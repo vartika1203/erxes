@@ -15,8 +15,8 @@ function createStatic() {
   }
 
   const dockerfile = `FROM node:14-slim
+USER node
 WORKDIR /erxes
-
 `;
 
   fs.writeFileSync("./.dev/Dockerfile", dockerfile);
@@ -133,6 +133,6 @@ async function generateDockerCompose() {
   fs.writeFileSync("./.dev/docker-compose.yml", yamlString);
 
   console.log(
-    chalk.green("Created a docker-compose file in ./.dev/docker-compose.yml")
+    chalk.green("Created a docker-compose file ./.dev/docker-compose.yml")
   );
 }
