@@ -26,6 +26,7 @@ import SocialPayInvoices from '../db/models/SocialPayInvoice';
 import FormOrders from '../db/models/FormOrders';
 import * as crypto from 'crypto';
 import { ISocialPayConfig } from '../db/models/definitions/integrations';
+import { graphqlPubsub } from '../pubsub';
 
 export const getOrCreateEngageMessage = async (
   integrationId: string,
@@ -651,7 +652,8 @@ export const getOrderInfo = async (
   integrationId,
   formId,
   customerId,
-  submissions: ISubmission[]
+  submissions: ISubmission[],
+  messageId: string
 ) => {
   const orderInfo: IFormOrderInfo = {
     paymentType: 'none',
@@ -667,7 +669,7 @@ export const getOrderInfo = async (
     return orderInfo;
   }
 
-  const integration = await Integrations.getIntegration({ _id: integrationId });
+  const integration = await getDocument('integrations', { _id: integrationId });
   const { leadData } = integration;
 
   if (!leadData) {
@@ -694,7 +696,13 @@ export const getOrderInfo = async (
   }
 
   try {
-    return await settleOrder(integrationId, formId, customerId, orderInfo);
+    return await settleOrder(
+      formId,
+      integrationId,
+      customerId,
+      orderInfo,
+      messageId
+    );
   } catch (e) {
     throw new Error(e.message);
   }
@@ -710,17 +718,6 @@ export const makeInvoiceNo = length => {
   return result;
 };
 
-export const socialPayInvoice = async (body: any, url: string) => {
-  const response = await sendRequest({
-    url,
-    method: 'POST',
-    body,
-    redirect: 'follow'
-  });
-
-  return response;
-};
-
 export const hmac256 = (key, message) => {
   const hash = crypto.createHmac('sha256', key).update(message);
   return hash.digest('hex');
@@ -730,7 +727,8 @@ const settleOrder = async (
   formId: string,
   integrationId: string,
   customerId: string,
-  orderInfo: IFormOrderInfo
+  orderInfo: IFormOrderInfo,
+  messageId: string
 ) => {
   let invoice: any = {};
   const { amount, phone, paymentType, items } = orderInfo;
@@ -739,34 +737,33 @@ const settleOrder = async (
     const {
       terminal,
       key,
-      url,
       useQrCode
     } = orderInfo.paymentConfig as ISocialPayConfig;
-    const invoiceNo = await makeInvoiceNo(32);
 
     invoice = await SocialPayInvoices.createInvoice({
       status: 'open',
       amount,
-      invoiceNo,
-      phone
+      invoiceNo: messageId,
+      phone,
+      type: paymentType
     });
 
     const requestBody: any = {
       amount,
-      checksum: await hmac256(key, terminal + invoiceNo + amount),
-      invoice: invoiceNo,
+      checksum: await hmac256(key, terminal + messageId + amount),
+      invoice: messageId,
       terminal
     };
 
-    let requestUrl = `${url}pos/invoice/qr`;
+    let requestUrl = `https://instore.golomtbank.com/pos/invoice/qr`;
 
     if (!useQrCode) {
-      requestUrl = `${url}pos/invoice/phone`;
+      requestUrl = `https://instore.golomtbank.com/pos/invoice/phone`;
 
       requestBody.phone = phone;
       requestBody.checksum = await hmac256(
         key,
-        terminal + invoiceNo + amount + phone
+        terminal + messageId + amount + phone
       );
     }
 
@@ -791,26 +788,152 @@ const settleOrder = async (
     // }
 
     try {
-      const { body } = await socialPayInvoice(requestBody, requestUrl || '');
+      const { body } = await sendRequest({
+        url: requestUrl,
+        method: 'POST',
+        body: requestBody,
+        redirect: 'follow'
+      });
+
+      console.log('body: ', body);
+
       const { response } = body;
       if (response.status !== 'SUCCESS') {
         throw new Error(response.desc);
       }
+
+      const order = await FormOrders.createOrder({
+        formId,
+        integrationId,
+        customerId,
+        items,
+        status: 'placed',
+        invoiceId: invoice._id,
+        messageId
+      });
+
+      console.log('order: ', order);
 
       return { socialPayResponse: response.desc };
     } catch (e) {
       throw new Error(e.message);
     }
   }
+};
 
-  const order = await FormOrders.createOrder({
-    formId,
-    integrationId,
-    customerId,
-    items,
-    status: 'placed',
-    invoiceId: invoice._id
+const cancelInvoice = async (type, config, invoiceNo, amount) => {
+  if (type === 'socialPay') {
+    const { key, terminal } = config;
+
+    const requestBody: any = {
+      amount,
+      checksum: await hmac256(key, terminal + invoiceNo + amount),
+      invoice: invoiceNo,
+      terminal
+    };
+
+    try {
+      const { body } = await sendRequest({
+        url: `https://instore.golomtbank.com/pos/invoice/cancel`,
+        method: 'POST',
+        body: requestBody,
+        redirect: 'follow'
+      });
+
+      if (body.response.status !== 'SUCCESS') {
+        throw new Error(body.response.desc);
+      }
+
+      return 'cancelled';
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+};
+
+export const cancelOrder = async ({
+  messageId,
+  customerId
+}: {
+  messageId: string;
+  customerId: string;
+}) => {
+  const order = await FormOrders.getOrder({
+    messageId,
+    customerId
   });
 
   console.log('order: ', order);
+
+  const invoice = await SocialPayInvoices.getInvoice(order.invoiceId);
+
+  if (order.status !== 'placed' || invoice.status !== 'open') {
+    throw new Error('Order is already settled');
+  }
+
+  const integration = await getDocument('integrations', {
+    _id: order.integrationId
+  });
+
+  const { leadData } = integration;
+
+  try {
+    const res = await cancelInvoice(
+      leadData.paymentType,
+      leadData.paymentConfig,
+      invoice.invoiceNo,
+      invoice.amount
+    );
+
+    await SocialPayInvoices.updateInvoiceStatus(invoice._id, 'cancelled');
+
+    await FormOrders.updateOrderStatus(order._id, 'cancelled');
+
+    return res;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
+export const handleSocialPayNotification = async req => {
+  const {
+    // resp_code,
+    resp_desc,
+    // amount,
+    // checksum,
+    invoice
+    // terminal
+  } = req.body;
+
+  let status = 'success';
+  let description = resp_desc;
+
+  // if (resp_code !== "00") {
+  //   status = "failed";
+  // }
+
+  // const response = await sendRequest({
+  //   url: "https://instore.golomtbank.com/pos/invoice/check",
+  //   method: "POST",
+  //   body: { amount, checksum, invoice, terminal },
+  //   redirect: "follow"
+  // });
+
+  // const { body } = response;
+
+  // if (body.response.resp_code !== "00") {
+  //   status = "failed";
+  //   description = body.response.resp_desc;
+  // }
+  // console.log("************************* ", invoice);
+  // const invoiceObj = await SocialPayInvoices.getInvoice({ invoiceNo: invoice });
+  // const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
+
+  // await SocialPayInvoices.updateInvoiceStatus(invoice._id, "paid");
+
+  // await FormOrders.updateOrderStatus(order._id, "paid");
+
+  graphqlPubsub.publish('formInvoiceUpdated', {
+    formInvoiceUpdated: { messageId: invoice, status, description }
+  });
 };

@@ -89,3 +89,15 @@ export const increaseViewCountMutation = `
     widgetsLeadIncreaseViewCount(formId: $formId)
   }
 `;
+
+export const cancelOrderMutation = `
+  mutation widgetsCancelOrder($customerId: String!, $messageId: String!) {
+    widgetsCancelOrder(customerId: $customerId, messageId: $messageId)
+  }
+`;
+
+export const formInvoiceUpdated = `
+  subscription formInvoiceUpdated($messageId: String) {
+    formInvoiceUpdated(messageId: $messageId) 
+  }
+`;

@@ -6,6 +6,7 @@ export interface ISocialPayInvoice {
   amount: number;
   invoiceNo: string;
   phone: string;
+  type: string;
 }
 
 export interface ISocialPayInvoiceDocument extends ISocialPayInvoice, Document {
@@ -16,6 +17,7 @@ export interface ISocialPayInvoiceDocument extends ISocialPayInvoice, Document {
 export const socialPayInvoiceSchema = schemaWrapper(
   new Schema({
     _id: field({ pkey: true }),
+    type: field({ type: String, label: 'Payment Type', required: true }),
     amount: field({ type: Number, label: 'Amount' }),
     createdAt: field({ type: Date, label: 'Created at' }),
     status: field({ type: String, label: 'Status' }),

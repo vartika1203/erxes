@@ -1,10 +1,10 @@
-import gql from 'graphql-tag';
-import * as React from 'react';
-import { ChildProps, graphql } from 'react-apollo';
-import DumbForm from '../../../form/components/Form';
-import { ICurrentStatus, IForm } from '../../../form/types';
-import { formDetailQuery } from '../../graphql';
-import { AppConsumer } from '../AppContext';
+import gql from "graphql-tag";
+import * as React from "react";
+import { ChildProps, graphql } from "react-apollo";
+import DumbForm from "../../../form/components/Form";
+import { ICurrentStatus, IForm } from "../../../form/types";
+import { formDetailQuery } from "../../graphql";
+import { AppConsumer } from "../AppContext";
 
 const Form = (props: ChildProps<IProps, QueryResponse>) => {
   const { data } = props;
@@ -37,6 +37,9 @@ interface IProps {
   onCreateNew: () => void;
   sendEmail: (params: any) => void;
   isSubmitting?: boolean;
+  socialPayResponse?: any;
+  lastMessageId?: string;
+  onCancelOrder: (customerId: string, messageId: string) => void;
 }
 
 const FormWithData = graphql<IProps, QueryResponse>(
@@ -44,7 +47,7 @@ const FormWithData = graphql<IProps, QueryResponse>(
 
   {
     options: ({ integration }) => ({
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
       variables: {
         _id: integration.formId
       }
@@ -60,7 +63,10 @@ const WithContext = () => (
       sendEmail,
       isSubmitting,
       getIntegration,
-      save
+      save,
+      socialPayResponse,
+      lastMessageId,
+      cancelOrder
     }) => {
       const integration = getIntegration();
 
@@ -72,6 +78,9 @@ const WithContext = () => (
           onCreateNew={createNew}
           sendEmail={sendEmail}
           integration={integration}
+          socialPayResponse={socialPayResponse}
+          lastMessageId={lastMessageId}
+          onCancelOrder={cancelOrder}
         />
       );
     }}

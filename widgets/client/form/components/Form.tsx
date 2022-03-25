@@ -28,6 +28,7 @@ type Props = {
   currentStatus: ICurrentStatus;
   callSubmit?: boolean;
   onSubmit: (doc: IFormDoc, formCode: string) => void;
+  onCancelOrder: (customerId: string, messageId: string) => void;
   onCreateNew: () => void;
   sendEmail: (params: IEmailParams) => void;
   setHeight?: () => void;
@@ -36,6 +37,7 @@ type Props = {
   color?: string;
   extraContent?: string;
   socialPayResponse?: any;
+  lastMessageId?: string;
 };
 
 type State = {
@@ -493,7 +495,10 @@ class Form extends React.Component<Props, State> {
 
   renderSocialPayResponse(response: string) {
     const onClick = () => {
-      console.log("onclick");
+      this.props.onCancelOrder(
+        connection.customerId,
+        this.props.lastMessageId || ""
+      );
     };
 
     const button = () => {
@@ -542,6 +547,17 @@ class Form extends React.Component<Props, State> {
     );
   }
 
+  renderCancelledForm() {
+    return (
+      <div className="erxes-form">
+        {this.renderHead("Order has cancelled")}
+        <div className="erxes-form-content">
+          <div className="erxes-callout-body">{__("Order has cancelled.")}</div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const {
       form,
@@ -551,6 +567,8 @@ class Form extends React.Component<Props, State> {
       socialPayResponse
     } = this.props;
     const doc = this.state.doc;
+
+    console.log("state = ", this.props.currentStatus);
 
     if (currentStatus.status === "SUCCESS") {
       const {
@@ -612,8 +630,11 @@ class Form extends React.Component<Props, State> {
     }
 
     if (currentStatus.status === "PENDING" && socialPayResponse) {
-      console.log(socialPayResponse);
       return this.renderSocialPayResponse(socialPayResponse);
+    }
+
+    if (currentStatus.status === "CANCELLED") {
+      return this.renderCancelledForm();
     }
 
     return this.renderForm();

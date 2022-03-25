@@ -286,5 +286,5 @@ export default {
   faqSearchArticlesQuery,
   integrationsFetchApi,
   conversationBotTypingStatus,
-  getEngageMessage,
+  getEngageMessage
 };

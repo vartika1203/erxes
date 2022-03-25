@@ -1,5 +1,4 @@
 import * as cookieParser from 'cookie-parser';
-
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as telemetry from 'erxes-telemetry';
@@ -29,6 +28,7 @@ import {
   updateContactsValidationStatus,
   updateContactValidationStatus
 } from './data/verifierUtils';
+import { handleSocialPayNotification } from './data/widgetUtils';
 import { connect, mongoStatus } from './db/connection';
 import { Configs, Segments, Users } from './db/models';
 import initWatchers from './db/watchers';
@@ -147,6 +147,11 @@ app.use(
     limit: '15mb'
   })
 );
+
+app.post(`/socialpay/notification`, (req, _res, _next) => {
+  console.log('req: ', req.body);
+  return handleSocialPayNotification(req);
+});
 
 app.use(cookieParser());
 

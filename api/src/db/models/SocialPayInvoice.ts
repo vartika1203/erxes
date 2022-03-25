@@ -8,19 +8,20 @@ import {
 
 export interface ISocialPayInvoiceModel
   extends Model<ISocialPayInvoiceDocument> {
-  getInvoice(_id: string): Promise<ISocialPayInvoiceDocument>;
+  getInvoice(doc: any): Promise<ISocialPayInvoiceDocument>;
   createInvoice(doc: ISocialPayInvoice): Promise<ISocialPayInvoiceDocument>;
   updateInvoice(
     _id: string,
     doc: ISocialPayInvoice
   ): Promise<ISocialPayInvoiceDocument>;
   removeInvoice(_id: string): void;
+  updateInvoiceStatus(_id: string, status: string): void;
 }
 
 export const loadClass = () => {
   class SocialPayInvoice {
-    public static async getInvoice(_id: string) {
-      const invoice = await SocialPayInvoices.findOne({ _id });
+    public static async getInvoice(doc: any) {
+      const invoice = await SocialPayInvoices.findOne(doc);
 
       if (!invoice) {
         throw new Error('Invoice not found');
@@ -48,6 +49,10 @@ export const loadClass = () => {
       await SocialPayInvoices.getInvoice(_id);
 
       return SocialPayInvoices.deleteOne({ _id });
+    }
+
+    public static async updateInvoiceStatus(_id: string, status: string) {
+      return SocialPayInvoices.updateOne({ _id }, { $set: { status } });
     }
   }
 

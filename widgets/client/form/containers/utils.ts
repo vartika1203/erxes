@@ -5,6 +5,7 @@ import { IBrowserInfo, IEmailParams } from "../../types";
 import { requestBrowserInfo } from "../../utils";
 import { connection } from "../connection";
 import {
+  cancelOrderMutation,
   increaseViewCountMutation,
   saveFormMutation,
   sendEmailMutation
@@ -166,5 +167,28 @@ export const saveLead = (params: {
 
     .catch(e => {
       saveCallback({ status: "error", errors: [{ text: e.message }] });
+    });
+};
+
+export const cancelOrder = (params: {
+  customerId: string;
+  messageId: string;
+  cancelCallback: (response: string) => void;
+}) => {
+  const { customerId, messageId, cancelCallback } = params;
+
+  client
+    .mutate({
+      mutation: gql(cancelOrderMutation),
+      variables: {
+        customerId,
+        messageId
+      }
+    })
+    .then(res => {
+      cancelCallback("CANCELLED");
+    })
+    .catch(_e => {
+      cancelCallback("CANCEL_FAILED");
     });
 };

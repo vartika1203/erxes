@@ -394,6 +394,7 @@ export let subscriptions = `
   checklistsChanged(contentType: String!, contentTypeId: String!): Checklist
   checklistDetailChanged(_id: String!): Checklist
   calendarEventUpdated: JSON
+  formInvoiceUpdated(messageId: String): JSON
 `;
 
 export default { types, queries, mutations, subscriptions };

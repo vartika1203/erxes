@@ -6,10 +6,11 @@ import {
 } from './definitions/formOrders';
 
 export interface IFormOrderModel extends Model<IFormOrderDocument> {
-  getOrder(_id: string): IFormOrderDocument;
+  getOrder(doc: any): IFormOrderDocument;
   createOrder(doc: IFormOrder): IFormOrderDocument;
   updateOrder(_id: string, fields: IFormOrder): IFormOrderDocument;
   removeOrder(_id: string): IFormOrderDocument;
+  updateOrderStatus(_id: string, status: string): void;
 }
 
 export const loadClass = () => {
@@ -44,6 +45,10 @@ export const loadClass = () => {
       }
 
       return formOrder.remove();
+    }
+
+    public static async updateOrderStatus(_id: string, status: string) {
+      return FormOrders.updateOne({ _id }, { $set: { status } });
     }
   }
 

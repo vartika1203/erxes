@@ -122,5 +122,15 @@ export default {
       graphqlPubsub.asyncIterator(
         'conversationExternalIntegrationMessageInserted'
       )
+  },
+
+  formInvoiceUpdated: {
+    subscribe: withFilter(
+      () => graphqlPubsub.asyncIterator('formInvoiceUpdated'),
+      // filter by messageId
+      (payload, variables) => {
+        return payload.formInvoiceUpdated.messageId === variables.messageId;
+      }
+    )
   }
 };

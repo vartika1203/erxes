@@ -3,7 +3,13 @@ import { IEmailParams, IIntegration, IIntegrationLeadData } from "../../types";
 import { checkRules } from "../../utils";
 import { connection } from "../connection";
 import { ICurrentStatus, IForm, IFormDoc, ISaveFormResponse } from "../types";
-import { increaseViewCount, postMessage, saveLead, sendEmail } from "./utils";
+import {
+  cancelOrder,
+  increaseViewCount,
+  postMessage,
+  saveLead,
+  sendEmail
+} from "./utils";
 import QRCode = require("qrcode");
 interface IState {
   isPopupVisible: boolean;
@@ -14,6 +20,7 @@ interface IState {
   extraContent?: string;
   callSubmit: boolean;
   socialPayResponse?: string;
+  lastMessageId?: string;
 }
 
 interface IStore extends IState {
@@ -31,6 +38,8 @@ interface IStore extends IState {
   getIntegration: () => IIntegration;
   getForm: () => IForm;
   getIntegrationConfigs: () => IIntegrationLeadData;
+  cancelOrder: (customerId: string, messageId: string) => void;
+  onChangeCurrentStatus: (status: string) => void;
 }
 
 const AppContext = React.createContext({} as IStore);
@@ -204,6 +213,7 @@ export class AppProvider extends React.Component<{}, IState> {
           callSubmit: false,
           isSubmitting: false,
           socialPayResponse,
+          lastMessageId: response.messageId,
           currentStatus: {
             status,
             errors
@@ -255,6 +265,21 @@ export class AppProvider extends React.Component<{}, IState> {
     return this.getIntegration().leadData;
   };
 
+  cancelOrder = (customerId: string, messageId: string) => {
+    cancelOrder({
+      customerId,
+      messageId,
+      cancelCallback: (response: string) => {
+        this.setState({ currentStatus: { status: response } });
+      }
+    });
+  };
+
+  onChangeCurrentStatus = (status: string) => {
+    console.log("STATUS = ", status);
+    this.setState({ currentStatus: { status } });
+  };
+
   render() {
     return (
       <AppContext.Provider
@@ -273,7 +298,9 @@ export class AppProvider extends React.Component<{}, IState> {
           setExtraContent: this.setExtraContent,
           getIntegration: this.getIntegration,
           getForm: this.getForm,
-          getIntegrationConfigs: this.getIntegrationConfigs
+          getIntegrationConfigs: this.getIntegrationConfigs,
+          cancelOrder: this.cancelOrder,
+          onChangeCurrentStatus: this.onChangeCurrentStatus
         }}
       >
         {this.props.children}

@@ -1,9 +1,11 @@
+import ApolloClient, { ApolloError, SubscriptionOptions } from "apollo-client";
 import gql from "graphql-tag";
 import * as React from "react";
 import { ChildProps, graphql } from "react-apollo";
+import client from "../../apollo-client";
 import { IEmailParams, IIntegration } from "../../types";
 import { Form as DumbForm } from "../components";
-import { formDetailQuery } from "../graphql";
+import { formDetailQuery, formInvoiceUpdated } from "../graphql";
 import { ICurrentStatus, IForm, IFormDoc } from "../types";
 import { AppConsumer } from "./AppContext";
 
@@ -22,6 +24,31 @@ const Form = (props: ChildProps<IProps, QueryResponse>) => {
     ...props,
     form: data.formDetail
   };
+
+  React.useEffect(() => {
+    client
+      .subscribe({
+        query: gql(formInvoiceUpdated),
+        variables: { messageId: props.lastMessageId || "" }
+      })
+      .subscribe({
+        next({ data }) {
+          console.log("subs: ", data.data);
+          if (data.formInvoiceUpdated.status === "success") {
+            console.log("changin status");
+            props.onChangeCurrentStatus("SUCCESS");
+          }
+        },
+        error(err: any) {
+          console.error("err", err);
+        }
+      });
+  });
+
+  console.log(
+    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ",
+    extendedProps.currentStatus
+  );
 
   return <DumbForm {...extendedProps} hasTopBar={true} />;
 };
@@ -42,6 +69,9 @@ interface IProps {
   extraContent?: string;
   isSubmitting?: boolean;
   socialPayResponse?: any;
+  lastMessageId?: string;
+  onCancelOrder: (customerId: string, messageId: string) => void;
+  onChangeCurrentStatus: (status: string) => void;
 }
 
 const FormWithData = graphql<IProps, QueryResponse>(
@@ -70,7 +100,10 @@ const WithContext = () => (
       extraContent,
       isSubmitting,
       getForm,
-      socialPayResponse
+      socialPayResponse,
+      lastMessageId,
+      cancelOrder,
+      onChangeCurrentStatus
     }) => {
       const integration = getIntegration();
       const form = getForm();
@@ -88,6 +121,9 @@ const WithContext = () => (
           extraContent={extraContent}
           callSubmit={callSubmit}
           socialPayResponse={socialPayResponse}
+          lastMessageId={lastMessageId}
+          onCancelOrder={cancelOrder}
+          onChangeCurrentStatus={onChangeCurrentStatus}
         />
       );
     }}

@@ -15,6 +15,7 @@ export interface IFormOrder {
   items: IOrderItem[];
   status: string;
   invoiceId: string;
+  messageId: string;
 }
 
 export interface IFormOrderDocument extends IFormOrder, Document {
@@ -64,6 +65,7 @@ export const formOrderSchema = schemaWrapper(
     items: field({ type: [orderItemSchema], label: 'Order items' }),
     createdAt: field({ type: Date, label: 'Created at' }),
     status: field({ type: String, label: 'Order status' }),
-    invoiceId: field({ type: String, label: 'Invoice id' })
+    invoiceId: field({ type: String, label: 'Invoice id' }),
+    messageId: field({ type: String, label: 'Conversation Message id' })
   })
 );
