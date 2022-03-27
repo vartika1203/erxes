@@ -152,7 +152,7 @@ async function startServer() {
       return true;
     },
     isEnabled: async name => {
-      return (name === "core") || (!!erxesConfigs.plugins[name])
+      return (name === "core") || (erxesConfigs.plugins[name] !== undefined)
     }
   };
 
