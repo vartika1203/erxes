@@ -17,6 +17,7 @@ import { connect } from './connection';
 import { debugInfo, debugError } from './debuggers';
 import { init as initBroker } from '@erxes/api-utils/src/messageBroker';
 import { logConsumers } from '@erxes/api-utils/src/logUtils';
+import { internalNoteConsumers } from '@erxes/api-utils/src/internalNotes';
 import * as elasticsearch from './elasticsearch';
 import pubsub from './pubsub';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
@@ -188,7 +189,7 @@ async function startServer() {
     }
 
     if (configs.meta) {
-      const { segments, forms, tags, imports } = configs.meta;
+      const { segments, forms, tags, imports, internalNotes, automations } = configs.meta;
       const { consumeRPCQueue } = messageBrokerClient;
 
       const logs = configs.meta.logs && configs.meta.logs.consumers;
@@ -274,6 +275,14 @@ async function startServer() {
         }
       }
 
+      if (internalNotes) {
+        internalNoteConsumers({
+          name: configs.name,
+          consumeRPCQueue,
+          generateInternalNoteNotif: internalNotes.generateInternalNoteNotif
+        });
+      }
+
       if (imports) {
         if (imports.prepareImportDocs) {
           consumeRPCQueue(
@@ -291,6 +300,18 @@ async function startServer() {
             async args => ({
               status: 'success',
               data: await imports.insertImportItems(args)
+            })
+          );
+        }
+      }
+
+      if (automations) {
+        if (automations.receiveActions) {
+          consumeRPCQueue(
+            `${configs.name}:automations.receiveActions`,
+            async args => ({
+              status: 'success',
+              data: await automations.receiveActions(args)
             })
           );
         }

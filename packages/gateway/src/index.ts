@@ -14,7 +14,7 @@ import { createGateway, IGatewayContext } from './gateway';
 import userMiddleware from './middlewares/userMiddleware';
 import * as db from './db';
 import pubsub from './subscription/pubsub';
-import { getService, getServices, redis } from './redis';
+import { getService, getServices, redis, setAfterMutations } from './redis';
 import { initBroker } from './messageBroker';
 import erxesConfigs from './erxes-configs';
 
@@ -35,6 +35,8 @@ const {
   const app = express();
 
   app.use(cookieParser());
+
+  app.use(userMiddleware);
 
   // TODO: Find some solution so that we can stop forwarding /read-file, /initialSetup etc.
   app.use(
@@ -58,6 +60,9 @@ const {
           return host;
         }
       },
+      onProxyReq: (proxyReq, req: any) => {
+        proxyReq.setHeader('userid', req.user ? req.user._id : '');
+      },
       pathRewrite: async path => {
         let newPath = path;
 
@@ -71,8 +76,6 @@ const {
       }
     })
   );
-
-  app.use(userMiddleware);
 
   const httpServer = http.createServer(app);
 
@@ -152,6 +155,8 @@ const {
   await new Promise<void>(resolve => httpServer.listen({ port }, resolve));
 
   await initBroker({ RABBITMQ_HOST, MESSAGE_BROKER_PREFIX, redis });
+
+  await setAfterMutations();
 
   console.log(
     `Erxes gateway ready at http://localhost:${erxesConfigs.GATEWAY_PORT}${apolloServer.graphqlPath}`

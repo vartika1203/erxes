@@ -230,9 +230,7 @@ httpServer.listen(PORT, async () => {
     name: 'core',
     dbConnectionString: MONGO_URL,
     hasSubscriptions: false,
-    meta: { logs: { providesActivityLog: true, consumers: logs },
-    forms
-  }
+    meta: { logs: { providesActivityLog: true, consumers: logs }, forms }
   });
 
   debugInit(`GraphQL Server is now running on ${PORT}`);
