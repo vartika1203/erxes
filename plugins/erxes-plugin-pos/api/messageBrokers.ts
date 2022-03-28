@@ -17,7 +17,7 @@ export default [
         const doneOrder = await models.PosOrders.findOne({ _id: order._id }).lean();
 
         const { deliveryConfig = {} } = pos;
-        const  deliveryInfo = doneOrder.deliveryInfo || {};
+        const deliveryInfo = doneOrder.deliveryInfo || {};
 
         const deal = await models.Deals.createDeal({
           name: `Delivery: ${doneOrder.number}`,
@@ -77,17 +77,37 @@ export default [
           }
         });
 
+        await models.PosOrders.updateOne(
+          { _id: doneOrder },
+          {
+            $set: {
+              deliveryInfo: {
+                ...deliveryInfo, dealId: deal._id
+              }
+            }
+          }
+        )
+
         return;
       }
 
       // ====== if (action === 'makePayment')
-      await models.PutResponses.updateOne({ _id: response._id }, { $set: { ...response, posToken, syncId } }, { upsert: true });
-      await models.PosOrders.updateOne({ _id: order._id }, {
-        $set: {
-          ...order, posToken, syncId, items,
-          branchId: order.branchId || pos.branchId
-        }
-      }, { upsert: true });
+      await models.PutResponses.updateOne(
+        { _id: response._id },
+        { $set: { ...response, posToken, syncId } },
+        { upsert: true }
+      );
+
+      await models.PosOrders.updateOne(
+        { _id: order._id },
+        {
+          $set: {
+            ...order, posToken, syncId, items,
+            branchId: order.branchId || pos.branchId
+          }
+        },
+        { upsert: true }
+      );
 
       const newOrder = await models.PosOrders.findOne({ _id: order._id }).lean();
 
@@ -98,6 +118,7 @@ export default [
         const toPos = await models.Pos.findOne({ branchId: newOrder.branchId });
 
         // paid order info to offline pos
+        // TODO: this message RPC, offline pos has seen by this message check
         await sendMessage(models, messageBroker, 'vrpc_queue:erxes-pos-to-pos', { order: { ...newOrder, posToken } }, toPos);
       }
 
@@ -132,7 +153,8 @@ export default [
   }
 ];
 
-export const sendMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
+const getChannels = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
+  const channels = [];
   const allPos = pos ? [pos] : await models.Pos.find().lean();
 
   for (const p of allPos) {
@@ -154,7 +176,27 @@ export const sendMessage = async (models, messageBroker, channel, params, pos = 
         continue;
       }
 
-      messageBroker().sendMessage(`${channel}_${syncId}`, params);
+      channels.push(`${channel}_${syncId}`);
     }
   }
+  return channels;
 }
+
+export const sendMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
+  const channels = await getChannels(models, messageBroker, channel, params, pos = undefined, excludeTokens = []);
+  for (const ch of channels) {
+    messageBroker().sendMessage(ch, params);
+  }
+}
+
+export const sendRPCMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
+  const channels = await getChannels(models, messageBroker, channel, params, pos = undefined, excludeTokens = []);
+  let ch = (channels && channels.length) && channels[0] || '';
+  if (!ch) {
+    return {}
+  }
+
+  return await messageBroker().sendRPCMessage(ch, params);
+}
+
+

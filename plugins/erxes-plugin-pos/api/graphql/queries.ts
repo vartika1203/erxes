@@ -358,6 +358,58 @@ const queries = [
       return { totalCount, products };
     }
   },
+
+  // delivery information from clientPortal
+  {
+    name: 'ordersDeliveryInfo',
+    handler: async (
+      _root,
+      { orderId },
+      { models }
+    ) => {
+      const order = await models.PosOrders.findOne({ _id: orderId }).lean();
+
+      // on kitchen
+      if (!order.deliveryInfo) {
+        throw new Error('Deleted delivery information.')
+      }
+
+      if (!order.deliveryInfo.dealId) {
+        return {
+          _id: order._id,
+          status: 'onKitchen',
+          date: order.paidDate
+        }
+      }
+
+      const dealId = order.deliveryInfo.dealId;
+      const deal = await models.Deals.findOne({ _id: dealId }).lean();
+
+      if (!deal) {
+        throw new Error('Deleted delivery information.')
+      }
+
+      const stage = await models.Stages.findOne({ _id: deal.stageId }).lean();
+
+      return {
+        _id: order._id,
+        status: stage.name,
+        date: deal.stageChangedDate || deal.modifiedDate || deal.createdAt
+      };
+    }
+
+  },
+  {
+    name: 'cpPosOrders',
+    handler: async (_root, params, { models, commonQuerySelector }) => {
+      const query = await generateFilterPosQuery(models, params, commonQuerySelector, '')
+
+      return paginate(models.PosOrders.find(query).sort({ createdAt: -1 }), {
+        page: params.page,
+        perPage: params.perPage
+      });
+    }
+  },
 ];
 
 export default queries;

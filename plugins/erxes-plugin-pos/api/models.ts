@@ -204,7 +204,27 @@ const posOrdersSchema = {
   syncId: { type: String, optional: true },
 
   syncedErkhet: { type: Boolean, default: false },
-  deliveryInfo: { type: Object, optional: true, label: 'Delivery Info, address, map, etc' }
+  // "deliveryInfo": {
+  //   "description": "desc orts code enee teree",
+  //   "mapValue": {
+  //     "locationValue": {
+  //       "type": "Point",
+  //       "coordinates": [
+  //         106.936283111572,
+  //         47.920138551642
+  //       ]
+  //     },
+  //     "field": "dznoBhE3XCkCaHuBX",
+  //     "value": {
+  //       "lat": 47.920138551642,
+  //       "lng": 106.936283111572
+  //     },
+  //     "stringValue": "106.93628311157227,47.920138551642026"
+  //   },
+  //   "dealId": "qWFz09faLKAliIUS4"
+  // },
+  deliveryInfo: { type: Object, optional: true, label: 'Delivery Info, address, map, etc' },
+
 };
 
 

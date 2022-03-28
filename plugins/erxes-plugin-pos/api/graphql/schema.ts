@@ -137,6 +137,12 @@ export const types = `
     products: [PosProduct],
     totalCount: Float,
   }
+
+  type DeliveryInfo {
+    _id: String
+    status: String
+    date: Date
+  }
 `;
 
 const queryParams = `
@@ -171,6 +177,8 @@ export const queries = `
   posProducts(${queryParams} categoryId: String, searchValue: String): PosProducts
   posOrdersSummary(${queryParams}): JSON
   ecommerceGetBranches(posToken: String): [Branch]
+  ordersDeliveryInfo(orderId: String!): DeliveryInfo
+  cpPosOrders(${queryParams}): [PosOrder]
 `;
 
 export const mutations = `
