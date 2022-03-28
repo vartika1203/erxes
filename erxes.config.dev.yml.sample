@@ -13,8 +13,6 @@ RABBITMQ_HOST: amqp://172.17.0.1
 # ELASTICSEARCH
 ELASTICSEARCH_URL: http://172.17.0.1:9200
 
-GATEWAY_PORT: 4000
-
 USE_BRAND_RESTRICTIONS:
 
 MAIN_APP_DOMAIN: http://localhost:3000
@@ -26,6 +24,9 @@ ELK_SYNCER: "false"
 
 CORE_URL:
 
+gateway: {}
+core: {}
+
 plugins:
   contacts:
     environment:
@@ -36,3 +37,7 @@ plugins:
   inbox:
     environment:
       MONGO_URL: mongodb://172.17.0.1:27017/erxes-inbox
+  cards:
+    environment:
+      MONGO_URL: mongodb://172.17.0.1:27017/erxes-cards
+      USE_IMPORT: "true"
