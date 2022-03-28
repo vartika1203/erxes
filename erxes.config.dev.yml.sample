@@ -27,6 +27,8 @@ CORE_URL:
 gateway: {}
 core: {}
 
+# plugin's directory name must be ./packages/plugin-${name}-api
+# plugin's package.json.name must be @erxes/plugin-${name}-api
 plugins:
   contacts:
     environment:
