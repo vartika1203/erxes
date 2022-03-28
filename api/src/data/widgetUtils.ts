@@ -895,7 +895,7 @@ export const cancelOrder = async ({
   }
 };
 
-export const handleSocialPayNotification = async req => {
+export const handleSocialPayNotification = async (req, res, _next) => {
   const {
     // resp_code,
     resp_desc,
@@ -936,4 +936,6 @@ export const handleSocialPayNotification = async req => {
   graphqlPubsub.publish('formInvoiceUpdated', {
     formInvoiceUpdated: { messageId: invoice, status, description }
   });
+
+  res.send('OK');
 };

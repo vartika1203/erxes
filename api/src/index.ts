@@ -148,9 +148,9 @@ app.use(
   })
 );
 
-app.post(`/socialpay/notification`, (req, _res, _next) => {
+app.post(`/socialpay/notification`, (req, res, next) => {
   console.log('req: ', req.body);
-  return handleSocialPayNotification(req);
+  return handleSocialPayNotification(req, res, next);
 });
 
 app.use(cookieParser());
