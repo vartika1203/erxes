@@ -153,7 +153,7 @@ export default [
   }
 ];
 
-const getChannels = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
+const getChannels = async (models, channel, pos, excludeTokens) => {
   const channels = [];
   const allPos = pos ? [pos] : await models.Pos.find().lean();
 
@@ -183,14 +183,14 @@ const getChannels = async (models, messageBroker, channel, params, pos = undefin
 }
 
 export const sendMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
-  const channels = await getChannels(models, messageBroker, channel, params, pos = undefined, excludeTokens = []);
+  const channels = await getChannels(models, channel, pos, excludeTokens);
   for (const ch of channels) {
     messageBroker().sendMessage(ch, params);
   }
 }
 
 export const sendRPCMessage = async (models, messageBroker, channel, params, pos = undefined, excludeTokens = []) => {
-  const channels = await getChannels(models, messageBroker, channel, params, pos = undefined, excludeTokens = []);
+  const channels = await getChannels(models, channel, pos, excludeTokens);
   let ch = (channels && channels.length) && channels[0] || '';
   if (!ch) {
     return {}
