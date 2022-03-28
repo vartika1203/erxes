@@ -34,7 +34,7 @@ export default [
   },
   {
     name: 'cpSpinCompaigns',
-    handler: async (_root, params, { models }) => {
+    handler: async (_root, _params, { models }) => {
       const now = new Date();
 
       return models.SpinCompaigns.find({
