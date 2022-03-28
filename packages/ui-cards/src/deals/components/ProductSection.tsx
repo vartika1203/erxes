@@ -1,15 +1,15 @@
-import Box from '@erxes/ui/src/components/Box';
-import EmptyState from '@erxes/ui/src/components/EmptyState';
-import Icon from '@erxes/ui/src/components/Icon';
-import ModalTrigger from '@erxes/ui/src/components/ModalTrigger';
-import Tip from '@erxes/ui/src/components/Tip';
-import { __ } from '@erxes/ui/src/utils';
-import { SectionBodyItem } from '@erxes/ui/src/layout/styles';
-import { IProduct } from '@erxes/ui-products/src/types';
-import React from 'react';
-import ProductForm from '../containers/product/ProductForm';
-import { CustomField, ProductName } from '../styles';
-import { IPaymentsData, IProductData } from '../types';
+import Box from "@erxes/ui/src/components/Box";
+import EmptyState from "@erxes/ui/src/components/EmptyState";
+import Icon from "@erxes/ui/src/components/Icon";
+import ModalTrigger from "@erxes/ui/src/components/ModalTrigger";
+import Tip from "@erxes/ui/src/components/Tip";
+import { __ } from "@erxes/ui/src/utils";
+import { SectionBodyItem } from "@erxes/ui/src/layout/styles";
+import { IProduct } from "@erxes/ui-products/src/types";
+import React from "react";
+import ProductForm from "../containers/product/ProductForm";
+import { CustomField, ProductName } from "../styles";
+import { IPaymentsData, IProductData } from "../types";
 
 type Props = {
   productsData: IProductData[];
@@ -27,10 +27,10 @@ function ProductSection({
   paymentsData,
   onChangeProductsData,
   onChangePaymentsData,
-  saveProductsData
+  saveProductsData,
 }: Props) {
   const contentWithId = (productId?: string) => {
-    const content = props => (
+    const content = (props) => (
       <ProductForm
         {...props}
         currentProduct={productId}
@@ -101,7 +101,7 @@ function ProductSection({
 
   return (
     <Box
-      title={__('Product & Service')}
+      title={__("Product & Service")}
       extraButtons={renderProductFormModal(
         <button>
           <Icon icon="edit-3" />

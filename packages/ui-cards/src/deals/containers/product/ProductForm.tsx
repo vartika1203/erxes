@@ -1,4 +1,5 @@
-import { AppConsumer } from "../../../../../core-ui/src/appContext";
+// import { AppConsumer } from "../../../../../core-ui/src/appContext";
+import { AppConsumer } from "coreui/appContext";
 import { IProduct } from "@erxes/ui-products/src/types";
 import React from "react";
 import ProductForm from "../../components/product/ProductForm";
@@ -17,9 +18,11 @@ type Props = {
 
 export default class ProductFormContainer extends React.Component<Props> {
   render() {
+    // console.log("heree", __("Hide Menu"));
     return (
       <AppConsumer>
         {({ currentUser }) => {
+          console.log(currentUser, "jjj");
           if (!currentUser) {
             return;
           }
