@@ -26,8 +26,8 @@ WORKDIR /erxes
 
 const commonConstConfig = {
   build: {
-    context: "../",
-    dockerfile: "./.dev/Dockerfile",
+    context: "./",
+    dockerfile: "./Dockerfile",
   },
   secrets: ["erxes.config.yml"],
   networks: ["erxes-dev"],
