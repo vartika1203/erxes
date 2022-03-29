@@ -28,7 +28,7 @@ export const fillSearchTextItem = (
   ]);
 };
 
-// set related tags
+// set related templates
 const setRelatedIds = async (template: IProductTemplateDocument) => {
   if (template.parentId) {
     const parentTemplate = await ProductTemplates.findOne({
@@ -59,7 +59,7 @@ const setRelatedIds = async (template: IProductTemplateDocument) => {
   }
 };
 
-// remove related tags
+// remove related templates
 const removeRelatedIds = async (template: IProductTemplateDocument) => {
   const _id = template ? template._id : '';
 
