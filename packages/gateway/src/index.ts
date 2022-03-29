@@ -16,7 +16,6 @@ import * as db from './db';
 import pubsub from './subscription/pubsub';
 import { getService, getServices, redis, setAfterMutations } from './redis';
 import { initBroker } from './messageBroker';
-import erxesConfigs from './erxes-configs';
 
 const {
   MAIN_APP_DOMAIN,
@@ -159,6 +158,6 @@ const {
   await setAfterMutations();
 
   console.log(
-    `Erxes gateway ready at http://localhost:${erxesConfigs.GATEWAY_PORT}${apolloServer.graphqlPath}`
+    `Erxes gateway ready at http://localhost:${port}${apolloServer.graphqlPath}`
   );
 })();
