@@ -28,7 +28,10 @@ import {
   updateContactsValidationStatus,
   updateContactValidationStatus
 } from './data/verifierUtils';
-import { handleSocialPayNotification } from './data/widgetUtils';
+import {
+  handleGolomtNotification,
+  handleSocialPayNotification
+} from './data/widgetUtils';
 import { connect, mongoStatus } from './db/connection';
 import { Configs, Segments, Users } from './db/models';
 import initWatchers from './db/watchers';
@@ -149,8 +152,11 @@ app.use(
 );
 
 app.post(`/socialpay/notification`, (req, res, next) => {
-  console.log('req: ', req.body);
   return handleSocialPayNotification(req, res, next);
+});
+
+app.post(`/golomt/e-commerce`, (req, res, next) => {
+  return handleGolomtNotification(req, res, next);
 });
 
 app.use(cookieParser());

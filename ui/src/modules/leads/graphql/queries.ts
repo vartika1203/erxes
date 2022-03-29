@@ -44,6 +44,7 @@ export const commonFields = `
   isActive
   visibility
   departmentIds
+  paymentConfig
 `;
 
 const integrations = `

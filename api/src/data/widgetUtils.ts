@@ -27,6 +27,7 @@ import FormOrders from '../db/models/FormOrders';
 import * as crypto from 'crypto';
 import { ISocialPayConfig } from '../db/models/definitions/integrations';
 import { graphqlPubsub } from '../pubsub';
+import { ECOMMERCE_API_URLS, SOCIAL_PAY_API_URLS } from './constants';
 
 export const getOrCreateEngageMessage = async (
   integrationId: string,
@@ -670,18 +671,14 @@ export const getOrderInfo = async (
   }
 
   const integration = await getDocument('integrations', { _id: integrationId });
-  const { leadData } = integration;
+  const { paymentConfig } = integration;
 
-  if (!leadData) {
+  if (!paymentConfig || paymentConfig.type === 'none') {
     return orderInfo;
   }
 
-  if (leadData.paymentType === 'none') {
-    return orderInfo;
-  }
-
-  orderInfo.paymentType = leadData.paymentType || 'none';
-  orderInfo.paymentConfig = leadData.paymentConfig;
+  orderInfo.paymentType = paymentConfig.type || 'none';
+  orderInfo.paymentConfig = paymentConfig;
 
   for (const submission of submissions) {
     const product = await Products.getProduct({ _id: submission.value });
@@ -732,14 +729,16 @@ const settleOrder = async (
 ) => {
   let invoice: any = {};
   const { amount, phone, paymentType, items } = orderInfo;
+  const {
+    terminal,
+    key,
+    useQrCode,
+    checksumKey,
+    redirectUrl,
+    token
+  } = orderInfo.paymentConfig as ISocialPayConfig;
 
-  if (paymentType === 'socialPay') {
-    const {
-      terminal,
-      key,
-      useQrCode
-    } = orderInfo.paymentConfig as ISocialPayConfig;
-
+  const handleSocialPay = async () => {
     invoice = await SocialPayInvoices.createInvoice({
       status: 'open',
       amount,
@@ -755,10 +754,10 @@ const settleOrder = async (
       terminal
     };
 
-    let requestUrl = `https://instore.golomtbank.com/pos/invoice/qr`;
+    let requestUrl = SOCIAL_PAY_API_URLS.QR_INVOICE;
 
     if (!useQrCode) {
-      requestUrl = `https://instore.golomtbank.com/pos/invoice/phone`;
+      requestUrl = SOCIAL_PAY_API_URLS.PHONE_INVOICE;
 
       requestBody.phone = phone;
       requestBody.checksum = await hmac256(
@@ -766,26 +765,6 @@ const settleOrder = async (
         terminal + messageId + amount + phone
       );
     }
-
-    // response:  {
-    //   header: { code: 200, status: 'success' },
-    //   body: {
-    //     response: {
-    //       desc: 'Төлбөрийн мэдээлэл амжилттай илгээгдлээ.',
-    //       status: 'SUCCESS'
-    //     }
-    //   }
-    // }
-
-    // response:  {
-    //   header: { code: 200, status: 'success' },
-    //   body: {
-    //     response: {
-    //       desc: 'socialpay-payment://key=DVclDuoRh53Z9zScbZ5ydg568yxw8ehXi0gbJiqTYyAeHZf3jPN7+rnQBUEYhM+MJlLa7cLAuV/FAr32quPrzMZwMc1PvHiUM8eZdCb5rUZmM15QWDPhX1XWmFrb6DC+',
-    //       status: 'SUCCESS'
-    //     }
-    //   }
-    // }
 
     try {
       const { body } = await sendRequest({
@@ -795,14 +774,12 @@ const settleOrder = async (
         redirect: 'follow'
       });
 
-      console.log('body: ', body);
-
       const { response } = body;
       if (response.status !== 'SUCCESS') {
         throw new Error(response.desc);
       }
 
-      const order = await FormOrders.createOrder({
+      await FormOrders.createOrder({
         formId,
         integrationId,
         customerId,
@@ -812,12 +789,76 @@ const settleOrder = async (
         messageId
       });
 
-      console.log('order: ', order);
-
-      return { socialPayResponse: response.desc };
+      return { invoiceResponse: response.desc, invoiceType: 'socialPay' };
     } catch (e) {
       throw new Error(e.message);
     }
+  };
+
+  const handleGolomtECommerce = async () => {
+    invoice = await SocialPayInvoices.createInvoice({
+      status: 'open',
+      amount,
+      transactionId: messageId,
+      type: paymentType
+    });
+
+    const returnType = 'POST';
+
+    const requestBody: any = {
+      amount,
+      checksum: await hmac256(
+        checksumKey,
+        messageId + amount + returnType + redirectUrl
+      ),
+      callback: redirectUrl,
+      genToken: 'N',
+      returnType,
+      transactionId: messageId
+    };
+
+    try {
+      const response = await sendRequest({
+        url: ECOMMERCE_API_URLS.CREATE_INVOICE,
+        method: 'POST',
+        body: requestBody,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow'
+      });
+
+      if (response.invoice) {
+        await FormOrders.createOrder({
+          formId,
+          integrationId,
+          customerId,
+          items,
+          status: 'placed',
+          invoiceId: invoice._id,
+          messageId
+        });
+
+        return {
+          invoiceResponse: `https://ecommerce.golomtbank.com/payment/mn/${response.invoice}`,
+          invoiceType: 'golomtEcommerce'
+        };
+      }
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  };
+
+  switch (paymentType) {
+    case 'socialPay':
+      return handleSocialPay();
+
+    case 'golomtEcommerce':
+      return handleGolomtECommerce();
+
+    default:
+      break;
   }
 };
 
@@ -834,7 +875,7 @@ const cancelInvoice = async (type, config, invoiceNo, amount) => {
 
     try {
       const { body } = await sendRequest({
-        url: `https://instore.golomtbank.com/pos/invoice/cancel`,
+        url: SOCIAL_PAY_API_URLS.CANCEL_INVOICE,
         method: 'POST',
         body: requestBody,
         redirect: 'follow'
@@ -863,8 +904,6 @@ export const cancelOrder = async ({
     customerId
   });
 
-  console.log('order: ', order);
-
   const invoice = await SocialPayInvoices.getInvoice(order.invoiceId);
 
   if (order.status !== 'placed' || invoice.status !== 'open') {
@@ -875,12 +914,12 @@ export const cancelOrder = async ({
     _id: order.integrationId
   });
 
-  const { leadData } = integration;
+  const { paymentConfig } = integration;
 
   try {
     const res = await cancelInvoice(
-      leadData.paymentType,
-      leadData.paymentConfig,
+      paymentConfig.type,
+      paymentConfig.paymentConfig,
       invoice.invoiceNo,
       invoice.amount
     );
@@ -895,47 +934,118 @@ export const cancelOrder = async ({
   }
 };
 
-export const handleSocialPayNotification = async (req, res, _next) => {
+export const handleSocialPayNotification = async (req, res, next) => {
   const {
-    // resp_code,
+    resp_code,
     resp_desc,
-    // amount,
-    // checksum,
-    invoice
-    // terminal
+    amount,
+    checksum,
+    invoice,
+    terminal
   } = req.body;
 
   let status = 'success';
   let description = resp_desc;
 
-  // if (resp_code !== "00") {
-  //   status = "failed";
-  // }
+  if (resp_code !== '00') {
+    status = 'failed';
+  }
 
-  // const response = await sendRequest({
-  //   url: "https://instore.golomtbank.com/pos/invoice/check",
-  //   method: "POST",
-  //   body: { amount, checksum, invoice, terminal },
-  //   redirect: "follow"
-  // });
+  try {
+    const response = await sendRequest({
+      url: SOCIAL_PAY_API_URLS.CHECK_INVOICE,
+      method: 'POST',
+      body: { amount, checksum, invoice, terminal },
+      redirect: 'follow'
+    });
 
-  // const { body } = response;
+    const { body } = response;
 
-  // if (body.response.resp_code !== "00") {
-  //   status = "failed";
-  //   description = body.response.resp_desc;
-  // }
-  // console.log("************************* ", invoice);
-  // const invoiceObj = await SocialPayInvoices.getInvoice({ invoiceNo: invoice });
-  // const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
+    if (body.response.resp_code !== '00') {
+      status = 'failed';
+      description = body.response.resp_desc;
 
-  // await SocialPayInvoices.updateInvoiceStatus(invoice._id, "paid");
+      graphqlPubsub.publish('formInvoiceUpdated', {
+        formInvoiceUpdated: { messageId: invoice, status, description }
+      });
 
-  // await FormOrders.updateOrderStatus(order._id, "paid");
+      return;
+    }
 
-  graphqlPubsub.publish('formInvoiceUpdated', {
-    formInvoiceUpdated: { messageId: invoice, status, description }
+    const invoiceObj = await SocialPayInvoices.getInvoice({
+      invoiceNo: invoice
+    });
+    const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
+
+    await SocialPayInvoices.updateInvoiceStatus(invoiceObj._id, 'paid');
+
+    await FormOrders.updateOrderStatus(order._id, 'paid');
+
+    graphqlPubsub.publish('formInvoiceUpdated', {
+      formInvoiceUpdated: { messageId: invoice, status, description }
+    });
+  } catch (e) {
+    next(e);
+  }
+
+  res.send('OK');
+};
+
+export const handleGolomtNotification = async (req, res, next) => {
+  const invoice = req.body.invoice || '';
+  const invoiceObj = await SocialPayInvoices.getInvoice({
+    transactionId: invoice
   });
+  const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
+  const integration = await getDocument('integrations', {
+    _id: order.integrationId
+  });
+  const { paymentConfig } = integration;
+  const { checksumKey = '', token } = paymentConfig;
+
+  const requestBody: any = {
+    transactionId: invoice,
+    checksum: await hmac256(checksumKey, invoice + invoice)
+  };
+
+  try {
+    const response = await sendRequest({
+      url: ECOMMERCE_API_URLS.CHECK_INVOICE,
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: requestBody,
+      redirect: 'follow'
+    });
+
+    if (response.errorCode !== '000') {
+      graphqlPubsub.publish('formInvoiceUpdated', {
+        formInvoiceUpdated: {
+          messageId: invoice,
+          status: 'failed',
+          description: response.errorDesc
+        }
+      });
+
+      return;
+    }
+
+    await SocialPayInvoices.updateInvoiceStatus(invoiceObj._id, 'paid');
+
+    await FormOrders.updateOrderStatus(order._id, 'paid');
+
+    graphqlPubsub.publish('formInvoiceUpdated', {
+      formInvoiceUpdated: {
+        messageId: invoice,
+        status: 'success',
+        description: response.errorDesc
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
 
   res.send('OK');
 };

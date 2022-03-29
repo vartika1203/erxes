@@ -1,8 +1,7 @@
-import { FormControl } from 'erxes-ui';
+import { FormControl, getEnv } from 'erxes-ui';
 import FormGroup from 'modules/common/components/form/Group';
 import ControlLabel from 'modules/common/components/form/Label';
 import { LeftItem } from 'modules/common/components/step/styles';
-import { __ } from 'modules/common/utils';
 import {
   IGolomtConfig,
   IQPayConfig,
@@ -12,32 +11,44 @@ import React from 'react';
 import { FlexItem } from './style';
 
 type Props = {
-  paymentType?: string;
   paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
   onChange: (name: string, value: any) => void;
 };
 
 class PaymentOptionStep extends React.Component<Props> {
   onChangeType = e => {
-    if (e.currentTarget.value === 'none') {
-      this.props.onChange('paymentConfig', {});
+    const { REACT_APP_API_URL } = getEnv();
+    const paymentConfig: any = { type: 'none' };
+
+    const value = e.currentTarget.value;
+    paymentConfig.type = value;
+
+    if (value === 'golomtEcommerce') {
+      paymentConfig.redirectUrl = `${REACT_APP_API_URL}/golomt/e-commerce`;
     }
 
-    this.props.onChange('paymentType', e.currentTarget.value);
+    if (value === 'socialPay') {
+      paymentConfig.pushNotification = `${REACT_APP_API_URL}/socialpay/notification`;
+    }
+
+    this.props.onChange('paymentConfig', paymentConfig);
   };
 
   onChangeConfig = (code: string, e) => {
-    const { paymentConfig = {} } = this.props;
-
-    console.log(e.target.value, code);
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
 
     paymentConfig[code] = e.target.value;
 
     this.props.onChange('paymentConfig', paymentConfig);
   };
 
-  renderItem = (key: string, title: string, description?: string) => {
-    const { paymentConfig = {} } = this.props;
+  renderItem = (
+    key: string,
+    title: string,
+    description?: string,
+    disabled?: boolean
+  ) => {
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
     const value = paymentConfig[key] || '';
 
     return (
@@ -48,13 +59,15 @@ class PaymentOptionStep extends React.Component<Props> {
           defaultValue={value}
           onChange={this.onChangeConfig.bind(this, key)}
           value={value}
+          disabled={disabled}
         />
       </FormGroup>
     );
   };
 
   renderGolomtEcommerce() {
-    if (this.props.paymentType !== 'golomtEcommerce') {
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
+    if (paymentConfig.type !== 'golomtEcommerce') {
       return null;
     }
 
@@ -62,17 +75,15 @@ class PaymentOptionStep extends React.Component<Props> {
       <>
         {this.renderItem('checksumKey', 'Голомт E-Commerce checksum key')}
         {this.renderItem('token', 'Голомт E-Commerce token')}
-        {this.renderItem('redirectUrl', 'Голомт E-Commerce redirect')}
-        {this.renderItem(
-          'pushNotification',
-          'Голомт E-Commerce push notification'
-        )}
+        {this.renderItem('redirectUrl', 'Голомт E-Commerce redirect', '', true)}
       </>
     );
   }
 
   renderSocialPay() {
-    if (this.props.paymentType !== 'socialPay') {
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
+
+    if (paymentConfig.type !== 'socialPay') {
       return null;
     }
 
@@ -80,17 +91,20 @@ class PaymentOptionStep extends React.Component<Props> {
       <>
         {this.renderItem('terminal', 'Terminal')}
         {this.renderItem('key', 'Key')}
-        {this.renderItem('url', 'InStore SocialPay url')}
         {this.renderItem(
           'pushNotification',
-          'Push notification url with /pushNotif'
+          'Push notification',
+          'Register following url on Golomt bank',
+          true
         )}
       </>
     );
   }
 
   renderQpay() {
-    if (this.props.paymentType !== 'qPay') {
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
+
+    if (paymentConfig.type !== 'qPay') {
       return null;
     }
 
@@ -106,6 +120,7 @@ class PaymentOptionStep extends React.Component<Props> {
   }
 
   render() {
+    const paymentConfig = this.props.paymentConfig || { type: 'none' };
     return (
       <FlexItem>
         <LeftItem>
@@ -114,13 +129,12 @@ class PaymentOptionStep extends React.Component<Props> {
             <FormControl
               id="paymentOptions "
               componentClass="select"
-              value={this.props.paymentType || 'none'}
+              value={paymentConfig.type}
               onChange={this.onChangeType}
             >
               <option value={'none'}>None</option>
               <option value={'golomtEcommerce'}>Golomt E-Commerce</option>
               <option value={'socialPay'}>Social Pay</option>
-              <option value={'qPay'}>QPay</option>
             </FormControl>
           </FormGroup>
           {this.renderGolomtEcommerce()}

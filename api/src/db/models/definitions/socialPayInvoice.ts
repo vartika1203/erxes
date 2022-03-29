@@ -4,9 +4,10 @@ import { field, schemaWrapper } from './utils';
 export interface ISocialPayInvoice {
   status: string;
   amount: number;
-  invoiceNo: string;
-  phone: string;
+  invoiceNo?: string;
+  phone?: string;
   type: string;
+  transactionId?: string;
 }
 
 export interface ISocialPayInvoiceDocument extends ISocialPayInvoice, Document {
@@ -21,7 +22,11 @@ export const socialPayInvoiceSchema = schemaWrapper(
     amount: field({ type: Number, label: 'Amount' }),
     createdAt: field({ type: Date, label: 'Created at' }),
     status: field({ type: String, label: 'Status' }),
-    invoiceNo: field({ type: String, label: 'Invoice no' }),
+    invoiceNo: field({ type: String, label: 'Social Pay Invoice no' }),
+    transactionId: field({
+      type: String,
+      label: 'Golomt E-commerce transaction id'
+    }),
     phone: field({ type: String, label: 'Phone' })
   })
 );

@@ -1,3 +1,8 @@
+import {
+  ISocialPayConfig,
+  IGolomtConfig,
+  IQPayConfig
+} from './../../leads/types';
 import { IBookingData } from 'modules/bookings/types';
 import { QueryResponse } from 'modules/common/types';
 import { IForm } from 'modules/forms/types';
@@ -343,6 +348,7 @@ export type AddIntegrationMutationVariables = {
   leadData: ILeadData;
   languageCode: string;
   formId: string;
+  paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
 } & IntegrationMutationVariables;
 
 export type AddIntegrationMutationResponse = {
@@ -356,6 +362,7 @@ export type EditIntegrationMutationVariables = {
   leadData: ILeadData;
   languageCode: string;
   formId: string;
+  paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
 } & IntegrationMutationVariables;
 
 export type EditIntegrationMutationResponse = {

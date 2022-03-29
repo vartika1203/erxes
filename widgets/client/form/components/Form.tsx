@@ -36,7 +36,8 @@ type Props = {
   isSubmitting?: boolean;
   color?: string;
   extraContent?: string;
-  socialPayResponse?: any;
+  invoiceResponse?: any;
+  invoiceType?: string;
   lastMessageId?: string;
 };
 
@@ -493,7 +494,28 @@ class Form extends React.Component<Props, State> {
     );
   }
 
-  renderSocialPayResponse(response: string) {
+  renderinvoiceResponse(response: string) {
+    if (this.props.invoiceType === "golomtEcommerce") {
+      const GolomtFrame = ({
+        src,
+        width,
+        height
+      }: {
+        src: string;
+        width: string;
+        height: string;
+      }) => (
+        <iframe
+          src={src}
+          width={width}
+          height={height}
+          scrolling="yes"
+        ></iframe>
+      );
+
+      return <GolomtFrame src={response} width="100%" height="600px" />;
+    }
+
     const onClick = () => {
       this.props.onCancelOrder(
         connection.customerId,
@@ -564,11 +586,9 @@ class Form extends React.Component<Props, State> {
       currentStatus,
       sendEmail,
       integration,
-      socialPayResponse
+      invoiceResponse
     } = this.props;
     const doc = this.state.doc;
-
-    console.log("state = ", this.props.currentStatus);
 
     if (currentStatus.status === "SUCCESS") {
       const {
@@ -629,8 +649,8 @@ class Form extends React.Component<Props, State> {
       return this.renderSuccessForm(thankTitle, thankContent, successImage);
     }
 
-    if (currentStatus.status === "PENDING" && socialPayResponse) {
-      return this.renderSocialPayResponse(socialPayResponse);
+    if (currentStatus.status === "PENDING" && invoiceResponse) {
+      return this.renderinvoiceResponse(invoiceResponse);
     }
 
     if (currentStatus.status === "CANCELLED") {

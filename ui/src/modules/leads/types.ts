@@ -18,21 +18,26 @@ export interface ICallout {
   skip?: boolean;
 }
 
-export interface ISocialPayConfig {
+interface IPaymentConfig {
+  type: string;
+}
+
+export interface ISocialPayConfig extends IPaymentConfig {
   terminal?: string;
   key?: string;
   url?: string;
   pushNotification?: string;
+  useQrCode?: boolean;
 }
 
-export interface IGolomtConfig {
+export interface IGolomtConfig extends IPaymentConfig {
   checksumKey?: string;
   token?: string;
   redirectUrl?: string;
   pushNotification?: string;
 }
 
-export interface IQPayConfig {
+export interface IQPayConfig extends IPaymentConfig {
   merchantUser?: string;
   merchantPassword?: string;
   invoiceCode?: string;
@@ -70,8 +75,6 @@ export interface ILeadData {
   conversionRate?: number;
   successImage?: string;
   successImageSize?: string;
-  paymentType?: string;
-  paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
 }
 
 export interface IWebhookData {
@@ -84,6 +87,7 @@ export interface ILeadIntegration extends IIntegration {
   brand: IBrand;
   tags: ITag[];
   createdUser: IUser;
+  paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
 }
 
 export type RemoveMutationVariables = {

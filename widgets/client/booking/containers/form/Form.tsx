@@ -37,7 +37,7 @@ interface IProps {
   onCreateNew: () => void;
   sendEmail: (params: any) => void;
   isSubmitting?: boolean;
-  socialPayResponse?: any;
+  invoiceResponse?: any;
   lastMessageId?: string;
   onCancelOrder: (customerId: string, messageId: string) => void;
 }
@@ -64,7 +64,7 @@ const WithContext = () => (
       isSubmitting,
       getIntegration,
       save,
-      socialPayResponse,
+      invoiceResponse,
       lastMessageId,
       cancelOrder
     }) => {
@@ -78,7 +78,7 @@ const WithContext = () => (
           onCreateNew={createNew}
           sendEmail={sendEmail}
           integration={integration}
-          socialPayResponse={socialPayResponse}
+          invoiceResponse={invoiceResponse}
           lastMessageId={lastMessageId}
           onCancelOrder={cancelOrder}
         />

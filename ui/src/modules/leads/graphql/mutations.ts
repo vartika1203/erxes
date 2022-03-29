@@ -9,6 +9,7 @@ const commonFormParamsDef = `
   $formId: String!,
   $languageCode: String,
   $leadData: IntegrationLeadData!
+  $paymentConfig: JSON
 `;
 
 const commonFormParams = `
@@ -19,7 +20,8 @@ const commonFormParams = `
   departmentIds: $departmentIds,
   formId: $formId,
   languageCode: $languageCode,
-  leadData: $leadData
+  leadData: $leadData,
+  paymentConfig: $paymentConfig
 `;
 
 const integrationRemove = `

@@ -19,7 +19,12 @@ import { IRouterProps } from '../../common/types';
 import Lead from '../components/Lead';
 import { mutations } from '../graphql';
 import { queries as settingsQueries } from 'modules/settings/general/graphql';
-import { ILeadData } from '../types';
+import {
+  IGolomtConfig,
+  ILeadData,
+  ISocialPayConfig,
+  IQPayConfig
+} from '../types';
 
 type Props = {
   emailTemplatesQuery: EmailTemplatesQueryResponse;
@@ -39,6 +44,7 @@ type State = {
     lead: any;
     leadData: ILeadData;
     channelIds?: string[];
+    paymentConfig?: IGolomtConfig | ISocialPayConfig | IQPayConfig;
   };
 };
 
@@ -65,7 +71,8 @@ class CreateLeadContainer extends React.Component<Props, State> {
           brandId,
           name,
           languageCode,
-          channelIds
+          channelIds,
+          paymentConfig
         } = this.state.doc;
 
         addIntegrationMutation({
@@ -75,7 +82,8 @@ class CreateLeadContainer extends React.Component<Props, State> {
             brandId,
             name,
             languageCode,
-            channelIds
+            channelIds,
+            paymentConfig
           }
         })
           .then(

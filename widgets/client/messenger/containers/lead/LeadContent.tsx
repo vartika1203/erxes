@@ -38,7 +38,7 @@ interface IProps {
   onSubmit: (doc: IFormDoc, formCode: string) => void;
   onCreateNew: () => void;
   sendEmail: (params: IEmailParams) => void;
-  socialPayResponse?: any;
+  invoiceResponse?: any;
   lastMessageId?: string;
   onCancelOrder: (customerId: string, messageId: string) => void;
 }
@@ -65,7 +65,7 @@ const WithContext = ({ formCode }: { formCode: string }) => (
         isCallOutVisible,
         isSubmitting,
         showForm,
-        socialPayResponse,
+        invoiceResponse,
         lastMessageId,
         cancelOrder
       }) => {
@@ -89,7 +89,7 @@ const WithContext = ({ formCode }: { formCode: string }) => (
             sendEmail={sendEmail}
             form={form}
             integration={integration}
-            socialPayResponse={socialPayResponse}
+            invoiceResponse={invoiceResponse}
             lastMessageId={lastMessageId}
             onCancelOrder={cancelOrder}
           />

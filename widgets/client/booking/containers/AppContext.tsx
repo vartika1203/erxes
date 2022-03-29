@@ -18,7 +18,8 @@ interface IState {
   selectedItem: string;
 
   currentStatus: ICurrentStatus;
-  socialPayResponse?: string;
+  invoiceResponse?: string;
+  invoiceType?: string;
   lastMessageId?: string;
 }
 

@@ -17,7 +17,12 @@ import { withRouter } from 'react-router-dom';
 import { IRouterProps } from '../../common/types';
 import Lead from '../components/Lead';
 import { mutations, queries } from '../graphql';
-import { ILeadData } from '../types';
+import {
+  IGolomtConfig,
+  ILeadData,
+  IQPayConfig,
+  ISocialPayConfig
+} from '../types';
 import { queries as settingsQueries } from 'modules/settings/general/graphql';
 import { ConfigsQueryResponse } from 'modules/settings/general/types';
 
@@ -39,6 +44,7 @@ type State = {
     languageCode: string;
     lead: any;
     leadData: ILeadData;
+    paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
   };
 };
 
@@ -83,7 +89,8 @@ class EditLeadContainer extends React.Component<FinalProps, State> {
           languageCode,
           channelIds,
           visibility,
-          departmentIds
+          departmentIds,
+          paymentConfig
         } = this.state.doc;
 
         editIntegrationMutation({
@@ -96,7 +103,8 @@ class EditLeadContainer extends React.Component<FinalProps, State> {
             languageCode,
             channelIds,
             visibility,
-            departmentIds
+            departmentIds,
+            paymentConfig
           }
         })
           .then(() => {

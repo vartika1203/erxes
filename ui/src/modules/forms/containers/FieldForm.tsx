@@ -35,8 +35,6 @@ const FormContainer = (props: Props) => {
   const productCategories: IProductCategory[] =
     (data && data.productCategories) || [];
 
-  console.log('productCategories: ', productCategories);
-
   return <FieldForm {...props} productCategories={productCategories} />;
 };
 

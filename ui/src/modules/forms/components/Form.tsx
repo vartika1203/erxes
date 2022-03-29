@@ -205,7 +205,6 @@ class Form extends React.Component<Props, State> {
   };
 
   onFieldSubmit = (field: IField) => {
-    console.log('saving: ', field);
     const { onDocChange } = this.props;
     const { fields, currentMode } = this.state;
 

@@ -27,6 +27,7 @@ export const types = `
     healthStatus: JSON
 
     bookingData: BookingData
+    paymentConfig: JSON
   }
 
   type BookingData {
@@ -83,8 +84,6 @@ export const types = `
     css: String
     successImage: String
     successImageSize: String
-    paymentType: String
-    paymentConfig: JSON
   }
 
   input BookingStyleInput {
@@ -213,7 +212,9 @@ export const mutations = `
     departmentIds: [String],
     languageCode: String,
     formId: String!,
+    paymentConfig: JSON,
     leadData: IntegrationLeadData!): Integration
+   
 
   integrationsEditLeadIntegration(
     _id: String!
@@ -224,7 +225,9 @@ export const mutations = `
     departmentIds: [String],
     languageCode: String,
     formId: String!,
+    paymentConfig: JSON,
     leadData: IntegrationLeadData!): Integration
+   
 
   integrationsCreateExternalIntegration(
     kind: String!,
@@ -277,6 +280,7 @@ export const mutations = `
     formId: String
     leadData: IntegrationLeadData
     bookingData: IntegrationBookingData
+    paymentConfig: JSON
   ): Integration
 
   integrationsEditBookingIntegration(
@@ -288,5 +292,6 @@ export const mutations = `
     formId: String
     leadData: IntegrationLeadData
     bookingData: IntegrationBookingData
+    paymentConfig: JSON
   ): Integration
 `;

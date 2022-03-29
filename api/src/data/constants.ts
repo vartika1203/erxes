@@ -581,3 +581,15 @@ export const CLOSE_DATE_TYPES = {
     }
   ]
 };
+
+export const SOCIAL_PAY_API_URLS = {
+  QR_INVOICE: 'https://instore.golomtbank.com/pos/invoice/qr',
+  PHONE_INVOICE: 'https://instore.golomtbank.com/pos/invoice/phone',
+  CANCEL_INVOICE: 'https://instore.golomtbank.com/pos/invoice/cancel',
+  CHECK_INVOICE: 'https://instore.golomtbank.com/pos/invoice/check'
+};
+
+export const ECOMMERCE_API_URLS = {
+  CREATE_INVOICE: 'https://ecommerce.golomtbank.com/api/invoice',
+  CHECK_INVOICE: 'https://ecommerce.golomtbank.com/api/inquiry'
+};

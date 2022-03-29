@@ -19,7 +19,8 @@ interface IState {
   isSubmitting?: boolean;
   extraContent?: string;
   callSubmit: boolean;
-  socialPayResponse?: string;
+  invoiceResponse?: string;
+  invoiceType?: string;
   lastMessageId?: string;
 }
 
@@ -57,7 +58,8 @@ export class AppProvider extends React.Component<{}, IState> {
       currentStatus: { status: "INITIAL" },
       extraContent: "",
       callSubmit: false,
-      socialPayResponse: ""
+      invoiceResponse: "",
+      invoiceType: ""
     };
   }
 
@@ -179,9 +181,8 @@ export class AppProvider extends React.Component<{}, IState> {
       integrationId: this.getIntegration()._id,
       formId: this.getForm()._id,
       saveCallback: async (response: ISaveFormResponse) => {
-        console.log(response);
         const { errors } = response;
-        let { socialPayResponse } = response;
+        let { invoiceResponse, invoiceType } = response;
 
         let status = "ERROR";
 
@@ -202,17 +203,20 @@ export class AppProvider extends React.Component<{}, IState> {
           status
         });
 
-        if (
-          socialPayResponse &&
-          socialPayResponse.includes("socialpay-payment")
-        ) {
-          socialPayResponse = await QRCode.toDataURL(socialPayResponse);
+        if (invoiceType === "socialPay") {
+          if (
+            invoiceResponse &&
+            invoiceResponse.includes("socialpay-payment")
+          ) {
+            invoiceResponse = await QRCode.toDataURL(invoiceResponse);
+          }
         }
 
         this.setState({
           callSubmit: false,
           isSubmitting: false,
-          socialPayResponse,
+          invoiceResponse,
+          invoiceType,
           lastMessageId: response.messageId,
           currentStatus: {
             status,
@@ -276,7 +280,6 @@ export class AppProvider extends React.Component<{}, IState> {
   };
 
   onChangeCurrentStatus = (status: string) => {
-    console.log("STATUS = ", status);
     this.setState({ currentStatus: { status } });
   };
 

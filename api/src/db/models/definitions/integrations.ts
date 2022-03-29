@@ -116,22 +116,29 @@ export interface IBookingDataDocument extends IBookingData, Document {
   viewCount?: number;
 }
 
-export interface ISocialPayConfig {
-  terminal: string;
-  key: string;
-  url: string;
-  pushNotification: string;
-  useQrCode: boolean;
+interface IPaymentConfig {
+  type: string;
 }
 
-export interface IGolomtConfig {
+export interface ISocialPayConfig extends IPaymentConfig {
+  terminal?: string;
+  key?: string;
+  url?: string;
+  pushNotification?: string;
+  useQrCode?: boolean;
+  checksumKey?: string;
+  token?: string;
+  redirectUrl?: string;
+}
+
+export interface IGolomtConfig extends IPaymentConfig {
   checksumKey: string;
   token: string;
   redirectUrl: string;
   pushNotification: string;
 }
 
-export interface IQPayConfig {
+export interface IQPayConfig extends IPaymentConfig {
   merchantUser: string;
   merchantPassword: string;
   invoiceCode: string;
@@ -162,8 +169,6 @@ export interface ILeadData {
   css?: string;
   successImage?: string;
   successImageSize?: string;
-  paymentType?: string;
-  paymentConfig?: IGolomtConfig | IQPayConfig | ISocialPayConfig;
 }
 
 export interface IWebhookData {
@@ -214,6 +219,7 @@ export interface IIntegrationDocument extends IIntegration, Document {
   webhookData?: IWebhookData;
   uiOptions?: IUiOptionsDocument;
   bookingData?: IBookingDataDocument;
+  paymentConfig?: IGolomtConfig | IQPayConfig | ISocialPayConfig;
 }
 
 // subdocument schema for MessengerOnlineHours
@@ -404,16 +410,6 @@ export const leadDataSchema = new Schema(
       type: String,
       optional: true,
       label: 'Success image size'
-    }),
-    paymentType: field({
-      type: String,
-      optional: true,
-      label: 'Payment type'
-    }),
-    paymentConfig: field({
-      type: Schema.Types.Mixed,
-      optional: true,
-      label: 'Payment configs'
     })
   },
   { _id: false }
@@ -530,7 +526,13 @@ export const integrationSchema = schemaHooksWrapper(
     messengerData: field({ type: messengerDataSchema }),
     uiOptions: field({ type: uiOptionsSchema }),
 
-    bookingData: field({ type: bookingSchema })
+    bookingData: field({ type: bookingSchema }),
+
+    paymentConfig: field({
+      type: Schema.Types.Mixed,
+      optional: true,
+      label: 'Payment configs'
+    })
   }),
   'erxes_integrations'
 );

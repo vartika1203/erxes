@@ -33,9 +33,7 @@ const Form = (props: ChildProps<IProps, QueryResponse>) => {
       })
       .subscribe({
         next({ data }) {
-          console.log("subs: ", data.data);
           if (data.formInvoiceUpdated.status === "success") {
-            console.log("changin status");
             props.onChangeCurrentStatus("SUCCESS");
           }
         },
@@ -44,11 +42,6 @@ const Form = (props: ChildProps<IProps, QueryResponse>) => {
         }
       });
   });
-
-  console.log(
-    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ",
-    extendedProps.currentStatus
-  );
 
   return <DumbForm {...extendedProps} hasTopBar={true} />;
 };
@@ -68,7 +61,8 @@ interface IProps {
   callSubmit: boolean;
   extraContent?: string;
   isSubmitting?: boolean;
-  socialPayResponse?: any;
+  invoiceResponse?: any;
+  invoiceType?: string;
   lastMessageId?: string;
   onCancelOrder: (customerId: string, messageId: string) => void;
   onChangeCurrentStatus: (status: string) => void;
@@ -100,7 +94,8 @@ const WithContext = () => (
       extraContent,
       isSubmitting,
       getForm,
-      socialPayResponse,
+      invoiceResponse,
+      invoiceType,
       lastMessageId,
       cancelOrder,
       onChangeCurrentStatus
@@ -120,7 +115,8 @@ const WithContext = () => (
           integration={integration}
           extraContent={extraContent}
           callSubmit={callSubmit}
-          socialPayResponse={socialPayResponse}
+          invoiceResponse={invoiceResponse}
+          invoiceType={invoiceType}
           lastMessageId={lastMessageId}
           onCancelOrder={cancelOrder}
           onChangeCurrentStatus={onChangeCurrentStatus}

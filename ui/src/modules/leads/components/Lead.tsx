@@ -49,6 +49,7 @@ type Props = {
     brandId: string;
     languageCode?: string;
     leadData: ILeadData;
+    paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
     channelIds?: string[];
     visibility?: string;
     departmentIds?: string[];
@@ -99,7 +100,6 @@ type State = {
   successImageSize?: string;
   departmentIds?: string[];
   visibility?: string;
-  paymentType?: string;
   paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
 };
 
@@ -165,8 +165,7 @@ class Lead extends React.Component<Props, State> {
       successPreviewStyle: {},
       departmentIds: integration.departmentIds || [],
       visibility: integration.visibility || 'public',
-      paymentType: leadData.paymentType,
-      paymentConfig: leadData.paymentConfig || {}
+      paymentConfig: integration.paymentConfig
     };
   }
 
@@ -203,6 +202,7 @@ class Lead extends React.Component<Props, State> {
       languageCode: this.state.language,
       departmentIds,
       visibility,
+      paymentConfig: this.state.paymentConfig,
       leadData: {
         loadType: this.state.type,
         successAction: this.state.successAction,
@@ -230,9 +230,7 @@ class Lead extends React.Component<Props, State> {
         isRequireOnce: this.state.isRequireOnce,
         css: this.state.css,
         successImage: this.state.successImage,
-        successImageSize: this.state.successImageSize,
-        paymentType: this.state.paymentType,
-        paymentConfig: this.state.paymentConfig
+        successImageSize: this.state.successImageSize
       }
     };
 
@@ -320,7 +318,6 @@ class Lead extends React.Component<Props, State> {
         onClick={this.onStepClick}
       >
         <PaymentOptionStep
-          paymentType={this.state.paymentType}
           paymentConfig={this.state.paymentConfig}
           onChange={this.onChange}
         />

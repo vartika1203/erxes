@@ -106,7 +106,8 @@ export interface IFormDoc {
 export interface ISaveFormResponse {
   status: string;
   errors?: IFieldError[];
-  socialPayResponse?: string;
+  invoiceType?: string;
+  invoiceResponse?: string;
   messageId?: string;
 }
 

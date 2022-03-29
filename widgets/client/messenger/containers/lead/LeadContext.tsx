@@ -18,7 +18,7 @@ interface IState {
   currentStatus: ICurrentStatus;
   isCallOutVisible: boolean;
   isSubmitting?: boolean;
-  socialPayResponse?: any;
+  invoiceResponse?: any;
   lastMessageId?: string;
 }
 
