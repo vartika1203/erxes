@@ -2,21 +2,17 @@
 "use strict";
 
 import _ from "lodash";
-// import packageJSON from '../package.json';
 import { program } from "commander";
 import actionDev from "../src/dev.mjs";
 import actionDevGenerate from "../src/dev-generate.mjs";
 import actionDevStart from "../src/dev-start.mjs";
 
-const cmdDev = program.command("dev").option("-b, --build", "rebuild images");
+const cmdDev = program.command("dev");
 
 cmdDev.action(actionDev);
 
 cmdDev.command("generate").action(actionDevGenerate);
-cmdDev
-  .command("start")
-  .option("-b, --build", "rebuild images")
-  .action(actionDevStart);
+cmdDev.command("start").action(actionDevStart);
 
 program.parse();
 
@@ -35,7 +31,6 @@ program.parse();
 // program.allowUnknownOption(true);
 
 // // Expose version.
-// program.version(packageJSON.version, '-v, --version');
 
 // // Make `-v` option case-insensitive.
 // process.argv = _.map(process.argv, arg => {

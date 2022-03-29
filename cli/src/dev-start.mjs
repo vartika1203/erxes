@@ -1,7 +1,7 @@
 import { execa } from "execa";
 import startWatchDotErxes from "./start-watch-doterxes.mjs";
 
-export default async function devStart({ build }) {
+export default async function devStart() {
   try {
     await startWatchDotErxes();
     
@@ -11,15 +11,12 @@ export default async function devStart({ build }) {
       "up",
       "--force-recreate",
       "--remove-orphans",
+      "--build"
     ];
-    if (build) {
-      args.push("--build");
-    }
+
     console.log("docker-compose " + args.join(" "));
 
-    const cmd = execa("docker-compose", args);
-    cmd.stdout.pipe(process.stdout);
-    cmd.stderr.pipe(process.stderr);
+    const cmd = execa("docker-compose", args, { stdio: 'inherit' });
 
     await cmd;
   } catch (e) {
