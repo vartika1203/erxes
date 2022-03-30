@@ -12,7 +12,7 @@ import messageBroker, {
   sendInboxMessage,
   sendTagsMessage
 } from './messageBroker';
-import { getService, getServices } from './inmemoryStorage';
+import { getService, getServices } from '@erxes/api-utils/src/serviceDiscovery'
 import { generateModels, IModels } from './connectionResolver';
 
 export const findCustomer = async ({ Customers }: IModels, doc) => {

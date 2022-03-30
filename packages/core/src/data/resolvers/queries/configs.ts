@@ -4,6 +4,8 @@ import { Configs } from '../../../db/models';
 import { DEFAULT_CONSTANT_VALUES } from '../../../db/models/definitions/constants';
 import { fetchElk } from '../../../elasticsearch';
 import { moduleRequireLogin } from '../../permissions/wrappers';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 import {
   checkPremiumService,
@@ -13,7 +15,15 @@ import {
   sendRequest
 } from '../../utils';
 
-import * as enabledServices from '../../../../enabled-services';
+
+const { ENABLED_SERVICES_PATH } = process.env;
+
+if(!ENABLED_SERVICES_PATH) {
+  throw new Error("ENABLED_SERVICES_PATH environment variable is not configured");
+}
+
+const enabledServices = require(ENABLED_SERVICES_PATH);
+
 
 const doSearch = async (index, value, fields) => {
   const highlightFields = {};

@@ -4,8 +4,14 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, NODE_ENV, LOAD_BALANCER_ADDRESS } = process.env;
+const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, NODE_ENV, LOAD_BALANCER_ADDRESS, ENABLED_SERVICES_PATH } = process.env;
 const isDev = NODE_ENV === 'development';
+
+if(!ENABLED_SERVICES_PATH) {
+  throw new Error("ENABLED_SERVICES_PATH environment variable is not configured.")
+}
+
+const enabledServices = require(ENABLED_SERVICES_PATH);
 
 export const redis = new Redis({
   host: REDIS_HOST,
@@ -17,14 +23,22 @@ const registry = new ServiceRegistry(redis, {});
 
 const generateKey = name => `service:config:${name}`;
 
-export const getServices = () => {
+export const getAvailableServices = () => {
   return registry.services();
 };
 
+export const getServices = () => {
+  const enabledPlugins = Object.keys(enabledServices || {}).filter(serviceName => enabledServices[serviceName]);
+  return ["core", ...enabledPlugins];
+}
+
 export const getService = async (name: string, config?: boolean) => {
-  const result = {
+  const result: {
+    address: string;
+    config: any;
+  } = {
     address: await registry.get(name),
-    config: {}
+    config: { meta: {}}
   };
 
   if (config) {

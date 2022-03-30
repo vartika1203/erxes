@@ -2,7 +2,7 @@ import EditorAttributeUtil from '@erxes/api-utils/src/editorAttributeUtils';
 
 import { debugBase, debugError } from './debuggers';
 import messageBroker from './messageBroker';
-import { getServices, getService } from './redis';
+import { getService, getServices } from '@erxes/api-utils/src/serviceDiscovery'
 import { ICampaign, ICustomer } from './types';
 
 export const isUsingElk = () => {
