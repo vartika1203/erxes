@@ -41,7 +41,7 @@ import {
 } from "../../messageBroker";
 import { trackViewPageEvent } from "../../events";
 import EditorAttributeUtil from "@erxes/api-utils/src/editorAttributeUtils";
-import { getService, getServices } from '@erxes/api-utils/src/serviceDiscovery'
+import { getServices } from '@erxes/api-utils/src/serviceDiscovery'
 import { IContext, IModels } from "../../connectionResolver";
 
 // ? import { IFormDocument } from '../../../db/models/definitions/forms';
@@ -1036,11 +1036,10 @@ const widgetMutations = {
     let finalContent = content;
 
     if (customer && form) {
-      const coreService = await getService("core");
 
       const replacedContent = await new EditorAttributeUtil(
         msgBrokerClient,
-        coreService.address,
+        `${process.env.MAIN_API_DOMAIN}/pl:core`,
         await getServices()
       ).replaceAttributes({
         content,

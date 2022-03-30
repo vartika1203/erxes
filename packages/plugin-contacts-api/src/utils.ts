@@ -329,11 +329,10 @@ export const getContentItem = async (
 };
 
 export const getEditorAttributeUtil = async () => {
-  const core = await getService('core');
   const services = await getServices();
   const editor = await new EditorAttributeUtil(
     messageBroker(),
-    core.address,
+    `${process.env.MAIN_API_DOMAIN}/pl:core`,
     services
   );
 
