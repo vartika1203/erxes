@@ -22,7 +22,7 @@ import { getDbSchemaLabels, sendToLog } from './logUtils';
 import { getDocument } from './resolvers/mutations/cacheUtils';
 import { findCompany, findCustomer, sendRequest } from './utils';
 import { IFormOrderInfo } from './types';
-import SocialPayInvoices from '../db/models/SocialPayInvoice';
+import Invoices from '../db/models/Invoice';
 import FormOrders from '../db/models/FormOrders';
 import * as crypto from 'crypto';
 import { ISocialPayConfig } from '../db/models/definitions/integrations';
@@ -657,7 +657,7 @@ export const getOrderInfo = async (
   messageId: string
 ) => {
   const orderInfo: IFormOrderInfo = {
-    paymentType: 'none',
+    paymentConfig: { type: 'none' },
     amount: 0,
     phone: '99391924',
     items: []
@@ -677,7 +677,6 @@ export const getOrderInfo = async (
     return orderInfo;
   }
 
-  orderInfo.paymentType = paymentConfig.type || 'none';
   orderInfo.paymentConfig = paymentConfig;
 
   for (const submission of submissions) {
@@ -728,23 +727,25 @@ const settleOrder = async (
   messageId: string
 ) => {
   let invoice: any = {};
-  const { amount, phone, paymentType, items } = orderInfo;
+  const { amount, phone, items } = orderInfo;
   const {
     terminal,
     key,
     useQrCode,
     checksumKey,
     redirectUrl,
-    token
+    token,
+    type
   } = orderInfo.paymentConfig as ISocialPayConfig;
 
   const handleSocialPay = async () => {
-    invoice = await SocialPayInvoices.createInvoice({
+    invoice = await Invoices.createInvoice({
       status: 'open',
       amount,
       invoiceNo: messageId,
       phone,
-      type: paymentType
+      type: 'lead',
+      invoiceType: type
     });
 
     const requestBody: any = {
@@ -796,11 +797,12 @@ const settleOrder = async (
   };
 
   const handleGolomtECommerce = async () => {
-    invoice = await SocialPayInvoices.createInvoice({
+    invoice = await Invoices.createInvoice({
       status: 'open',
       amount,
-      transactionId: messageId,
-      type: paymentType
+      invoiceNo: messageId,
+      type: 'lead',
+      invoiceType: type
     });
 
     const returnType = 'POST';
@@ -850,7 +852,7 @@ const settleOrder = async (
     }
   };
 
-  switch (paymentType) {
+  switch (type) {
     case 'socialPay':
       return handleSocialPay();
 
@@ -904,7 +906,7 @@ export const cancelOrder = async ({
     customerId
   });
 
-  const invoice = await SocialPayInvoices.getInvoice(order.invoiceId);
+  const invoice = await Invoices.getInvoice(order.invoiceId);
 
   if (order.status !== 'placed' || invoice.status !== 'open') {
     throw new Error('Order is already settled');
@@ -924,7 +926,7 @@ export const cancelOrder = async ({
       invoice.amount
     );
 
-    await SocialPayInvoices.updateInvoiceStatus(invoice._id, 'cancelled');
+    await Invoices.updateInvoiceStatus(invoice._id, 'cancelled');
 
     await FormOrders.updateOrderStatus(order._id, 'cancelled');
 
@@ -972,12 +974,12 @@ export const handleSocialPayNotification = async (req, res, next) => {
       return;
     }
 
-    const invoiceObj = await SocialPayInvoices.getInvoice({
+    const invoiceObj = await Invoices.getInvoice({
       invoiceNo: invoice
     });
     const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
 
-    await SocialPayInvoices.updateInvoiceStatus(invoiceObj._id, 'paid');
+    await Invoices.updateInvoiceStatus(invoiceObj._id, 'paid');
 
     await FormOrders.updateOrderStatus(order._id, 'paid');
 
@@ -993,8 +995,8 @@ export const handleSocialPayNotification = async (req, res, next) => {
 
 export const handleGolomtNotification = async (req, res, next) => {
   const invoice = req.body.invoice || '';
-  const invoiceObj = await SocialPayInvoices.getInvoice({
-    transactionId: invoice
+  const invoiceObj = await Invoices.getInvoice({
+    invoiceNo: invoice
   });
   const order = await FormOrders.getOrder({ invoiceId: invoiceObj._id });
   const integration = await getDocument('integrations', {
@@ -1032,7 +1034,7 @@ export const handleGolomtNotification = async (req, res, next) => {
       return;
     }
 
-    await SocialPayInvoices.updateInvoiceStatus(invoiceObj._id, 'paid');
+    await Invoices.updateInvoiceStatus(invoiceObj._id, 'paid');
 
     await FormOrders.updateOrderStatus(order._id, 'paid');
 

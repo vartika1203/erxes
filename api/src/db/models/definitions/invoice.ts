@@ -1,32 +1,29 @@
 import { Document, Schema } from 'mongoose';
 import { field, schemaWrapper } from './utils';
 
-export interface ISocialPayInvoice {
+export interface IInvoice {
   status: string;
   amount: number;
   invoiceNo?: string;
   phone?: string;
   type: string;
-  transactionId?: string;
+  invoiceType: string;
 }
 
-export interface ISocialPayInvoiceDocument extends ISocialPayInvoice, Document {
+export interface IInvoiceDocument extends IInvoice, Document {
   _id: string;
   createdAt: Date;
 }
 
-export const socialPayInvoiceSchema = schemaWrapper(
+export const invoiceSchema = schemaWrapper(
   new Schema({
     _id: field({ pkey: true }),
-    type: field({ type: String, label: 'Payment Type', required: true }),
+    type: field({ type: String, label: 'Type', required: true }),
+    invoiceType: field({ type: String, label: 'Invoice Type', required: true }),
     amount: field({ type: Number, label: 'Amount' }),
     createdAt: field({ type: Date, label: 'Created at' }),
     status: field({ type: String, label: 'Status' }),
-    invoiceNo: field({ type: String, label: 'Social Pay Invoice no' }),
-    transactionId: field({
-      type: String,
-      label: 'Golomt E-commerce transaction id'
-    }),
+    invoiceNo: field({ type: String, label: 'Invoice no' }),
     phone: field({ type: String, label: 'Phone' })
   })
 );

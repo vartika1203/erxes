@@ -28,7 +28,6 @@ export interface IContext {
 }
 
 export interface IFormOrderInfo {
-  paymentType: string;
   paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
   amount: number;
   phone: string;
