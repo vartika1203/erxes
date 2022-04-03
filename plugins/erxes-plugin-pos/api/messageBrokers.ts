@@ -40,7 +40,7 @@ export default [
           // }
           customFieldsData: [{
             ...deliveryInfo.mapValue,
-            field: deliveryConfig.mapCustomField
+            field: (deliveryConfig.mapCustomField).replace('customFieldsData.', '')
           }],
           stageId: deliveryConfig.stageId,
           assignedUserIds: deliveryConfig.assignedUserIds,

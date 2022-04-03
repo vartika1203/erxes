@@ -86,23 +86,6 @@ class DeliveryConfig extends React.Component<Props, { config: any }> {
       this.onChangeConfig('mapCustomField', value)
 
     }
-    // const uomOnChange = (option: HTMLOptionElement) =>
-    //   this.onChangeConfig(
-    //     'uom',
-    //     option ? option.value : ''
-    //   );
-
-    // const currencyOnChange = (currency: HTMLOptionElement) =>
-    //   this.onChangeConfig(
-    //     'currency',
-    //     currency ? currency.value : '',
-    //   );
-
-    // const selectOption = option => (
-    //   <div className="simple-option">
-    //     <span>{option.label}</span>
-    //   </div>
-    // );
 
     return (
       <FlexItem>
@@ -131,7 +114,7 @@ class DeliveryConfig extends React.Component<Props, { config: any }> {
                     value={config.mapCustomField}
                     onChange={onMapCustomFieldChange}
                     options={fieldsCombined.map(f => ({
-                      value: f._id,
+                      value: f.name,
                       label: f.label
                     }))}
                   />
@@ -139,28 +122,6 @@ class DeliveryConfig extends React.Component<Props, { config: any }> {
 
               </BlockRow>
             </Block>
-
-            {/* <Block>
-              <h4>{__("Other deal info")}</h4>
-              <BlockRow>
-                <Select
-                  name="uom"
-                  placeholder={__('Choose')}
-                  value={config.uom}
-                  onChange={uomOnChange}
-                  optionRenderer={selectOption}
-                  options={this.selectConfigOptions([''], MEASUREMENTS)}
-                />
-                <Select
-                  name="currency"
-                  placeholder={__('Choose')}
-                  value={config.currency}
-                  onChange={currencyOnChange}
-                  optionRenderer={selectOption}
-                  options={this.selectConfigOptions(currencies, CURRENCIES)}
-                />
-              </BlockRow>
-            </Block> */}
 
             <Block>
               <h4>{__("Deal users")}</h4>
