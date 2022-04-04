@@ -23,6 +23,8 @@ const Form = (props: ChildProps<IProps, QueryResponse>) => {
     integration: props.integration
   };
 
+  console.log(extendedProps);
+
   return <DumbForm {...extendedProps} hasTopBar={true} />;
 };
 
@@ -38,6 +40,7 @@ interface IProps {
   sendEmail: (params: any) => void;
   isSubmitting?: boolean;
   invoiceResponse?: any;
+  invoiceType?: string;
   lastMessageId?: string;
   onCancelOrder: (customerId: string, messageId: string) => void;
 }
@@ -66,6 +69,7 @@ const WithContext = () => (
       save,
       invoiceResponse,
       lastMessageId,
+      invoiceType,
       cancelOrder
     }) => {
       const integration = getIntegration();
@@ -79,6 +83,7 @@ const WithContext = () => (
           sendEmail={sendEmail}
           integration={integration}
           invoiceResponse={invoiceResponse}
+          invoiceType={invoiceType}
           lastMessageId={lastMessageId}
           onCancelOrder={cancelOrder}
         />

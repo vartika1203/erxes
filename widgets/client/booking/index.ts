@@ -1,27 +1,29 @@
-import 'erxes-icon/css/erxes.min.css';
-import client from '../apollo-client';
-import { connection } from './connection';
-import './sass/style.scss';
-import { App } from './containers';
+import "erxes-icon/css/erxes.min.css";
+import client from "../apollo-client";
+import { connection } from "./connection";
+import "./sass/style.scss";
+import { App } from "./containers";
 
-import gql from 'graphql-tag';
-import { initStorage } from '../common';
-import widgetConnect from '../widgetConnect';
-import { widgetsConnectMutation } from './graphql';
-import { IIntegration } from '../types';
+import gql from "graphql-tag";
+import { getLocalStorageItem, initStorage } from "../common";
+import widgetConnect from "../widgetConnect";
+import { widgetsConnectMutation } from "./graphql";
+import { IIntegration } from "../types";
 
 widgetConnect({
   postParams: {
-    source: 'fromBookings'
+    source: "fromForms"
   },
 
   connectMutation: (event: MessageEvent) => {
     const { setting, storage } = event.data;
-
+    console.log(event);
     connection.setting = setting;
 
     initStorage(storage);
 
+    console.log("asdasdkljaka ", getLocalStorageItem("customerId"));
+    console.log("booking: ", storage);
     // call connect mutation
     return client
       .mutate({
@@ -39,7 +41,7 @@ widgetConnect({
     const response = data.widgetsBookingConnect;
 
     if (!response) {
-      throw new Error('Integration not found');
+      throw new Error("Integration not found");
     }
 
     // save connection info

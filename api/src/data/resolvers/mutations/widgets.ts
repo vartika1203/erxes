@@ -1,3 +1,4 @@
+import { IProductDocument } from './../../../db/models/definitions/deals';
 import * as strip from 'strip';
 import {
   Companies,
@@ -128,6 +129,7 @@ const createFormConversation = async (
     submissions: ISubmission[];
     browserInfo: any;
     cachedCustomerId?: string;
+    product?: IProductDocument;
   },
   generateContent: (form: IFormDocument) => string,
   generateConvData: () => {
@@ -136,7 +138,7 @@ const createFormConversation = async (
   },
   type?: string
 ) => {
-  const { integrationId, formId, submissions } = args;
+  const { integrationId, formId, submissions, product } = args;
 
   let orderResponse: any = undefined;
 
@@ -180,7 +182,8 @@ const createFormConversation = async (
       formId,
       args.cachedCustomerId,
       submissions,
-      message._id
+      message._id,
+      product
     );
   } catch (e) {
     return { status: 'error', errors: [e.message] };
@@ -1068,7 +1071,7 @@ const widgetMutations = {
     const product = await Products.getProduct({ _id: productId });
 
     return createFormConversation(
-      args,
+      { ...args, product },
       () => {
         return `<p>submitted a new booking for <strong><a href="/settings/product-service/details/${productId}">${product?.name}</a> ${product?.code}</strong></p>`;
       },

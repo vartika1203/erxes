@@ -20,6 +20,7 @@ const commonBookingParamsDef = `
   $languageCode: String,
   $leadData: IntegrationLeadData
   $bookingData: IntegrationBookingData
+  $paymentConfig: JSON
 `;
 
 const commonBookingParams = `
@@ -30,6 +31,7 @@ const commonBookingParams = `
   languageCode: $languageCode,
   leadData: $leadData
   bookingData: $bookingData
+  paymentConfig: $paymentConfig
 `;
 
 const integrationsCreateBooking = `

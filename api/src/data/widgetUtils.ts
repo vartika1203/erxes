@@ -1,3 +1,4 @@
+import { IProductDocument } from './../db/models/definitions/deals';
 import {
   Brands,
   Companies,
@@ -654,7 +655,8 @@ export const getOrderInfo = async (
   formId,
   customerId,
   submissions: ISubmission[],
-  messageId: string
+  messageId: string,
+  product?: IProductDocument
 ) => {
   const orderInfo: IFormOrderInfo = {
     paymentConfig: { type: 'none' },
@@ -666,7 +668,7 @@ export const getOrderInfo = async (
     e => e.type === 'productCategory' && e.value.length > 0
   );
 
-  if (submissions.length === 0) {
+  if (submissions.length === 0 && !product) {
     return orderInfo;
   }
 
@@ -688,6 +690,17 @@ export const getOrderInfo = async (
       quantity: 1,
       price,
       total: price * 1
+    });
+  }
+
+  if (product) {
+    const price = product.unitPrice || 0;
+    orderInfo.amount = price;
+    orderInfo.items.push({
+      productId: product._id,
+      quantity: 1,
+      price,
+      total: price
     });
   }
 
@@ -728,6 +741,7 @@ const settleOrder = async (
 ) => {
   let invoice: any = {};
   const { amount, phone, items } = orderInfo;
+
   const {
     terminal,
     key,

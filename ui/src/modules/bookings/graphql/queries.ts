@@ -89,6 +89,8 @@ export const commonFields = `
     colorCode
   }
 
+  paymentConfig
+
   form {
     ${formFields}
   }

@@ -1,6 +1,11 @@
 import { IUser } from 'modules/auth/types';
 import { QueryResponse } from 'modules/common/types';
-import { ILeadData } from 'modules/leads/types';
+import {
+  IGolomtConfig,
+  ILeadData,
+  IQPayConfig,
+  ISocialPayConfig
+} from 'modules/leads/types';
 import { IBrand } from 'modules/settings/brands/types';
 import { IIntegration } from 'modules/settings/integrations/types';
 import { IProductCategory } from 'modules/settings/productService/types';
@@ -21,6 +26,7 @@ export interface IBookingIntegration extends IIntegration {
   brand: IBrand;
   tags: ITag[];
   createdUser: IUser;
+  paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
 }
 
 export interface IBookingData {

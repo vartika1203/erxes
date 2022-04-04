@@ -17,7 +17,12 @@ import {
   EmailTemplatesQueryResponse,
   EmailTemplatesTotalCountQueryResponse
 } from 'modules/settings/emailTemplates/containers/List';
-import { ILeadData } from 'modules/leads/types';
+import {
+  IGolomtConfig,
+  ILeadData,
+  IQPayConfig,
+  ISocialPayConfig
+} from 'modules/leads/types';
 import { queries } from '../graphql';
 import { queries as settingsQueries } from 'modules/settings/general/graphql';
 import { FieldsQueryResponse } from 'modules/settings/properties/types';
@@ -47,6 +52,7 @@ type State = {
     leadData: ILeadData;
     channelIds?: string[];
     bookingData: IBookingData;
+    paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
   };
 };
 

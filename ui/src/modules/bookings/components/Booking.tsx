@@ -24,8 +24,14 @@ import { FullPreview } from 'modules/leads/components/step';
 import { colors } from 'modules/common/styles';
 import { IForm, IFormData } from 'modules/forms/types';
 import { IEmailTemplate } from 'modules/settings/emailTemplates/types';
-import { ILeadData } from 'modules/leads/types';
+import {
+  IGolomtConfig,
+  ILeadData,
+  IQPayConfig,
+  ISocialPayConfig
+} from 'modules/leads/types';
 import { IAttachment } from 'modules/common/types';
+import PaymentOptionStep from 'modules/leads/components/step/PaymentOptionStep';
 
 type Props = {
   integration?: IBookingIntegration;
@@ -38,6 +44,7 @@ type Props = {
     leadData: ILeadData;
     channelIds?: string[];
     bookingData: IBookingData;
+    paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
   }) => void;
   isActionLoading?: boolean;
   afterFormDbSave: (formId: string) => void;
@@ -69,6 +76,7 @@ type State = {
   loadType: string;
   successImage?: string;
   successImageSize?: string;
+  paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
 };
 
 function Booking(props: Props) {
@@ -119,7 +127,8 @@ function Booking(props: Props) {
     successImageSize: leadData.successImageSize || '',
     loadType: 'popup',
 
-    carousel: 'form'
+    carousel: 'form',
+    paymentConfig: integration.paymentConfig
   });
 
   const [booking, setBooking] = useState<IBooking>({
@@ -188,6 +197,8 @@ function Booking(props: Props) {
         successImage: state.successImage,
         successImageSize: state.successImageSize
       },
+
+      paymentConfig: state.paymentConfig,
 
       bookingData: {
         name: booking.name,
@@ -336,6 +347,17 @@ function Booking(props: Props) {
                 formId={integration.formId}
                 onDocChange={onFormDocChange}
                 onInit={onFormInit}
+              />
+            </Step>
+
+            <Step
+              img="/images/icons/erxes-25.png"
+              title="Payment options"
+              onClick={onStepClick}
+            >
+              <PaymentOptionStep
+                paymentConfig={state.paymentConfig}
+                onChange={onChange}
               />
             </Step>
 

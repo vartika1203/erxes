@@ -19,7 +19,12 @@ import {
 } from 'modules/settings/emailTemplates/containers/List';
 import { queries as templatesQuery } from 'modules/settings/emailTemplates/graphql';
 import { queries as settingsQueries } from 'modules/settings/general/graphql';
-import { ILeadData } from 'modules/leads/types';
+import {
+  ILeadData,
+  ISocialPayConfig,
+  IGolomtConfig,
+  IQPayConfig
+} from 'modules/leads/types';
 import { FieldsQueryResponse } from 'modules/settings/properties/types';
 import { FIELDS_GROUPS_CONTENT_TYPES } from 'modules/settings/properties/constants';
 import { ConfigsQueryResponse } from 'modules/settings/general/types';
@@ -50,6 +55,7 @@ type State = {
     leadData: ILeadData;
     channelIds?: string[];
     bookingData: IBookingData;
+    paymentConfig?: ISocialPayConfig | IGolomtConfig | IQPayConfig;
   };
 };
 

@@ -5,6 +5,7 @@ import { IEmailParams, IIntegration, IProduct } from "../../types";
 import { connection } from "../connection";
 import { IBookingData } from "../types";
 import { saveBooking } from "./utils";
+import QRCode = require("qrcode");
 
 interface IState {
   activeRoute: string;
@@ -163,18 +164,46 @@ export class AppProvider extends React.Component<{}, IState> {
       integrationId: this.getIntegration()._id,
       formId: this.getIntegration().formId,
       productId: this.state.activeProduct,
-      saveCallback: (response: ISaveFormResponse) => {
+      saveCallback: async (response: ISaveFormResponse) => {
         const { errors } = response;
 
-        const status = response.status === "ok" ? "SUCCESS" : "ERROR";
+        let { invoiceResponse, invoiceType } = response;
+
+        let status = "ERROR";
+
+        switch (response.status) {
+          case "ok":
+            status = "SUCESS";
+            break;
+          case "pending":
+            status = "PENDING";
+            break;
+          default:
+            status = "ERROR";
+            break;
+        }
+
+        if (invoiceType === "socialPay") {
+          if (
+            invoiceResponse &&
+            invoiceResponse.includes("socialpay-payment")
+          ) {
+            invoiceResponse = await QRCode.toDataURL(invoiceResponse);
+          }
+        }
 
         this.setState({
           isSubmitting: false,
+          invoiceResponse,
+          invoiceType,
+          lastMessageId: response.messageId,
           currentStatus: {
             status,
             errors
           }
         });
+
+        console.log("state: ", this.state);
       }
     });
   };

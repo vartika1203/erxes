@@ -153,6 +153,8 @@ export const saveBookingMutation = `
         code
         text
       }
+      invoiceResponse
+      invoiceType
     }
   }
 `;

@@ -285,7 +285,10 @@ class Form extends React.Component<Props, State> {
           <Description>
             {__('Choose a field type from the options below.')}
           </Description>
-          <FieldChoices onChoiceClick={this.onChoiceClick} />
+          <FieldChoices
+            type={this.props.type}
+            onChoiceClick={this.onChoiceClick}
+          />
         </LeftItem>
         {currentField && (
           <FieldForm
