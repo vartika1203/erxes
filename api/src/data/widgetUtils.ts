@@ -682,11 +682,11 @@ export const getOrderInfo = async (
   orderInfo.paymentConfig = paymentConfig;
 
   for (const submission of submissions) {
-    const product = await Products.getProduct({ _id: submission.value });
-    const price = product.unitPrice || 0;
+    const productObj = await Products.getProduct({ _id: submission.value });
+    const price = productObj.unitPrice || 0;
     orderInfo.amount += price;
     orderInfo.items.push({
-      productId: product._id,
+      productId: productObj._id,
       quantity: 1,
       price,
       total: price * 1
