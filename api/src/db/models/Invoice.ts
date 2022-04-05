@@ -20,7 +20,7 @@ export const loadClass = () => {
       const invoice = await Invoices.findOne(doc);
 
       if (!invoice) {
-        throw new Error('Invoice not found');
+        throw new Error(`Invoice not found`);
       }
 
       return invoice;
@@ -42,7 +42,7 @@ export const loadClass = () => {
     }
 
     public static async removeInvoice(_id: string) {
-      await Invoices.getInvoice(_id);
+      await Invoices.getInvoice({ _id });
 
       return Invoices.deleteOne({ _id });
     }

@@ -1,4 +1,5 @@
 import { dateType } from 'aws-sdk/clients/sts'; // tslint:disable-line
+import e = require('cors');
 import * as faker from 'faker';
 import * as Random from 'meteor-random';
 import * as momentTz from 'moment-timezone';
@@ -87,6 +88,8 @@ import {
 import { IMessengerAppCrendentials } from './models/definitions/messengerApps';
 import { ICondition } from './models/definitions/segments';
 import { IUserDocument } from './models/definitions/users';
+import FormOrders from './models/FormOrders';
+import Invoices from './models/Invoice';
 import PipelineTemplates from './models/PipelineTemplates';
 
 export const getUniqueValue = async (
@@ -1965,4 +1968,61 @@ export const clientPortalFactory = async (params: { name?: string }) => {
   });
 
   return portal.save();
+};
+
+export const invoiceFactory = async (params: {
+  status?: string;
+  amount?: number;
+  invoiceNo?: string;
+  type?: string;
+  invoiceType?: string;
+}) => {
+  const invoice = new Invoices({
+    status: params.status || 'open',
+    amount: params.amount || faker.random.number(),
+    invoiceNo: params.invoiceNo || Random.id(),
+    type: params.type || 'lead',
+    invoiceType: params.invoiceType || 'socialPay'
+  });
+
+  return invoice.save();
+};
+
+interface IOrderItemFactoryInput {
+  quantity?: number;
+  price?: number;
+  productId?: string;
+  total?: number;
+}
+
+export const formOrderFactory = async (params: {
+  formId?: string;
+  integrationId?: string;
+  customerId?: string;
+  items?: IOrderItemFactoryInput[];
+  status?: string;
+  invoiceId?: string;
+  messageId?: string;
+}) => {
+  const items = params.items || [
+    {
+      quantity: faker.random.number({ min: 1, max: 10 }),
+      price: faker.random.number(),
+      productId: Random.id()
+    }
+  ];
+
+  const formOrder = new FormOrders({
+    formId: params.formId || Random.id(),
+    items: items.map(e => {
+      return { ...e, total: e.quantity * e.price };
+    }),
+    integrationId: params.integrationId || Random.id(),
+    customerId: params.customerId || Random.id(),
+    status: params.status || 'placed',
+    invoiceId: params.invoiceId || Random.id(),
+    messageId: params.messageId || Random.id()
+  });
+
+  return formOrder.save();
 };
