@@ -140,7 +140,7 @@ const createFormConversation = async (
 ) => {
   const { integrationId, formId, submissions, product } = args;
 
-  let orderResponse: any = undefined;
+  let orderResponse: any;
 
   const form = await Forms.findOne({ _id: formId });
 
