@@ -17,13 +17,11 @@ widgetConnect({
 
   connectMutation: (event: MessageEvent) => {
     const { setting, storage } = event.data;
-    console.log(event);
+
     connection.setting = setting;
 
     initStorage(storage);
 
-    console.log("asdasdkljaka ", getLocalStorageItem("customerId"));
-    console.log("booking: ", storage);
     // call connect mutation
     return client
       .mutate({

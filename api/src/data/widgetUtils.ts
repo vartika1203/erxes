@@ -661,9 +661,9 @@ export const getOrderInfo = async (
   const orderInfo: IFormOrderInfo = {
     paymentConfig: { type: 'none' },
     amount: 0,
-    phone: '99391924',
     items: []
   };
+
   submissions = submissions.filter(
     e => e.type === 'productCategory' && e.value.length > 0
   );
@@ -708,6 +708,7 @@ export const getOrderInfo = async (
     return await settleOrder(
       formId,
       integrationId,
+      integration.kind,
       customerId,
       orderInfo,
       messageId
@@ -735,6 +736,7 @@ export const hmac256 = (key, message) => {
 const settleOrder = async (
   formId: string,
   integrationId: string,
+  integrationKind: string,
   customerId: string,
   orderInfo: IFormOrderInfo,
   messageId: string
@@ -758,7 +760,7 @@ const settleOrder = async (
       amount,
       invoiceNo: messageId,
       phone,
-      type: 'lead',
+      type: integrationKind,
       invoiceType: type
     });
 
@@ -769,17 +771,7 @@ const settleOrder = async (
       terminal
     };
 
-    let requestUrl = SOCIAL_PAY_API_URLS.QR_INVOICE;
-
-    if (!useQrCode) {
-      requestUrl = SOCIAL_PAY_API_URLS.PHONE_INVOICE;
-
-      requestBody.phone = phone;
-      requestBody.checksum = await hmac256(
-        key,
-        terminal + messageId + amount + phone
-      );
-    }
+    const requestUrl = SOCIAL_PAY_API_URLS.QR_INVOICE;
 
     try {
       const { body } = await sendRequest({
@@ -815,7 +807,7 @@ const settleOrder = async (
       status: 'open',
       amount,
       invoiceNo: messageId,
-      type: 'lead',
+      type: integrationKind,
       invoiceType: type
     });
 
@@ -954,10 +946,10 @@ export const handleSocialPayNotification = async (req, res, next) => {
   const {
     resp_code,
     resp_desc,
-    amount,
-    checksum,
-    invoice,
-    terminal
+    // amount,
+    // checksum,
+    invoice
+    // terminal
   } = req.body;
 
   let status = 'success';

@@ -83,6 +83,7 @@ export const types = `
     videoCallData: VideoCallData
     contentType: String
     bookingWidgetData: JSON
+    invoiceData: JSON
   }
 
   type FacebookPost {

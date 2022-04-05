@@ -78,13 +78,9 @@ export const saveBooking = (params: {
     };
   });
 
-  console.log("connection: ", connection.customerId);
-
   const cachedCustomerId = connection.customerId
     ? connection.customerId
     : getLocalStorageItem("customerId");
-
-  console.log("customerId: ", cachedCustomerId);
 
   const variables = {
     integrationId,

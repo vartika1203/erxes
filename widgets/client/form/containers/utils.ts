@@ -125,9 +125,6 @@ export const saveLead = (params: {
     ? connection.customerId
     : getLocalStorageItem("customerId");
 
-  console.log("customerId", cachedCustomerId);
-  console.log("connection: ", connection);
-
   const variables = {
     integrationId,
     formId,

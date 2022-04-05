@@ -30,6 +30,6 @@ export interface IContext {
 export interface IFormOrderInfo {
   paymentConfig?: ISocialPayConfig | IQPayConfig | IGolomtConfig;
   amount: number;
-  phone: string;
+  phone?: string;
   items: IOrderItem[];
 }

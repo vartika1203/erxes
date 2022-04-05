@@ -1,7 +1,9 @@
 import gql from "graphql-tag";
 import * as React from "react";
 import { ChildProps, graphql } from "react-apollo";
+import client from "../../../apollo-client";
 import DumbForm from "../../../form/components/Form";
+import { formInvoiceUpdated } from "../../../form/graphql";
 import { ICurrentStatus, IForm } from "../../../form/types";
 import { formDetailQuery } from "../../graphql";
 import { AppConsumer } from "../AppContext";
@@ -23,7 +25,23 @@ const Form = (props: ChildProps<IProps, QueryResponse>) => {
     integration: props.integration
   };
 
-  console.log(extendedProps);
+  React.useEffect(() => {
+    client
+      .subscribe({
+        query: gql(formInvoiceUpdated),
+        variables: { messageId: props.lastMessageId || "" }
+      })
+      .subscribe({
+        next({ data }) {
+          if (data.formInvoiceUpdated.status === "success") {
+            props.onChangeCurrentStatus("SUCCESS");
+          }
+        },
+        error(err: any) {
+          console.error("err", err);
+        }
+      });
+  });
 
   return <DumbForm {...extendedProps} hasTopBar={true} />;
 };
@@ -43,6 +61,7 @@ interface IProps {
   invoiceType?: string;
   lastMessageId?: string;
   onCancelOrder: (customerId: string, messageId: string) => void;
+  onChangeCurrentStatus: (status: string) => void;
 }
 
 const FormWithData = graphql<IProps, QueryResponse>(
@@ -70,7 +89,8 @@ const WithContext = () => (
       invoiceResponse,
       lastMessageId,
       invoiceType,
-      cancelOrder
+      cancelOrder,
+      onChangeCurrentStatus
     }) => {
       const integration = getIntegration();
 
@@ -86,6 +106,7 @@ const WithContext = () => (
           invoiceType={invoiceType}
           lastMessageId={lastMessageId}
           onCancelOrder={cancelOrder}
+          onChangeCurrentStatus={onChangeCurrentStatus}
         />
       );
     }}

@@ -17,15 +17,11 @@ widgetConnect({
 
   connectMutation: (event: MessageEvent) => {
     const { setting, hasPopupHandlers, storage } = event.data;
-    console.log(event);
 
     connection.setting = setting;
     connection.hasPopupHandlers = hasPopupHandlers;
 
     initStorage(storage);
-
-    console.log("asdasdkljaka ", getLocalStorageItem("customerId"));
-    console.log("form: ", storage);
 
     // call connect mutation
     return client

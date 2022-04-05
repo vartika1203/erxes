@@ -39,6 +39,7 @@ interface IStore extends IState {
   save: (params: any) => void;
   getIntegration: () => IIntegration;
   cancelOrder: (customerId: string, messageId: string) => void;
+  onChangeCurrentStatus: (status: string) => void;
 }
 
 const AppContext = React.createContext({} as IStore);
@@ -202,8 +203,6 @@ export class AppProvider extends React.Component<{}, IState> {
             errors
           }
         });
-
-        console.log("state: ", this.state);
       }
     });
   };
@@ -216,6 +215,10 @@ export class AppProvider extends React.Component<{}, IState> {
         this.setState({ currentStatus: { status: response } });
       }
     });
+  };
+
+  onChangeCurrentStatus = (status: string) => {
+    this.setState({ currentStatus: { status } });
   };
 
   render() {
@@ -236,7 +239,8 @@ export class AppProvider extends React.Component<{}, IState> {
           sendEmail,
           save: this.save,
           getIntegration: this.getIntegration,
-          cancelOrder: this.cancelOrder
+          cancelOrder: this.cancelOrder,
+          onChangeCurrentStatus: this.onChangeCurrentStatus
         }}
       >
         {this.props.children}
