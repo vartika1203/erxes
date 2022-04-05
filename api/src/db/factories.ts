@@ -1,5 +1,4 @@
 import { dateType } from 'aws-sdk/clients/sts'; // tslint:disable-line
-import e = require('cors');
 import * as faker from 'faker';
 import * as Random from 'meteor-random';
 import * as momentTz from 'moment-timezone';
@@ -2004,7 +2003,7 @@ export const formOrderFactory = async (params: {
   invoiceId?: string;
   messageId?: string;
 }) => {
-  const items = params.items || [
+  const items: any[] = params.items || [
     {
       quantity: faker.random.number({ min: 1, max: 10 }),
       price: faker.random.number(),

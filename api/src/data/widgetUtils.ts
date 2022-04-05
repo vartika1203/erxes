@@ -747,7 +747,6 @@ const settleOrder = async (
   const {
     terminal,
     key,
-    useQrCode,
     checksumKey,
     redirectUrl,
     token,
@@ -946,10 +945,10 @@ export const handleSocialPayNotification = async (req, res, next) => {
   const {
     resp_code,
     resp_desc,
-    // amount,
-    // checksum,
-    invoice
-    // terminal
+    amount,
+    checksum,
+    invoice,
+    terminal
   } = req.body;
 
   let status = 'success';
