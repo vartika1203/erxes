@@ -2014,8 +2014,8 @@ export const formOrderFactory = async (params: {
 
   const formOrder = new FormOrders({
     formId: params.formId || Random.id(),
-    items: items.map(e => {
-      return { ...e, total: e.quantity * e.price };
+    items: items.map(item => {
+      return { ...item, total: item.quantity * item.price };
     }),
     integrationId: params.integrationId || Random.id(),
     customerId: params.customerId || Random.id(),
