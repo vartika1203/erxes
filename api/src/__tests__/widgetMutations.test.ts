@@ -1970,7 +1970,7 @@ describe('lead', () => {
     invoiceCancelMock.restore();
   });
 
-  test('widgets: fail invoice', async () => {
+  test('widgets: invoice failed', async () => {
     const category = await productCategoryFactory({});
     const product = await productFactory({ categoryId: category._id });
 
