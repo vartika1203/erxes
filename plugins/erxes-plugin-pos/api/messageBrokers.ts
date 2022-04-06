@@ -18,11 +18,12 @@ export default [
 
         const { deliveryConfig = {} } = pos;
         const deliveryInfo = doneOrder.deliveryInfo || {};
+        const { marker = {} } = deliveryInfo;
 
         const deal = await models.Deals.createDeal({
           name: `Delivery: ${doneOrder.number}`,
           startDate: doneOrder.createdAt,
-          description: deliveryInfo.description,
+          description: deliveryInfo.address,
           // {
           //   "locationValue": {
           //     "type": "Point",
@@ -38,10 +39,23 @@ export default [
           //   },
           //   "stringValue": "106.93628311157227,47.920138551642026"
           // }
-          customFieldsData: [{
-            ...deliveryInfo.mapValue,
-            field: (deliveryConfig.mapCustomField).replace('customFieldsData.', '')
-          }],
+          customFieldsData: [
+            {
+              field: (deliveryConfig.mapCustomField).replace('customFieldsData.', ''),
+              locationValue: {
+                type: "Point",
+                coordinates: [
+                  marker.longitude, marker.latitude
+                ]
+              },
+              value: {
+                lat: marker.latitude,
+                lng: marker.longitude,
+                description: "location"
+              },
+              stringValue: `${marker.longitude},${marker.latitude}`
+            }
+          ],
           stageId: deliveryConfig.stageId,
           assignedUserIds: deliveryConfig.assignedUserIds,
           watchedUserIds: deliveryConfig.watchedUserIds,
