@@ -1965,4 +1965,54 @@ describe('lead', () => {
 
     expect(cancelResponse).toBe('cancelled');
   });
+
+  test('widgets: fail invoice', async () => {
+    const category = await productCategoryFactory({});
+    const product = await productFactory({ categoryId: category._id });
+
+    const form = await formFactory({});
+    const integration = await integrationFactory({
+      kind: 'lead',
+      paymentConfig: { type: 'socialPay', terminal: '1298934', key: 'key' },
+      formId: form._id
+    });
+
+    const productField = await fieldFactory({
+      contentType: 'form',
+      contentTypeId: form._id,
+      productCategoryId: category._id
+    });
+
+    const mock = sinon.stub(utils, 'sendRequest').callsFake(() => {
+      return Promise.resolve({
+        header: {
+          code: 200,
+          status: 'success'
+        },
+        body: {
+          response: {
+            desc: 'failed',
+            status: 'FAILED'
+          }
+        }
+      });
+    });
+
+    const response = await widgetMutations.widgetsSaveLead(
+      {},
+      {
+        integrationId: integration._id,
+        formId: form._id,
+        submissions: [
+          { _id: productField._id, value: product._id, type: 'productCategory' }
+        ],
+        browserInfo: {
+          currentPageUrl: '/page'
+        }
+      }
+    );
+
+    mock.restore();
+    expect(response.status).toBe('error');
+  });
 });
