@@ -60,6 +60,7 @@ export const types = `
     stageId: String
     groupId: String
     column: Int
+    productId: String
   }
 `;
 

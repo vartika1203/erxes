@@ -165,6 +165,12 @@ export interface IBotData {
   };
 }
 
+export interface IInvoiceData {
+  _id: string;
+  status: string;
+  amount: number;
+}
+
 export interface IMessage {
   content: string;
   videoCallData?: IVideoCallData;
@@ -189,6 +195,7 @@ export interface IMessage {
   createdAt: Date;
   updatedAt: Date;
   bookingWidgetData?: any;
+  invoiceData?: IInvoiceData;
 }
 
 // mutation types

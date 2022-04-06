@@ -102,7 +102,8 @@ export const saveLead = (params: {
       associatedFieldId,
       groupId,
       isHidden,
-      column
+      column,
+      productId
     } = doc[fieldId];
 
     if (isHidden) {
@@ -117,7 +118,8 @@ export const saveLead = (params: {
       validation,
       associatedFieldId,
       groupId,
-      column
+      column,
+      productId
     };
   });
 

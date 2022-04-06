@@ -61,6 +61,16 @@ export const types = `
     duration: Float
   }
 
+  type Invoice {
+    _id: String
+    status: String
+    amount: Int
+    invoiceNo: String
+    type: String
+    invoiceType: String
+    createdAt: Date
+  }
+
   type ConversationMessage {
     _id: String!
     content: String
@@ -83,7 +93,7 @@ export const types = `
     videoCallData: VideoCallData
     contentType: String
     bookingWidgetData: JSON
-    invoiceData: JSON
+    invoiceData: Invoice
   }
 
   type FacebookPost {

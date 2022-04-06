@@ -683,7 +683,7 @@ export const getOrderInfo = async (
   orderInfo.paymentConfig = paymentConfig;
 
   for (const submission of submissions) {
-    const productObj = await Products.getProduct({ _id: submission.value });
+    const productObj = await Products.getProduct({ _id: submission.productId });
     const price = productObj.unitPrice || 0;
     orderInfo.amount += price;
     orderInfo.items.push({

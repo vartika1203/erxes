@@ -42,6 +42,27 @@ export default class AppMessage extends React.Component<Props, {}> {
     );
   }
 
+  renderInvoiceData() {
+    const invoice = this.props.message.invoiceData;
+    if (!invoice) {
+      return null;
+    }
+
+    return (
+      <>
+        <MessageContent internal={false}>
+          <span
+            dangerouslySetInnerHTML={{
+              __html: xss(
+                `amount: ${invoice.amount}  <br>  invoice state: ${invoice.status}`
+              )
+            }}
+          />
+        </MessageContent>
+      </>
+    );
+  }
+
   render() {
     const { isSameUser, message } = this.props;
     const { bookingWidgetData, createdAt } = message;
@@ -49,6 +70,7 @@ export default class AppMessage extends React.Component<Props, {}> {
     return (
       <>
         <FormMessage message={bookingWidgetData} />
+        {this.renderInvoiceData()}
         <MessageItem isSame={isSameUser}>
           {this.renderAvatar()}
 

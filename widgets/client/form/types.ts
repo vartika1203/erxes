@@ -100,6 +100,7 @@ export interface IFormDoc {
     groupId: string;
     isHidden?: boolean;
     column?: number;
+    productId?: string;
   };
 }
 

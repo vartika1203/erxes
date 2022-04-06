@@ -1,6 +1,7 @@
 import { Conversations } from '../../db/models';
 import { MESSAGE_TYPES } from '../../db/models/definitions/constants';
 import { IMessageDocument } from '../../db/models/definitions/conversationMessages';
+import Invoices from '../../db/models/Invoice';
 import { debugError } from '../../debuggers';
 import { IContext } from '../types';
 import { getDocument } from './mutations/cacheUtils';
@@ -78,5 +79,15 @@ export default {
       debugError(e);
       return null;
     }
+  },
+
+  async invoiceData(message: IMessageDocument) {
+    const invoice = await Invoices.findOne({ invoiceNo: message._id }).lean();
+
+    if (!invoice) {
+      return null;
+    }
+
+    return invoice;
   }
 };

@@ -1,3 +1,4 @@
+import { Products } from './../../../db/models/Products';
 import { IProductDocument } from './../../../db/models/definitions/deals';
 import * as strip from 'strip';
 import {

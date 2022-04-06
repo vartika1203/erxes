@@ -6,7 +6,8 @@ import {
   CellWrapper,
   FormTable,
   FieldWrapper,
-  FormMessageInput
+  FormMessageInput,
+  MessageContent
 } from '../styles';
 import {
   PreviewTitle,
@@ -22,6 +23,7 @@ import Tip from 'modules/common/components/Tip';
 import Button from 'modules/common/components/Button';
 import { __ } from 'modules/common/utils';
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
+import xss from 'xss';
 
 type Props = {
   message: IMessage;
@@ -110,6 +112,27 @@ export default class FormMessage extends React.Component<Props, {}> {
     );
   }
 
+  renderInvoiceData() {
+    const invoice = this.props.message.invoiceData;
+    if (!invoice) {
+      return null;
+    }
+
+    return (
+      <>
+        <MessageContent internal={false}>
+          <span
+            dangerouslySetInnerHTML={{
+              __html: xss(
+                `amount: ${invoice.amount}  <br>  invoice state: ${invoice.status}`
+              )
+            }}
+          />
+        </MessageContent>
+      </>
+    );
+  }
+
   renderPrintBtn() {
     return (
       <PrintButton>
@@ -130,17 +153,21 @@ export default class FormMessage extends React.Component<Props, {}> {
     const { formWidgetData, content } = this.props.message;
 
     return (
-      <FormTable ref={el => (this.componentRef = el)}>
-        <PreviewTitle style={{ backgroundColor: '#6569DF' }}>
-          <div>{content}</div>
-        </PreviewTitle>
-        <PreviewBody embedded="embedded">
-          <BodyContent>
-            {formWidgetData.map(field => this.renderField(field))}
-          </BodyContent>
-        </PreviewBody>
-        {this.renderPrintBtn()}
-      </FormTable>
+      <>
+        <FormTable ref={el => (this.componentRef = el)}>
+          <PreviewTitle style={{ backgroundColor: '#6569DF' }}>
+            <div>{content}</div>
+          </PreviewTitle>
+          <PreviewBody embedded="embedded">
+            <BodyContent>
+              {formWidgetData.map(field => this.renderField(field))}
+            </BodyContent>
+          </PreviewBody>
+
+          {this.renderPrintBtn()}
+        </FormTable>
+        {this.renderInvoiceData()}
+      </>
     );
   }
 }

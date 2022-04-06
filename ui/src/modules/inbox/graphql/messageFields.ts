@@ -91,4 +91,8 @@ export default `
       attachmentId
     }
   }
+  invoiceData {
+    status
+    amount
+  }
 `;

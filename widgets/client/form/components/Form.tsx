@@ -160,17 +160,18 @@ class Form extends React.Component<Props, State> {
         };
       }
 
-      // if (field.type === 'productCategory') {
-      //   const formField = fields.find(f => f._id === key);
-      //   const products = (formField && formField.products) || [];
-      //   const selectedProduct = products.find(p => p._id === field.value);
-      //   doc[key] = selectedProduct && {
-      //     ...field,
-      //     value: `${
-      //       selectedProduct.name
-      //     } - ${selectedProduct.unitPrice.toLocaleString()}`
-      //   };
-      // }
+      if (field.type === "productCategory") {
+        const formField = fields.find(f => f._id === key);
+        const products = (formField && formField.products) || [];
+        const selectedProduct = products.find(p => p._id === field.value);
+        doc[key] = selectedProduct && {
+          ...field,
+          value: `${
+            selectedProduct.name
+          } - ${selectedProduct.unitPrice.toLocaleString()}`,
+          productId: selectedProduct._id
+        };
+      }
     }
 
     this.props.onSubmit(doc, this.props.form.code);
