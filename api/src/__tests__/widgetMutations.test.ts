@@ -1944,14 +1944,18 @@ describe('lead', () => {
         integrationId: integration._id,
         formId: form._id,
         submissions: [
-          { _id: productField._id, value: product._id, type: 'productCategory' }
+          {
+            _id: productField._id,
+            value: product._id,
+            type: 'productCategory',
+            productId: product._id
+          }
         ],
         browserInfo: {
           currentPageUrl: '/page'
         }
       }
     );
-    mock.restore();
 
     const cancelResponse = await widgetMutations.widgetsCancelOrder(
       {},
@@ -1961,9 +1965,9 @@ describe('lead', () => {
       }
     );
 
-    invoiceCancelMock.restore();
-
     expect(cancelResponse).toBe('cancelled');
+    mock.restore();
+    invoiceCancelMock.restore();
   });
 
   test('widgets: fail invoice', async () => {
@@ -2004,7 +2008,12 @@ describe('lead', () => {
         integrationId: integration._id,
         formId: form._id,
         submissions: [
-          { _id: productField._id, value: product._id, type: 'productCategory' }
+          {
+            _id: productField._id,
+            value: product._id,
+            type: 'productCategory',
+            productId: product._id
+          }
         ],
         browserInfo: {
           currentPageUrl: '/page'
