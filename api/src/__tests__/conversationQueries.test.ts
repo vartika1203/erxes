@@ -1,3 +1,4 @@
+import { invoiceFactory } from './../db/factories';
 import * as moment from 'moment';
 import * as sinon from 'sinon';
 import { IntegrationsAPI } from '../data/dataSources';
@@ -183,6 +184,11 @@ describe('conversationQueries', () => {
           videoCallData {
             url
             name
+            status
+          }
+          invoiceData {
+            _id
+            amount
             status
           }
         }
@@ -427,6 +433,25 @@ describe('conversationQueries', () => {
     } catch (e) {
       expect(e[0].message).toBe('Integrations api is not running');
     }
+  });
+
+  test('Conversation messages with invoiceData', async () => {
+    const conversation = await conversationFactory({});
+    const message = await conversationMessageFactory({
+      conversationId: conversation._id
+    });
+    await invoiceFactory({ invoiceNo: message._id });
+
+    const responses = await graphqlRequest(
+      qryConversationMessage,
+      'conversationMessages',
+      {
+        conversationId: conversation._id
+      }
+    );
+
+    expect(responses).toHaveLength(1);
+    expect(responses[0].invoiceData).toBeDefined();
   });
 
   test('Conversation messages total count', async () => {
