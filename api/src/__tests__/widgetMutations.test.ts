@@ -8,6 +8,7 @@ import widgetMutations, {
   getMessengerData
 } from '../data/resolvers/mutations/widgets';
 import * as utils from '../data/utils';
+import * as widgetUtils from '../data/widgetUtils';
 import {
   brandFactory,
   companyFactory,
@@ -19,6 +20,7 @@ import {
   fieldGroupFactory,
   formFactory,
   integrationFactory,
+  productCategoryFactory,
   knowledgeBaseArticleFactory,
   messengerAppFactory,
   productFactory,
@@ -1895,5 +1897,72 @@ describe('lead', () => {
     expect(await FormSubmissions.find().countDocuments()).toBe(
       submissions.length
     );
+  });
+
+  test('widgets: cancel order', async () => {
+    const category = await productCategoryFactory({});
+    const product = await productFactory({ categoryId: category._id });
+
+    const form = await formFactory({});
+    const integration = await integrationFactory({
+      kind: 'lead',
+      paymentConfig: { type: 'socialPay', terminal: '1298934', key: 'key' },
+      formId: form._id
+    });
+
+    const productField = await fieldFactory({
+      contentType: 'form',
+      contentTypeId: form._id,
+      productCategoryId: category._id
+    });
+
+    const mock = sinon.stub(utils, 'sendRequest').callsFake(() => {
+      return Promise.resolve({
+        header: {
+          code: 200,
+          status: 'success'
+        },
+        body: {
+          response: {
+            desc:
+              'socialpay-payment://key=P5G7DMH+jZJGSlVrLu+4ZUkLga+4m40enrqxtbJx4xCIKt3ehpmirP/FDWvCfpD+9ASYMa5fxWIvCHhYg6R1ZNulzjG5aZeSdpsOrmgTXU0=',
+            status: 'SUCCESS'
+          }
+        }
+      });
+    });
+
+    const invoiceCancelMock = sinon
+      .stub(widgetUtils, 'cancelInvoice')
+      .callsFake(() => {
+        return 'cancelled';
+      });
+
+    const response = await widgetMutations.widgetsSaveLead(
+      {},
+      {
+        integrationId: integration._id,
+        formId: form._id,
+        submissions: [
+          { _id: productField._id, value: product._id, type: 'productCategory' }
+        ],
+        browserInfo: {
+          currentPageUrl: '/page'
+        }
+      }
+    );
+    mock.restore();
+
+    const cancelResponse = await widgetMutations.widgetsCancelOrder(
+      {},
+      {
+        messageId: response.messageId,
+        customerId: response.customerId
+      }
+    );
+
+    invoiceCancelMock.restore();
+
+    expect(cancelResponse).toBe('cancelled');
   });
 });

@@ -669,14 +669,15 @@ export const getOrderInfo = async (
   );
 
   if (submissions.length === 0 && !product) {
-    return orderInfo;
+    return null;
   }
 
   const integration = await getDocument('integrations', { _id: integrationId });
+
   const { paymentConfig } = integration;
 
   if (!paymentConfig || paymentConfig.type === 'none') {
-    return orderInfo;
+    return null;
   }
 
   orderInfo.paymentConfig = paymentConfig;
@@ -869,7 +870,7 @@ const settleOrder = async (
   }
 };
 
-const cancelInvoice = async (type, config, invoiceNo, amount) => {
+export const cancelInvoice = async (type, config, invoiceNo, amount) => {
   if (type === 'socialPay') {
     const { key, terminal } = config;
 
@@ -911,7 +912,7 @@ export const cancelOrder = async ({
     customerId
   });
 
-  const invoice = await Invoices.getInvoice(order.invoiceId);
+  const invoice = await Invoices.getInvoice({ _id: order.invoiceId });
 
   if (order.status !== 'placed' || invoice.status !== 'open') {
     throw new Error('Order is already settled');

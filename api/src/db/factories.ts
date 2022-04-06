@@ -870,6 +870,7 @@ interface IIntegrationFactoryInput {
   bookingData?: any;
   visibility?: string;
   departmentIds?: string[];
+  paymentConfig?: any;
 }
 
 export const integrationFactory = async (
@@ -899,7 +900,8 @@ export const integrationFactory = async (
           description: 'Booking description'
         },
     visibility: params.visibility || 'public',
-    departmentIds: params.departmentIds || []
+    departmentIds: params.departmentIds || [],
+    paymentConfig: params.paymentConfig
   };
 
   if (params.messengerData && !params.messengerData.timezone) {

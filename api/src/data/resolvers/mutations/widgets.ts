@@ -180,7 +180,7 @@ const createFormConversation = async (
     orderResponse = await getOrderInfo(
       integrationId,
       formId,
-      args.cachedCustomerId,
+      args.cachedCustomerId || cachedCustomer._id,
       submissions,
       message._id,
       product
