@@ -362,6 +362,8 @@ interface IProductTemplateInput {
   templateItems?: any[];
   tagIds?: string[];
   status?: string;
+  parentId?: string;
+  relatedIds?: string[];
 }
 
 export const productTemplateFactory = async (
@@ -393,7 +395,9 @@ export const productTemplateFactory = async (
       }
     ],
     tagIds: params.tagIds || [faker.random.uuid()],
-    status: params.status || 'active'
+    status: params.status || 'active',
+    parentId: params.parentId,
+    relatedIds: params.relatedIds || []
   });
 
   return prouctTemplate.save();
@@ -727,6 +731,7 @@ interface IFieldFactoryInput {
   options?: string[];
   associatedFieldId?: string;
   showInCard?: boolean;
+  productCategoryId?: string;
 }
 
 export const fieldFactory = async (params: IFieldFactoryInput) => {
@@ -764,7 +769,8 @@ export const fieldFactory = async (params: IFieldFactoryInput) => {
       params.isDefinedByErxes === undefined || params.isDefinedByErxes === null
         ? false
         : params.isDefinedByErxes,
-    showInCard: params.showInCard || false
+    showInCard: params.showInCard || false,
+    productCategoryId: params.productCategoryId || ''
   });
 };
 

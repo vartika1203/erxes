@@ -10,6 +10,9 @@ import ControlLabel from 'erxes-ui/lib/components/form/Label';
 import { ModalFooter } from 'erxes-ui/lib/styles/main';
 import { IButtonMutateProps, IFormProps } from 'erxes-ui/lib/types';
 import { FlexContent } from 'modules/boards/styles/item';
+import { IAttachment } from 'modules/common/types';
+import Uploader from 'modules/common/components/Uploader';
+import { extractAttachment } from 'modules/common/utils';
 import { ExpandWrapper } from 'modules/settings/styles';
 import React from 'react';
 
@@ -19,6 +22,7 @@ import Stages from './Stages';
 
 type Props = {
   productTemplate?: IProductTemplate;
+  productTemplates: IProductTemplate[];
   items?: IProductTemplate;
   renderButton: (props: IButtonMutateProps) => JSX.Element;
   closeModal: () => void;
@@ -29,6 +33,7 @@ type State = {
   items: IProductTemplateItem[];
   discount: number;
   totalAmount: number;
+  templateImage?: IAttachment;
 };
 class Form extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -36,12 +41,18 @@ class Form extends React.Component<Props, State> {
 
     const productTemplate =
       props.productTemplate || props.items || ({} as IProductTemplate);
-    const { discount, totalAmount, templateItems } = productTemplate;
+    const {
+      discount,
+      totalAmount,
+      templateItems,
+      templateImage
+    } = productTemplate;
 
     this.state = {
       items: templateItems || [],
       discount: discount ? discount : 0,
-      totalAmount: totalAmount ? totalAmount : 0
+      totalAmount: totalAmount ? totalAmount : 0,
+      templateImage: templateImage ? templateImage : undefined
     };
   }
 
@@ -67,6 +78,36 @@ class Form extends React.Component<Props, State> {
     this.setState({ discount, totalAmount });
   };
 
+  generateTemplateOptions = (
+    templates: IProductTemplate[],
+    currentTemplateId?: string
+  ) => {
+    const result: React.ReactNode[] = [];
+
+    for (const template of templates) {
+      const order = template.order || '';
+
+      const foundedString = order.match(/[/]/gi);
+
+      let space = '';
+
+      if (foundedString) {
+        space = '\u00A0 '.repeat(foundedString.length);
+      }
+
+      if (currentTemplateId !== template._id) {
+        result.push(
+          <option key={template._id} value={template._id}>
+            {space}
+            {template.title}
+          </option>
+        );
+      }
+    }
+
+    return result;
+  };
+
   onChangeItems = items => {
     this.calculateTotalAmountAndDiscount(items);
   };
@@ -77,10 +118,21 @@ class Form extends React.Component<Props, State> {
     this.setState({ discount });
   };
 
+  onChangeAttachment = (files: IAttachment[]) => {
+    this.setState({ templateImage: files.length ? files[0] : undefined });
+  };
+
   renderContent = (formProps: IFormProps) => {
-    const { renderButton, closeModal, productTemplate } = this.props;
+    const {
+      renderButton,
+      closeModal,
+      productTemplate,
+      productTemplates
+    } = this.props;
     const { values, isSubmitted } = formProps;
     const object = productTemplate || ({} as IProductTemplate);
+    const templateImages =
+      (object.templateImage && extractAttachment([object.templateImage])) || [];
 
     values.templateItems = this.state.items;
 
@@ -101,6 +153,17 @@ class Form extends React.Component<Props, State> {
             required={true}
             componentClass="select"
             options={TYPE_CHOICES}
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <ControlLabel>Template image</ControlLabel>
+
+          <Uploader
+            defaultFileList={templateImages}
+            onChange={this.onChangeAttachment}
+            multiple={false}
+            single={true}
           />
         </FormGroup>
 
@@ -161,6 +224,22 @@ class Form extends React.Component<Props, State> {
             rows={3}
           />
         </FormGroup>
+
+        {productTemplates && (
+          <FormGroup>
+            <ControlLabel>Parent Template</ControlLabel>
+
+            <FormControl
+              {...formProps}
+              name="parentId"
+              componentClass="select"
+              defaultValue={object.parentId}
+            >
+              <option value="" />
+              {this.generateTemplateOptions(productTemplates, object._id)}
+            </FormControl>
+          </FormGroup>
+        )}
         <FormGroup>
           <div id="stages-in-pipeline-form">
             <Stages
@@ -181,7 +260,7 @@ class Form extends React.Component<Props, State> {
 
           {renderButton({
             name: 'Save',
-            values,
+            values: { ...values, templateImage: this.state.templateImage },
             isSubmitted,
             callback: closeModal,
             object: productTemplate
