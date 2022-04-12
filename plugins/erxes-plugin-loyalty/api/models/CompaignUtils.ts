@@ -42,9 +42,9 @@ export const commonSchema = {
 }
 
 export const validCompaign = (doc) => {
-  if (!doc.startDate || doc.startDate < new Date()) {
-    throw new Error('The start date must be in the future')
-  }
+  // if (!doc.startDate || doc.startDate < new Date()) {
+  //   throw new Error('The start date must be in the future')
+  // }
 
   if (doc.endDate && doc.startDate > doc.endDate) {
     throw new Error('The end date must be after from start date')

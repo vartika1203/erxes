@@ -113,7 +113,7 @@ export class Spin {
     const interval = intervals.find(i => (i.min <= random && random < i.max));
 
     if (!interval) {
-      await models.updateOne({ _id: spinId }, { status: SPIN_STATUS.LOSS, usedAt: new Date() });
+      await models.Spins.updateOne({ _id: spinId }, { status: SPIN_STATUS.LOSS, usedAt: new Date() });
       return models.Spins.getSpin(models, spinId);
     }
 

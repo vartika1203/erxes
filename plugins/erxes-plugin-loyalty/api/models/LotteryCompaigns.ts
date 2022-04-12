@@ -127,7 +127,7 @@ export class LotteryCompaign {
 
     await this.setLuckyLottery(models, compaign, award, luckyLottery)
 
-    return models.getLottery(models, luckyLottery._id);
+    return models.Lotteries.getLottery(models, luckyLottery._id);
   }
 
   public static async getNextChar(models, { compaignId, awardId, prevChars }) {
@@ -154,7 +154,7 @@ export class LotteryCompaign {
         nextChar,
         afterChars,
         fitLotteriesCount,
-        luckyLottery: await models.getLottery(models, luckyLottery._id)
+        luckyLottery: await models.Lotteries.getLottery(models, luckyLottery._id)
       }
 
     }
