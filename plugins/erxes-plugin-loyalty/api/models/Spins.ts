@@ -86,7 +86,7 @@ export class Spin {
   public static async doSpin(models, { spinId }) {
     const spin = await models.Spins.getSpin(models, spinId);
     const { ownerType, ownerId } = spin;
-    const spinCompaign = await models.SpinCompaigns.getSpinCompaign(models, spin.spinCompaignId);
+    const spinCompaign = await models.SpinCompaigns.getSpinCompaign(models, spin.compaignId);
 
     const now = new Date();
 
