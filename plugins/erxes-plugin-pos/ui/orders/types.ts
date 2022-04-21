@@ -1,6 +1,6 @@
 import { IOrdersSummary, QueryResponse } from "../types";
 import { IUser } from 'erxes-ui/lib/auth/types';
-import {ICustomer} from 'erxes-ui/lib/customers/types';
+import { ICustomer } from 'erxes-ui/lib/customers/types';
 import { IProductCategory, IProduct } from 'erxes-ui/lib/products/types';
 
 export type IOrder = {
@@ -64,6 +64,7 @@ export type OrdersSummaryQueryResponse = {
 
 export type IPosProduct = {
   count: number;
+  amount: number;
 } & IProduct
 
 export type PosProductsQueryResponse = {
@@ -81,4 +82,12 @@ export type PosOrderSyncErkhetMutationResponse = {
 
 export type PosOrderReturnBillMutationResponse = {
   posOrderReturnBill: (mutation: { variables: { _id: string } }) => Promise<any>;
+};
+
+export type PosOrderChangePaymentsMutationResponse = {
+  posOrderChangePayments: (mutation: {
+    variables: {
+      _id: string, cashAmount: number, cardAmount: number, mobileAmount: number
+    }
+  }) => Promise<any>;
 };

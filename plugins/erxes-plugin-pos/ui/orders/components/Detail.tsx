@@ -4,18 +4,38 @@ import React from 'react';
 import {
   __,
   FieldStyle,
+  FormControl,
   SidebarCounter,
   SidebarList,
   Table
 } from 'erxes-ui';
 import { DetailRow, FinanceAmount, FlexRow } from '../../styles';
 import { IOrderDet } from '../types';
+import { Button, Alert } from 'erxes-ui';
 
 type Props = {
+  onChangePayments: (_id: string, cashAmount: number, cardAmount: number, mobileAmount: number) => void;
   order: IOrderDet;
 };
 
-class PutResponseDetail extends React.Component<Props> {
+type State = {
+  cashAmount: number;
+  cardAmount: number;
+  mobileAmount: number;
+}
+
+class PutResponseDetail extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+
+    const { order } = this.props;
+    this.state = {
+      cashAmount: order.cashAmount,
+      cardAmount: order.cardAmount,
+      mobileAmount: order.mobileAmount,
+    };
+  }
+
   displayValue(order, name) {
     const value = _.get(order, name);
     return <FinanceAmount>{(value || 0).toLocaleString()}</FinanceAmount>;
@@ -32,6 +52,38 @@ class PutResponseDetail extends React.Component<Props> {
         </FlexRow>
       </li>
     );
+  }
+
+  renderEditRow(label, key) {
+    const value = this.state[key];
+    const onChangeValue = (e) => {
+      this.setState({ [key]: Number(e.target.value) } as any)
+    }
+    return (
+      <li>
+        <FlexRow>
+          <FieldStyle>{__(`${label}`)}:</FieldStyle>
+          <FormControl
+            type="number"
+            onChange={onChangeValue}
+            value={value}
+          />
+        </FlexRow>
+      </li>
+    );
+  }
+
+  save = () => {
+    const { order } = this.props;
+    const { totalAmount } = order;
+    const { cashAmount, cardAmount, mobileAmount } = this.state;
+
+    if (cashAmount + cardAmount + mobileAmount !== totalAmount) {
+      Alert.error('Is not balanced');
+      return;
+    }
+
+    this.props.onChangePayments(this.props.order._id, cashAmount, cardAmount, mobileAmount);
   }
 
   render() {
@@ -85,10 +137,19 @@ class PutResponseDetail extends React.Component<Props> {
         {this.renderRow('Total Amount', this.displayValue(order, 'totalAmount'))}
 
         <ul>
-          {this.renderRow('Cash Amount', this.displayValue(order, 'cashAmount'))}
-          {this.renderRow('Card Amount', this.displayValue(order, 'cardAmount'))}
-          {this.renderRow('Mobile Amount', this.displayValue(order, 'mobileAmount'))}
+          {this.renderEditRow('Cash Amount', 'cashAmount')}
+          {this.renderEditRow('Card Amount', 'cardAmount')}
+          {this.renderEditRow('Mobile Amount', 'mobileAmount')}
         </ul>
+
+        <Button
+          btnStyle='success'
+          size='small'
+          onClick={this.save}
+          icon='edit'
+        >
+          Save Payments Change
+        </Button>
       </SidebarList>
     )
   }
