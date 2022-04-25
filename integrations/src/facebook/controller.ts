@@ -102,31 +102,38 @@ const init = async app => {
 
   app.get('/facebook/get-pages', async (req, res, next) => {
     debugRequest(debugFacebook, req);
-    const { kind, accountId } = req.query;
-
-    const account = await Accounts.getAccount({ _id: req.query.accountId });
-
-    const accessToken = account.token;
-
-    let pages = [];
 
     try {
-      pages = await getPageList(accessToken, kind);
-    } catch (e) {
-      if (!e.message.includes('Application request limit reached')) {
-        await Integrations.updateOne(
-          { accountId },
-          { $set: { healthStatus: 'account-token', error: `${e.message}` } }
-        );
+      const { kind, accountId } = req.query;
+
+      const account = await Accounts.getAccount({ _id: req.query.accountId });
+
+      const accessToken = account.token;
+
+      let pages = [];
+
+      try {
+        pages = await getPageList(accessToken, kind);
+      } catch (e) {
+        if (!e.message.includes('Application request limit reached')) {
+          await Integrations.updateOne(
+            { accountId },
+            { $set: { healthStatus: 'account-token', error: `${e.message}` } }
+          );
+        }
+
+        debugError(`Error occured while connecting to facebook ${e.message}`);
+        return next(e);
       }
 
-      debugError(`Error occured while connecting to facebook ${e.message}`);
+      debugResponse(debugFacebook, req, JSON.stringify(pages));
+
+      return res.json(pages);
+    } catch (e) {
+      debugError(`Error occured while getting pages ${e.message}`);
+
       return next(e);
     }
-
-    debugResponse(debugFacebook, req, JSON.stringify(pages));
-
-    return res.json(pages);
   });
 
   app.get('/facebook/get-post', async (req, res) => {
