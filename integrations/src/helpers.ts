@@ -547,26 +547,33 @@ export const removeAccount = async (
 export const repairIntegrations = async (
   integrationId: string
 ): Promise<true | Error> => {
-  const integration = await Integrations.findOne({ erxesApiId: integrationId });
-
-  for (const pageId of integration.facebookPageIds) {
-    const pageTokens = await refreshPageAccesToken(pageId, integration);
-
-    await subscribePage(pageId, pageTokens[pageId]);
-
-    await Integrations.remove({
-      erxesApiId: { $ne: integrationId },
-      facebookPageIds: pageId,
-      kind: integration.kind
+  try {
+    debugError('repair facebook integration called');
+    const integration = await Integrations.findOne({
+      erxesApiId: integrationId
     });
+
+    for (const pageId of integration.facebookPageIds) {
+      const pageTokens = await refreshPageAccesToken(pageId, integration);
+
+      await subscribePage(pageId, pageTokens[pageId]);
+
+      await Integrations.remove({
+        erxesApiId: { $ne: integrationId },
+        facebookPageIds: pageId,
+        kind: integration.kind
+      });
+    }
+
+    await Integrations.updateOne(
+      { erxesApiId: integrationId },
+      { $set: { healthStatus: 'healthy', error: '' } }
+    );
+
+    return true;
+  } catch (e) {
+    debugError(`error during repair facebook integration ${e.message}`);
   }
-
-  await Integrations.updateOne(
-    { erxesApiId: integrationId },
-    { $set: { healthStatus: 'healthy', error: '' } }
-  );
-
-  return true;
 };
 
 export const removeCustomers = async params => {
