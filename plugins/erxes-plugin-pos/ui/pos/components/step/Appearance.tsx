@@ -32,6 +32,9 @@ export interface IUIOptions {
   favIcon: string;
   receiptIcon: string;
   texts: IColor;
+  kioskHeaderImage: string;
+  mobileAppImage: string;
+  qrCodeImage: string;
 }
 
 type Props = {
@@ -58,6 +61,9 @@ class Appearance extends React.Component<Props, State> {
       bgImage: '',
       receiptIcon: '',
       texts: {},
+      kioskHeaderImage: '',
+      mobileAppImage: '',
+      qrCodeImage: ''
     };
 
     if (!uiOptions.colors) {
@@ -104,12 +110,12 @@ class Appearance extends React.Component<Props, State> {
     const { uiOptions } = this.state;
 
     const onChangeInput = (e) => {
-      uiOptions['texts'][key] = e.target.value;
+      uiOptions.texts[key] = e.target.value;
 
       this.onChangeFunction("uiOptions", uiOptions);
     };
 
-    const defaultValue = (uiOptions['texts'] || {})[key];
+    const defaultValue = (uiOptions.texts || {})[key];
     return (
       <FormGroup>
         <ControlLabel>{title || key}</ControlLabel>
@@ -183,6 +189,21 @@ class Appearance extends React.Component<Props, State> {
                 "receiptIcon",
                 "Receipt icon",
                 "16x16px transparent PNG"
+              )}
+              {this.renderUploadImage(
+                "kioskHeaderImage",
+                "Kiosk header image",
+                "Kiosk header image PNG"
+              )}
+              {this.renderUploadImage(
+                "mobileAppImage",
+                "Mobile app image",
+                "Mobile app image PNG"
+              )}
+              {this.renderUploadImage(
+                "qrCodeImage",
+                "QR code image",
+                "QR code image PNG"
               )}
             </AppearanceRow>
           </Block>
