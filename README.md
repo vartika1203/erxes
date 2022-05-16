@@ -23,7 +23,7 @@
 
 ## Features
 
-With erxes, achieving growth and unity within your company is possible. We designed erxes to help you eliminate fragmented business processes by bringing all of your messaging and collaboration into one tool. As a result, you will be able to double your output and treat all of your customers as close friends. Optimize your growth operation and scale-up better and faster, but most importantly, correctly.
+With erxes, achieving growth and unity within your company is possible. We designed erxes to help you eliminate fragmented business processes by bringing all of your messaging and collaboration into one tool. As a result, you will be able to double your output and treat all of your customers as close friends. Optimize your growth operation and scale-up better and faster, but most importantly, correctly using the feature of our open source platform.
 
 <img src="https://s3.amazonaws.com/erxes/github/features-transparent.png" width="400" align="right" style="max-width: 50%">
 
